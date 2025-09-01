@@ -40,14 +40,13 @@ class OnboardingView extends GetView<OnboardingController> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: isCompact ? 30 : 60),
                             Text(
                               item.title,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "Mulish",
                                 fontWeight: FontWeight.w600,
-                                fontSize: isCompact ? 26 : 30,
+                                fontSize: 30,
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -78,13 +77,15 @@ class OnboardingView extends GetView<OnboardingController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
                           controller.contents.length,
-                          (index) => _Dot(active: controller.currentPage.value == index),
+                          (index) => _Dot(
+                              active: controller.currentPage.value == index),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(30),
                         child: Obx(() {
-                          final last = controller.currentPage.value + 1 == controller.contents.length;
+                          final last = controller.currentPage.value + 1 ==
+                              controller.contents.length;
                           if (last) {
                             return SizedBox(
                               width: double.infinity,
@@ -92,14 +93,17 @@ class OnboardingView extends GetView<OnboardingController> {
                                 onPressed: controller.start,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFFD3582E),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50)),
                                   padding: EdgeInsets.symmetric(
                                     horizontal: isCompact ? 100 : width * 0.2,
                                     vertical: isCompact ? 18 : 22,
                                   ),
-                                  textStyle: TextStyle(fontSize: isCompact ? 13 : 16),
+                                  textStyle:
+                                      TextStyle(fontSize: isCompact ? 13 : 16),
                                 ),
-                                child: const Text("START", style: TextStyle(color: Colors.white)),
+                                child: const Text("START",
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             );
                           }
@@ -123,11 +127,16 @@ class OnboardingView extends GetView<OnboardingController> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFFD3582E),
                                   elevation: 0,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
-                                  textStyle: TextStyle(fontSize: isCompact ? 13 : 16, fontFamily: "Mulish"),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30, vertical: 18),
+                                  textStyle: TextStyle(
+                                      fontSize: isCompact ? 13 : 16,
+                                      fontFamily: "Mulish"),
                                 ),
-                                child: const Text("NEXT", style: TextStyle(color: Colors.white)),
+                                child: const Text("NEXT",
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             ],
                           );
