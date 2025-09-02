@@ -32,7 +32,7 @@ class OnboardingView extends GetView<OnboardingController> {
                             Expanded(
                               child: Center(
                                 child: AspectRatio(
-                                  aspectRatio: 4 / 3,
+                                  aspectRatio: 4 / 4,
                                   child: FittedBox(
                                     fit: BoxFit.contain,
                                     child: Image.asset(item.image),
@@ -102,8 +102,12 @@ class OnboardingView extends GetView<OnboardingController> {
                                   textStyle:
                                       TextStyle(fontSize: isCompact ? 13 : 16),
                                 ),
-                                child: const Text("START",
-                                    style: TextStyle(color: Colors.white)),
+                                child: const Text(
+                                  "START",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Mulish'),
+                                ),
                               ),
                             );
                           }
