@@ -71,6 +71,9 @@ flutter:
   - assets/images/news3.png
   - assets/images/news4.png
   - assets/images/news5.png
+  - assets/images/news6.png
+  - assets/images/news7.jpg
+  - assets/images/news8.jpg
 
 
   fonts:

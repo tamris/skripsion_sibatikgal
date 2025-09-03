@@ -9,7 +9,7 @@ class HomeQuickActions extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final items = controller.actions;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.map((a) {
@@ -39,7 +39,7 @@ class _ActionItem extends StatelessWidget {
               height: 68,
               width: 68,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 138, 90, 68),
+                color: const Color.fromARGB(255, 255, 246, 241),
                 borderRadius: BorderRadius.circular(14),
                 boxShadow: [
                   BoxShadow(
@@ -49,7 +49,7 @@ class _ActionItem extends StatelessWidget {
                   )
                 ],
               ),
-              child: Icon(icon, color: const Color(0xFFF7F5F2)),
+              child: Icon(icon, color: const Color(0xFF8A5A44)),
             ),
             const SizedBox(height: 8),
 

@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/informasi_page/bindings/informasi_page_binding.dart';
+import '../modules/informasi_page/views/informasi_page_view.dart';
 import '../modules/login_page/bindings/login_page_binding.dart';
 import '../modules/login_page/views/login_page_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
@@ -29,6 +31,11 @@ class AppPages {
       name: _Paths.LOGIN_PAGE,
       page: () => const LoginPageView(),
       binding: LoginPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.INFORMASI_PAGE,
+      page: () => const InformasiPageView(),
+      binding: InformasiPageBinding(),
     ),
   ];
 }

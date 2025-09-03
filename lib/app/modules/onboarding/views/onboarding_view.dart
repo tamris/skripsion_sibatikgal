@@ -92,7 +92,7 @@ class OnboardingView extends GetView<OnboardingController> {
                               child: ElevatedButton(
                                 onPressed: controller.start,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFD3582E),
+                                  backgroundColor: const Color(0xFF8A5A44),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50)),
                                   padding: EdgeInsets.symmetric(
@@ -117,7 +117,7 @@ class OnboardingView extends GetView<OnboardingController> {
                               TextButton(
                                 onPressed: controller.skipToEnd,
                                 style: TextButton.styleFrom(
-                                  foregroundColor: const Color(0xFFD3582E),
+                                  foregroundColor: const Color(0xFF8A5A44),
                                   textStyle: TextStyle(
                                     fontFamily: "Mulish",
                                     fontWeight: FontWeight.w600,
@@ -129,7 +129,7 @@ class OnboardingView extends GetView<OnboardingController> {
                               ElevatedButton(
                                 onPressed: controller.next,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFD3582E),
+                                  backgroundColor: const Color(0xFF8A5A44),
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50)),
@@ -169,7 +169,7 @@ class _Dot extends StatelessWidget {
       height: 10,
       width: active ? 22 : 10,
       decoration: BoxDecoration(
-        color: const Color(0xFFD3582E),
+        color: const Color(0xFF8A5A44),
         borderRadius: BorderRadius.circular(50),
       ),
     );

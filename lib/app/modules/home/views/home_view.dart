@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 
-// widgets terpisah
 import '../widgets/courosel.dart';
 import '../widgets/hedaer.dart';
 import '../widgets/new_list.dart';
@@ -16,21 +15,25 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFFF6F6F6),
-      bottomNavigationBar: HomeBottomNav(),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF7F5F2),
+      bottomNavigationBar: const HomeBottomNav(),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(child: HomeHeader()),
-            SliverToBoxAdapter(child: HomeSearchBar()),
-            SliverToBoxAdapter(child: HomeCarousel()),
-            SliverToBoxAdapter(child: HomeQuickActions()),
+            const SliverToBoxAdapter(child: HomeHeader()),
+            const SliverToBoxAdapter(child: HomeSearchBar()),
+            const SliverToBoxAdapter(child: HomeCarousel()),
+            const SliverToBoxAdapter(child: HomeQuickActions()),
             SliverToBoxAdapter(
-              child: HomeSectionTitle(title: 'Browser', action: 'Lihat semua'),
+              child: HomeSectionTitle(
+                title: 'Informasi',
+                action: 'Lihat semua >',
+                onTap: () => Get.toNamed('/informasi-page'),
+              ),
             ),
-            HomeNewsList(),
-            SliverToBoxAdapter(child: SizedBox(height: 16)),
+            const HomeNewsList(),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
       ),

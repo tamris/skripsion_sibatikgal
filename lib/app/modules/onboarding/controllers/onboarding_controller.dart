@@ -14,9 +14,9 @@ class OnboardingController extends GetxController {
   final currentPage = 0.obs;
 
   final bgColors = const [
-    Color(0xffDAD3C8),
-    Color(0xffFFE5DE),
-    Color(0xffDCF6E6),
+    Color(0xffF7F5F2),
+    Color(0xffF7F5F2),
+    Color(0xffF7F5F2),
   ];
 
   final contents = <OnboardingContent>[

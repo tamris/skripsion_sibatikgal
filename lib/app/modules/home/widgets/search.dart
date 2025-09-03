@@ -12,7 +12,7 @@ class HomeSearchBar extends GetView<HomeController> {
       child: TextField(
         controller: controller.searchC,
         decoration: InputDecoration(
-          hintText: 'Cari kempenye alam...',
+          hintText: 'Cari informasi batik...',
           hintStyle: TextStyle(
             fontFamily: 'Poppins',
             fontSize: 16,
