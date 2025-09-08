@@ -30,13 +30,16 @@ class HomeHeader extends GetView<HomeController> {
                   ],
                 )),
           ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Container(
-              height: 60,
-              width: 60,
-              color: const Color(0xFFEAEAEA),
-              child: const Icon(Icons.person, color: Colors.grey),
+          GestureDetector(
+            onTap: () => Get.toNamed('/profile-user'),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                height: 60,
+                width: 60,
+                color: const Color(0xFFEAEAEA),
+                child: const Icon(Icons.person, color: Colors.grey),
+              ),
             ),
           ),
         ],

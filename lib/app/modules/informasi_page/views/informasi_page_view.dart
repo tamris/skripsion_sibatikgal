@@ -1,3 +1,4 @@
+import 'package:batikara/app/modules/informasi_page/widgets/informasi_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../home/views/news_detail_page.dart';
@@ -23,21 +24,40 @@ class InformasiPageView extends GetView<InformasiPageController> {
         () => CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Row(
-                  children: [
-                    Text(
-                      '${controller.news.length} artikel',
-                      style: TextStyle(
-                        color: Colors.brown[700],
-                        fontFamily: 'Mulish',
-                        fontWeight: FontWeight.w600,
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Wrap(
+                      spacing: 8,
+                      children: controller.categories.map((cat) {
+                        final selected =
+                            controller.selectedCategory.value.isEmpty
+                                ? cat == 'Semua'
+                                : controller.selectedCategory.value == cat;
+                        return ChoiceChip(
+                          label: Text(cat,
+                              style: const TextStyle(fontFamily: 'Poppins')),
+                          selected: selected,
+                          selectedColor: Colors.brown[100],
+                          backgroundColor: Colors.white,
+                          labelStyle: TextStyle(
+                            color: selected
+                                ? Colors.brown[800]
+                                : Colors.brown[400],
+                            fontWeight:
+                                selected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                          onSelected: (_) => controller.onCategoryChanged(cat),
+                        );
+                      }).toList(),
                     ),
-                    const Spacer(),
-                  ],
-                ),
+                  ),
+                  InformasiSearchBar(
+                    onChanged: controller.onSearchChanged,
+                  ),
+                ],
               ),
             ),
             SliverList.separated(

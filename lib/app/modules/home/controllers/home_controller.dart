@@ -33,7 +33,7 @@ class HomeController extends GetxController {
     QuickAction(
         icon: Icons.style,
         label: 'Galeri Batik',
-        onTap: () => Get.toNamed('/gallery')),
+        onTap: () => Get.toNamed('/galeri-page')),
     QuickAction(
         icon: Icons.center_focus_strong,
         label: 'Deteksi',
@@ -75,6 +75,14 @@ class HomeController extends GetxController {
           'Kenali sosok inspiratif di balik lestarinya Batik Tegalan, Taryo. Sejak tahun 1973, beliau telah mendedikasikan hidupnya untuk menjaga keaslian dan mengembangkan seni batik khas Tegal. Dengan ketekunan yang luar biasa, ia terus berkarya, menjaga agar motif-motif kuno Tegalan tidak punah ditelan zaman, sekaligus berinovasi untuk menciptakan desain-desain baru yang relevan.\n\nKontribusi Taryo tidak berhenti pada karyanya sendiri. Beliau adalah pilar bagi komunitas perajin lokal, aktif membina dan berkolaborasi untuk memastikan regenerasi pembatik terus berjalan. Melalui kerja kerasnya, Taryo telah membantu menciptakan ekosistem yang mendukung keberlanjutan industri batik di Tegal. Kisahnya bukan hanya tentang seorang seniman, tetapi tentang seorang penjaga budaya yang semangatnya menjadi cerminan dalam mempertahankan identitas bangsa.',
       categori: 'Wawasan & Edukasi',
       image: 'assets/images/news7.jpg',
+    ),
+    NewsItem(
+      title: 'Festival Batik Tegalan Heritage 2024',
+      subtitle: 'Merayakan Warisan Budaya Tegal',
+      deskripsi:
+          'Saksikan kemeriahan Festival Batik Tegalan Heritage 2024 yang akan diselenggarakan di Alun-alun Kota Tegal pada 15-17 November 2024. Event spektakuler ini menampilkan pameran karya batik terbaik dari puluhan pengrajin lokal, termasuk koleksi eksklusif dari maestro batik Taryo yang telah berkarya sejak 1973.\n\nFestival ini menawarkan beragam kegiatan menarik seperti workshop membatik untuk pemula, fashion show batik kontemporer, talk show bersama para ahli batik, dan pasar batik dengan harga spesial. Pengunjung juga dapat menyaksikan demo langsung proses pembuatan batik tulis tradisional dan berinteraksi dengan para pengrajin berpengalaman.\n\nAcara ini tidak hanya sebagai ajang promosi batik Tegalan, tetapi juga sebagai upaya pelestarian budaya dan pemberdayaan ekonomi kreatif lokal. Dengan mengusung tema "Batik Tegalan: Dari Tradisi Menuju Inovasi", festival ini diharapkan dapat menarik wisatawan dan meningkatkan apresiasi masyarakat terhadap kekayaan budaya Indonesia.',
+      categori: 'Event',
+      image: 'assets/images/news9.jpg',
     ),
   ].obs;
 

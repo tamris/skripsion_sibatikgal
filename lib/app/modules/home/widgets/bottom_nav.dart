@@ -20,7 +20,7 @@ class HomeBottomNav extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Color(0xFFF7F5F2),
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.06),
@@ -68,7 +68,7 @@ class HomeBottomNav extends StatelessWidget {
                       Get.offAllNamed('/home');
                       break;
                     case 1:
-                      Get.offAllNamed('/gallery');
+                      Get.offAllNamed('/galeri-page');
                       break;
                     case 2:
                       Get.offAllNamed('/detect');
