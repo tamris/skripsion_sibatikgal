@@ -1,23 +1,69 @@
+import 'dart:async';
+import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class GaleriPageController extends GetxController {
-  //TODO: Implement GaleriPageController
-
+  // Query pencarian
+  final RxString searchQuery = ''.obs;
   final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  final currentBanner = 0.obs;
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query;
+    update();
+  }
+
+  final List<String> banners = [
+    'assets/images/Sekar Jagad.jpg',
+    'assets/images/Kembang Pacar.jpg',
+    'assets/images/Poci Tahu Aci.jpg',
+  ];
+
+  // CHANGED: mulai dari halaman 1 (karena 0 dipakai "tail clone")
+  final PageController pageC = PageController(initialPage: 1); // CHANGED
+
+  // dipanggil saat page berubah (index real = virtualIndex - 1)
+  void onBannerChanged(int index) {
+    currentBanner.value = index;
+  }
+
+  // ========== Auto-play ==========
+  final Duration autoPlayInterval = const Duration(seconds: 3);
+  final Duration slideDuration = const Duration(milliseconds: 800);
+  final Curve slideCurve = Curves.easeInOut;
+
+  Timer? _autoTimer;
+
+  void startAutoPlay() {
+    _autoTimer?.cancel();
+    if (banners.isEmpty) return;
+
+    _autoTimer = Timer.periodic(autoPlayInterval, (_) {
+      pageC.nextPage(duration: slideDuration, curve: slideCurve);
+    });
+  }
+
+  void stopAutoPlay() {
+    _autoTimer?.cancel();
+    _autoTimer = null;
+  }
+
+  void jumpSilently(int page) {
+    // NEW
+    pageC.jumpToPage(page);
   }
 
   @override
-  void onReady() {
-    super.onReady();
+  void onInit() {
+    super.onInit();
+    startAutoPlay();
   }
 
   @override
   void onClose() {
+    stopAutoPlay();
+    pageC.dispose();
     super.onClose();
   }
-
-  void increment() => count.value++;
 }
