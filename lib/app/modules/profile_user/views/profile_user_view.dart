@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileUserView extends StatelessWidget {
   const ProfileUserView({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class ProfileUserView extends StatelessWidget {
                     radius: 68,
                     backgroundColor: Colors.grey[300],
                     backgroundImage: const AssetImage(
-                        'assets/images/news7.jpg'), // ganti dengan path foto profil
+                        'assets/images/avatar.png'), // ganti dengan path foto profil
                   ),
                   Positioned(
                     bottom: 4,
@@ -73,6 +74,11 @@ class ProfileUserView extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress),
               const SizedBox(height: 16),
               const _ProfileTextField(
+                  label: 'Jenis Kelamin',
+                  hint: 'Laki-laki',
+                  keyboardType: TextInputType.emailAddress),
+              const SizedBox(height: 16),
+              const _ProfileTextField(
                   label: 'Tanggal Lahir',
                   hint: '12 Desember 1998',
                   keyboardType: TextInputType.datetime),
@@ -89,9 +95,9 @@ class ProfileUserView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {},
-                  child: const Text(
+                  child: Text(
                     'SAVE',
-                    style: TextStyle(
+                    style: GoogleFonts.mulish(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -126,7 +132,7 @@ class _ProfileTextField extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            fontFamily: 'Poppins',
+            fontFamily: 'Mulish',
             fontWeight: FontWeight.w500,
             fontSize: 14,
             color: Color(0xFF8A5A44),
@@ -138,7 +144,7 @@ class _ProfileTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(
-              fontFamily: 'Poppins',
+              fontFamily: 'Mulish',
               color: Colors.grey,
               fontSize: 15,
             ),

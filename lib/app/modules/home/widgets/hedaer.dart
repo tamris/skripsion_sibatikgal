@@ -37,8 +37,15 @@ class HomeHeader extends GetView<HomeController> {
               child: Container(
                 height: 60,
                 width: 60,
-                color: const Color(0xFFEAEAEA),
-                child: const Icon(Icons.person, color: Colors.grey),
+                // Hapus properti 'color' dan 'child' dari sini
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    // Arahkan ke gambar di folder assets Anda
+                    image: AssetImage('assets/images/avatar.png'),
+                    // Membuat gambar mengisi seluruh container
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
           ),

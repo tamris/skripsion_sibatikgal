@@ -18,6 +18,7 @@ class GaleriPageController extends GetxController {
     'assets/images/Sekar Jagad.jpg',
     'assets/images/Kembang Pacar.jpg',
     'assets/images/Poci Tahu Aci.jpg',
+    'assets/images/Sidomulyo.jpg',
   ];
 
   // CHANGED: mulai dari halaman 1 (karena 0 dipakai "tail clone")
@@ -30,7 +31,7 @@ class GaleriPageController extends GetxController {
 
   // ========== Auto-play ==========
   final Duration autoPlayInterval = const Duration(seconds: 3);
-  final Duration slideDuration = const Duration(milliseconds: 800);
+  final Duration slideDuration = const Duration(milliseconds: 630);
   final Curve slideCurve = Curves.easeInOut;
 
   Timer? _autoTimer;

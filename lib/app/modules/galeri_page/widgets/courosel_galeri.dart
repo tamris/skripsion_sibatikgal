@@ -29,21 +29,24 @@ class GalleryCarousel extends GetView<GaleriPageController> {
         SizedBox(
           height: 190,
           child: PageView.builder(
+            allowImplicitScrolling: true, // pre-cache page berikutnya
+            pageSnapping: true, // snap rapi ke tiap halaman
             controller: controller.pageC,
             // WRAP LOGIC: geser ke halaman “real” saat nabrak clone
             onPageChanged: (vi) {
-              // CHANGED
               if (vi == 0) {
-                // dari tail clone snap ke real terakhir
-                controller.jumpSilently(banners.length);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  controller.pageC.jumpToPage(banners.length);
+                });
               } else if (vi == banners.length + 1) {
-                // dari head clone snap ke real pertama
-                controller.jumpSilently(1);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  controller.pageC.jumpToPage(1);
+                });
               } else {
-                // update indikator (real index = vi - 1)
                 controller.onBannerChanged(vi - 1);
               }
             },
+
             itemCount: totalVirtual, // CHANGED
             itemBuilder: (_, i) {
               final img = assetForVirtualIndex(i); // NEW

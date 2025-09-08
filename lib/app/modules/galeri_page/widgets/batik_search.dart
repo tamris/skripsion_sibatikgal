@@ -7,12 +7,12 @@ class BatikSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
       child: SizedBox(
         width: double.infinity,
         child: TextField(
           decoration: InputDecoration(
-            hintText: 'Cari informasi batik...',
+            hintText: 'Cari motif batik...',
             hintStyle: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,

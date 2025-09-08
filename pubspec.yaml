@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   get_storage: ^2.1.1
+  google_fonts: ^6.2.1
+  
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -75,6 +77,7 @@ flutter:
   - assets/images/news7.jpg
   - assets/images/news8.jpg
   - assets/images/news9.jpg
+  - assets/images/avatar.png
   - assets/images/Kembang Pacar.jpg
   - assets/images/Poci Tahu Aci.jpg
   - assets/images/Sidomulyo.jpg
