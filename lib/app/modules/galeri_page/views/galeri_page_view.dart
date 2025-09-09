@@ -52,87 +52,90 @@ class GaleriPageView extends GetView<GaleriPageController> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: GridView.builder(
-                  itemCount: controller.batikList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio:
-                        0.86, // sedikit lebih “kotak” seperti contoh
-                  ),
-                  itemBuilder: (context, i) {
-                    final cat = controller.batikList[i];
+                child: Obx(() => GridView.builder(
+                      itemCount: controller.batikList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio:
+                            0.86, // sedikit lebih “kotak” seperti contoh
+                      ),
+                      itemBuilder: (context, i) {
+                        final cat = controller.batikList[i];
 
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(22),
-                      overlayColor: const MaterialStatePropertyAll(
-                          Colors.transparent), // ⬅️ no overlay gelap
-                      splashColor: Colors.black12, // halus
-                      highlightColor: Colors.transparent,
-                      onTap: () {
-                        Get.to(() => BatikDetailPage(), arguments: cat);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
+                        return InkWell(
                           borderRadius: BorderRadius.circular(22),
-                          border: Border.all(color: const Color(0xFFE7EAEE)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              blurRadius: 18,
-                              offset: const Offset(0, 8),
+                          overlayColor: const MaterialStatePropertyAll(
+                              Colors.transparent), // ⬅️ no overlay gelap
+                          splashColor: Colors.black12, // halus
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            Get.to(() => BatikDetailPage(), arguments: cat);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(22),
+                              border:
+                                  Border.all(color: const Color(0xFFE7EAEE)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.06),
+                                  blurRadius: 18,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            AspectRatio(
-                              aspectRatio: 1,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: Hero(
-                                  // ⬅️ TAMBAH HERO
-                                  tag:
-                                      'batik_image_${cat.image}', // samakan dengan detail
-                                  child: Image.asset(
-                                    cat.image,
-                                    fit: BoxFit.cover,
-                                    // fade-in halus saat frame pertama tampil
-                                    frameBuilder: (ctx, child, frame, wasSync) {
-                                      if (wasSync) return child;
-                                      return AnimatedOpacity(
-                                        opacity: frame == null ? 0 : 1,
-                                        duration:
-                                            const Duration(milliseconds: 250),
-                                        child: child,
-                                      );
-                                    },
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                AspectRatio(
+                                  aspectRatio: 1,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: Hero(
+                                      // ⬅️ TAMBAH HERO
+                                      tag:
+                                          'batik_image_${cat.image}', // samakan dengan detail
+                                      child: Image.asset(
+                                        cat.image,
+                                        fit: BoxFit.cover,
+                                        // fade-in halus saat frame pertama tampil
+                                        frameBuilder:
+                                            (ctx, child, frame, wasSync) {
+                                          if (wasSync) return child;
+                                          return AnimatedOpacity(
+                                            opacity: frame == null ? 0 : 1,
+                                            duration: const Duration(
+                                                milliseconds: 250),
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  cat.title,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.lora(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              cat.title,
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.lora(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                                height: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                          ),
+                        );
+                      },
+                    )),
               ),
             )
           ],
