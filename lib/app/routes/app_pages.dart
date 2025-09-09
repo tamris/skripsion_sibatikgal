@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/chatbot_page/bindings/chatbot_page_binding.dart';
+import '../modules/chatbot_page/views/chatbot_page_view.dart';
 import '../modules/galeri_page/bindings/galeri_page_binding.dart';
 import '../modules/galeri_page/views/galeri_page_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -18,7 +20,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.ONBOARDING;
+  static const INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -50,6 +52,11 @@ class AppPages {
       name: _Paths.GALERI_PAGE,
       page: () => const GaleriPageView(),
       binding: GaleriPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHATBOT_PAGE,
+      page: () => const ChatbotPageView(),
+      binding: ChatbotPageBinding(),
     ),
   ];
 }

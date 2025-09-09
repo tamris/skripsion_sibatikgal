@@ -74,7 +74,7 @@ class GaleriBottomNav extends StatelessWidget {
                       Get.offAllNamed('/detect');
                       break;
                     case 3:
-                      Get.offAllNamed('/mapping');
+                      Get.offAllNamed('/chatbot-page');
                       break;
                     case 4:
                       Get.offAllNamed('/profile');

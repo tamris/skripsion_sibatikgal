@@ -1,3 +1,4 @@
+import 'package:batikara/app/modules/galeri_page/views/batik_detail.dart';
 import 'package:batikara/app/modules/galeri_page/widgets/batik_search.dart';
 import 'package:batikara/app/modules/galeri_page/widgets/bottom_nav.dart';
 import 'package:batikara/app/modules/galeri_page/widgets/courosel_galeri.dart';
@@ -12,16 +13,6 @@ class GaleriPageView extends GetView<GaleriPageController> {
   const GaleriPageView({super.key});
   @override
   Widget build(BuildContext context) {
-    final categories = [
-      {'image': 'assets/images/Sekar Jagad.jpg', 'label': 'Sekar Jagad'},
-      {'image': 'assets/images/Kembang Pacar.jpg', 'label': 'Kembang Pacar'},
-      {'image': 'assets/images/Poci Tahu Aci.jpg', 'label': 'Poci Tahu Aci'},
-      {'image': 'assets/images/Sidomulyo.jpg', 'label': 'Sidomulyo'},
-      {'image': 'assets/images/Sekar Jagad.jpg', 'label': 'Sekar Jagad'},
-      {'image': 'assets/images/Kembang Pacar.jpg', 'label': 'Kembang Pacar'},
-      {'image': 'assets/images/Poci Tahu Aci.jpg', 'label': 'Poci Tahu Aci'},
-      {'image': 'assets/images/Sidomulyo.jpg', 'label': 'Sidomulyo'},
-    ];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFF7F5F2),
@@ -62,7 +53,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: GridView.builder(
-                  itemCount: categories.length,
+                  itemCount: controller.batikList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 16,
@@ -71,17 +62,22 @@ class GaleriPageView extends GetView<GaleriPageController> {
                         0.86, // sedikit lebih “kotak” seperti contoh
                   ),
                   itemBuilder: (context, i) {
-                    final cat = categories[i];
+                    final cat = controller.batikList[i];
 
                     return InkWell(
                       borderRadius: BorderRadius.circular(22),
-                      onTap: () {}, // TODO: aksi jika diklik
+                      overlayColor: const MaterialStatePropertyAll(
+                          Colors.transparent), // ⬅️ no overlay gelap
+                      splashColor: Colors.black12, // halus
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        Get.to(() => BatikDetailPage(), arguments: cat);
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(22),
-                          border: Border.all(
-                              color: const Color(0xFFE7EAEE)), // outline tipis
+                          border: Border.all(color: const Color(0xFFE7EAEE)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.06),
@@ -94,21 +90,34 @@ class GaleriPageView extends GetView<GaleriPageController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // gambar kotak dengan sudut bulat (seperti contoh)
                             AspectRatio(
-                              aspectRatio: 1, // kotak
+                              aspectRatio: 1,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(18),
-                                child: Image.asset(
-                                  cat['image']!,
-                                  fit: BoxFit.cover,
+                                child: Hero(
+                                  // ⬅️ TAMBAH HERO
+                                  tag:
+                                      'batik_image_${cat.image}', // samakan dengan detail
+                                  child: Image.asset(
+                                    cat.image,
+                                    fit: BoxFit.cover,
+                                    // fade-in halus saat frame pertama tampil
+                                    frameBuilder: (ctx, child, frame, wasSync) {
+                                      if (wasSync) return child;
+                                      return AnimatedOpacity(
+                                        opacity: frame == null ? 0 : 1,
+                                        duration:
+                                            const Duration(milliseconds: 250),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
                             const SizedBox(height: 10),
-                            // label center, bold tipis
                             Text(
-                              cat['label']!,
+                              cat.title,
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
