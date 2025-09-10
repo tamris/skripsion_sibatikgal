@@ -18,6 +18,8 @@ class GaleriPageView extends GetView<GaleriPageController> {
         backgroundColor: const Color(0xFFF7F5F2),
         foregroundColor: Colors.black,
         elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         title: const Text(
           'Galeri Batik',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/chatbot_page_controller.dart';
+import '../widgets/typing_indicator_widget.dart';
 
 class ChatbotPageView extends GetView<ChatbotPageController> {
   const ChatbotPageView({super.key});
@@ -27,8 +28,16 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                   controller: controller.scrollC,
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(12),
-                  itemCount: controller.messages.length,
+                  // Tambah 1 untuk typing indicator jika sedang typing
+                  itemCount: controller.messages.length +
+                      (controller.isTyping.value ? 1 : 0),
                   itemBuilder: (context, index) {
+                    // Jika index adalah item terakhir dan sedang typing, tampilkan typing indicator
+                    if (index == controller.messages.length &&
+                        controller.isTyping.value) {
+                      return const TypingIndicatorWidget();
+                    }
+
                     final msg = controller.messages[index];
                     final isUser = msg.isUser;
 
@@ -36,7 +45,7 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                       alignment:
                           isUser ? Alignment.centerRight : Alignment.centerLeft,
                       child: ConstrainedBox(
-                        // bubble max 75% lebar layar (bisa kamu ubah 0.7–0.8)
+                        // bubble max 75% lebar layar
                         constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.75,
                         ),
@@ -62,7 +71,6 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                           child: Text(
                             msg.text,
                             softWrap: true,
-                            // biar tetep patah, jangan kasih maxLines
                             style: GoogleFonts.plusJakartaSans(
                               textStyle: TextStyle(
                                 color: isUser ? Colors.white : Colors.black87,
@@ -70,7 +78,6 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                                 fontSize: 16,
                               ),
                             ),
-                            // textAlign: TextAlign.justify,
                           ),
                         ),
                       ),
@@ -110,13 +117,27 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => controller.sendMessage(controller.textC.text),
-                  child: const CircleAvatar(
-                    backgroundColor: Color(0xFF8A5A44),
-                    child: Icon(Icons.send, color: Colors.white),
-                  ),
-                ),
+                Obx(() => GestureDetector(
+                      onTap: controller.isTyping.value
+                          ? null // Disable button saat typing
+                          : () => controller.sendMessage(controller.textC.text),
+                      child: CircleAvatar(
+                        backgroundColor: controller.isTyping.value
+                            ? Colors.grey
+                            : const Color(0xFF8A5A44),
+                        child: controller.isTyping.value
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
+                            : const Icon(Icons.send, color: Colors.white),
+                      ),
+                    )),
               ],
             ),
           ),

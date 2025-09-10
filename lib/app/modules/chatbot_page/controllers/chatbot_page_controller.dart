@@ -15,7 +15,7 @@ class ChatbotPageController extends GetxController {
     if (text.trim().isEmpty) return;
 
     // Tambahkan pesan user
-    messages.add(Message(text: text, isUser: true));
+    messages.add(Message(text: text.trim(), isUser: true));
 
     textC.clear(); // ✅ clear setelah kirim
 
@@ -24,6 +24,9 @@ class ChatbotPageController extends GetxController {
 
     // Scroll ke bawah setelah update
     _scrollToBottom();
+
+    // Tampilkan typing indicator
+    isTyping.value = true;
 
     // Simulasi balasan bot
     Future.delayed(const Duration(milliseconds: 600), () {
@@ -53,6 +56,7 @@ class ChatbotPageController extends GetxController {
 
   @override
   void onClose() {
+    textC.dispose();
     scrollC.dispose();
     super.onClose();
   }

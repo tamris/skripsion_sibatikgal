@@ -7,7 +7,7 @@ class PengaturanPageController extends GetxController {
   var greeting = ''.obs;
 
   // Contoh data user — nanti bisa kamu ganti dari store/auth
-  final RxString displayName = 'Mr. John Doe'.obs;
+  final RxString displayName = 'Rizqi Pratama'.obs;
   final RxString photoUrl = ''.obs; // kosong = fallback avatar
 
   void toggleNotif(bool v) => pushNotif.value = v;
