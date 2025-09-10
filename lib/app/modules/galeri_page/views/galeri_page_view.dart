@@ -16,12 +16,13 @@ class GaleriPageView extends GetView<GaleriPageController> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFF7F5F2),
-        foregroundColor: const Color(0xFF8A5A44),
+        foregroundColor: Colors.black,
         elevation: 0,
         centerTitle: true,
         title: const Text(
           'Galeri Batik',
-          style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
+          style: TextStyle(
+              fontFamily: 'Poppins', fontWeight: FontWeight.w800, fontSize: 28),
         ),
       ),
       backgroundColor: const Color(0xFFF7F5F2),

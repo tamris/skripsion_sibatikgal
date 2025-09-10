@@ -13,7 +13,8 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("TikAI",
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+            style:
+                GoogleFonts.poppins(fontWeight: FontWeight.w800, fontSize: 28)),
         backgroundColor: const Color(0xFFF5F5F5),
         foregroundColor: Colors.black87,
         elevation: 0,

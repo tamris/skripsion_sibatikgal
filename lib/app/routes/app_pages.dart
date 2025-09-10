@@ -8,7 +8,6 @@ import '../modules/deteksi_page/views/deteksi_page_view.dart';
 import '../modules/galeri_page/bindings/galeri_page_binding.dart';
 import '../modules/galeri_page/views/galeri_page_view.dart';
 import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
 import '../modules/informasi_page/bindings/informasi_page_binding.dart';
 import '../modules/informasi_page/views/informasi_page_view.dart';
 import '../modules/login_page/bindings/login_page_binding.dart';

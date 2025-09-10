@@ -30,7 +30,7 @@ class ChatbotPageController extends GetxController {
       messages.add(
         Message(
           text:
-              "Halo, Saya adalah TikAl, asisten yang dapat menjawab pertanyaan Anda tentang Batik Tegalan. Saya telah mempelajari konten tentang Batik Tegalan dan siap menjawab pertanyaan Anda tentang topik tersebut.",
+              "Sejarah batik Tegalan bermula dari akhir abad ke-19, ketika Raja Amangkurat I membawa pengikutnya, termasuk pengrajin batik, ke Tegal. Batik Tegalan mulai dikenal sejak awal abad ke-20 dan berkembang pesat karena pengaruh perdagangan di daerah pesisir.",
           isUser: false,
         ),
       );
