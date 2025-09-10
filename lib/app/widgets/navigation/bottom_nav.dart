@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
-class GaleriBottomNav extends StatelessWidget {
-  /// Kalau mau set tab aktif dari luar, tinggal ganti param ini.
+class BottomNav extends StatelessWidget {
   final int currentIndex;
-  const GaleriBottomNav({super.key, this.currentIndex = 0});
+  final Function(int)? onTap; // Tambahkan callback parameter
+
+  const BottomNav({
+    super.key,
+    this.currentIndex = 0,
+    this.onTap, // Tambahkan di constructor
+  });
 
   @override
   Widget build(BuildContext context) {
     const terracotta = Color(0xFF8A5A44);
-    const textMuted = Color(0xFF6B7280); // abu-abu label
+    const textMuted = Color(0xFF6B7280);
 
     return SafeArea(
       top: false,
@@ -59,27 +63,10 @@ class GaleriBottomNav extends StatelessWidget {
               ),
               child: NavigationBar(
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-                selectedIndex:
-                    currentIndex, // default 0; bisa diganti dari luar
+                selectedIndex: currentIndex,
                 onDestinationSelected: (i) {
                   HapticFeedback.selectionClick();
-                  switch (i) {
-                    case 0:
-                      Get.offAllNamed('/home');
-                      break;
-                    case 1:
-                      Get.offAllNamed('/galeri-page');
-                      break;
-                    case 2:
-                      Get.offAllNamed('/detect');
-                      break;
-                    case 3:
-                      Get.offAllNamed('/chatbot-page');
-                      break;
-                    case 4:
-                      Get.offAllNamed('/profile');
-                      break;
-                  }
+                  onTap?.call(i); // Gunakan callback
                 },
                 destinations: const [
                   NavigationDestination(
@@ -105,7 +92,7 @@ class GaleriBottomNav extends StatelessWidget {
                     icon: Icon(Icons.settings_outlined),
                     selectedIcon: Icon(Icons.settings),
                     label: 'Pengaturan',
-                  ),
+                  )
                 ],
               ),
             ),

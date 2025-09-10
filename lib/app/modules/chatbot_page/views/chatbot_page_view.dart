@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../galeri_page/widgets/bottom_nav.dart';
 import '../controllers/chatbot_page_controller.dart';
 
 class ChatbotPageView extends GetView<ChatbotPageController> {
@@ -19,7 +18,6 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
         foregroundColor: Colors.black87,
         elevation: 0,
       ),
-      bottomNavigationBar: const GaleriBottomNav(currentIndex: 3),
       body: Column(
         children: [
           // Daftar pesan

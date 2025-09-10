@@ -1,7 +1,10 @@
+import 'package:batikara/app/widgets/navigation/main_wrapper.dart';
 import 'package:get/get.dart';
 
 import '../modules/chatbot_page/bindings/chatbot_page_binding.dart';
 import '../modules/chatbot_page/views/chatbot_page_view.dart';
+import '../modules/deteksi_page/bindings/deteksi_page_binding.dart';
+import '../modules/deteksi_page/views/deteksi_page_view.dart';
 import '../modules/galeri_page/bindings/galeri_page_binding.dart';
 import '../modules/galeri_page/views/galeri_page_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -12,6 +15,8 @@ import '../modules/login_page/bindings/login_page_binding.dart';
 import '../modules/login_page/views/login_page_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/pengaturan_page/bindings/pengaturan_page_binding.dart';
+import '../modules/pengaturan_page/views/pengaturan_page_view.dart';
 import '../modules/profile_user/bindings/profile_user_binding.dart';
 import '../modules/profile_user/views/profile_user_view.dart';
 
@@ -25,7 +30,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => const HomeView(),
+      page: () => const MainWrapper(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -57,6 +62,16 @@ class AppPages {
       name: _Paths.CHATBOT_PAGE,
       page: () => const ChatbotPageView(),
       binding: ChatbotPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENGATURAN_PAGE,
+      page: () => const PengaturanPageView(),
+      binding: PengaturanPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETEKSI_PAGE,
+      page: () => const DeteksiPageView(),
+      binding: DeteksiPageBinding(),
     ),
   ];
 }

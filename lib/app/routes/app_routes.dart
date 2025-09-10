@@ -10,6 +10,8 @@ abstract class Routes {
   static const PROFILE_USER = _Paths.PROFILE_USER;
   static const GALERI_PAGE = _Paths.GALERI_PAGE;
   static const CHATBOT_PAGE = _Paths.CHATBOT_PAGE;
+  static const PENGATURAN_PAGE = _Paths.PENGATURAN_PAGE;
+  static const DETEKSI_PAGE = _Paths.DETEKSI_PAGE;
 }
 
 abstract class _Paths {
@@ -21,4 +23,6 @@ abstract class _Paths {
   static const PROFILE_USER = '/profile-user';
   static const GALERI_PAGE = '/galeri-page';
   static const CHATBOT_PAGE = '/chatbot-page';
+  static const PENGATURAN_PAGE = '/pengaturan-page';
+  static const DETEKSI_PAGE = '/deteksi-page';
 }

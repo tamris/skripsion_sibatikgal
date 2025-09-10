@@ -8,7 +8,6 @@ import '../widgets/new_list.dart';
 import '../widgets/search.dart';
 import '../widgets/quick_actions.dart';
 import '../widgets/section_title.dart';
-import '../widgets/bottom_nav.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -17,7 +16,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F5F2),
-      bottomNavigationBar: const HomeBottomNav(),
+      // bottomNavigationBar: const HomeBottomNav(),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [

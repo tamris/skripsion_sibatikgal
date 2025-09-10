@@ -1,6 +1,6 @@
 import 'package:batikara/app/modules/galeri_page/views/batik_detail.dart';
 import 'package:batikara/app/modules/galeri_page/widgets/batik_search.dart';
-import 'package:batikara/app/modules/galeri_page/widgets/bottom_nav.dart';
+
 import 'package:batikara/app/modules/galeri_page/widgets/courosel_galeri.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,6 @@ class GaleriPageView extends GetView<GaleriPageController> {
           style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
         ),
       ),
-      bottomNavigationBar: const GaleriBottomNav(currentIndex: 1),
       backgroundColor: const Color(0xFFF7F5F2),
       body: SafeArea(
         child: Column(
