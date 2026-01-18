@@ -13,8 +13,8 @@ class PengaturanPageController extends GetxController {
 
   void toggleNotif(bool v) => pushNotif.value = v;
 
-  void goToProfile() => Get.toNamed('/login_page'); // sesuaikan rute
-  void goToChangePassword() => Get.toNamed('/change-password');
+  void goToProfile() => Get.toNamed('/profile-user'); // sesuaikan rute
+  void goToChangePassword() => Get.toNamed('/ubah-sandi');
   void goToFaqs() => Get.toNamed('/faqs');
 
   void logout() {

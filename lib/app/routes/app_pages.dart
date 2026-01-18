@@ -21,6 +21,8 @@ import '../modules/profile_user/bindings/profile_user_binding.dart';
 import '../modules/profile_user/views/profile_user_view.dart';
 import '../modules/regsiter_page/bindings/regsiter_page_binding.dart';
 import '../modules/regsiter_page/views/regsiter_page_view.dart';
+import '../modules/ubah_sandi/bindings/ubah_sandi_binding.dart';
+import '../modules/ubah_sandi/views/ubah_sandi_view.dart';
 import '../widgets/navigation/main_wrapper.dart';
 
 part 'app_routes.dart';
@@ -85,6 +87,11 @@ class AppPages {
       name: _Paths.OTP_VERIFIKASI,
       page: () => const OtpVerifikasiView(),
       binding: OtpVerifikasiBinding(),
+    ),
+    GetPage(
+      name: _Paths.UBAH_SANDI,
+      page: () => const UbahSandiView(),
+      binding: UbahSandiBinding(),
     ),
   ];
 }
