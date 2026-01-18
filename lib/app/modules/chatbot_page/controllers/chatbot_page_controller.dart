@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/models/chatbot_model.dart';
+import '../../../data/service/chatbot_service.dart';
 
 class ChatbotPageController extends GetxController {
   var messages = <Message>[].obs;
@@ -11,11 +12,13 @@ class ChatbotPageController extends GetxController {
 
   var isTyping = false.obs;
 
-  void sendMessage(String text) {
+  void sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
+    final userMessage = text.trim();
+
     // Tambahkan pesan user
-    messages.add(Message(text: text.trim(), isUser: true));
+    messages.add(Message(text: userMessage, isUser: true));
 
     textC.clear(); // ✅ clear setelah kirim
 
@@ -28,18 +31,31 @@ class ChatbotPageController extends GetxController {
     // Tampilkan typing indicator
     isTyping.value = true;
 
-    // Simulasi balasan bot
-    Future.delayed(const Duration(milliseconds: 600), () {
+    // Panggil API untuk mendapatkan response bot
+    try {
+      final botResponse = await ChatbotService.getChatResponse(userMessage);
+
+      // Tambahkan response bot
       messages.add(
         Message(
-          text:
-              "Sejarah batik Tegalan bermula dari akhir abad ke-19, ketika Raja Amangkurat I membawa pengikutnya, termasuk pengrajin batik, ke Tegal. Batik Tegalan mulai dikenal sejak awal abad ke-20 dan berkembang pesat karena pengaruh perdagangan di daerah pesisir.",
+          text: botResponse,
           isUser: false,
         ),
       );
+    } catch (e) {
+      // Jika ada error, tampilkan pesan error
+      messages.add(
+        Message(
+          text: "Maaf, terjadi kesalahan. Silakan coba lagi nanti.",
+          isUser: false,
+        ),
+      );
+      print('Error getting bot response: $e');
+    } finally {
+      // Hilangkan typing indicator
       isTyping.value = false;
       _scrollToBottom();
-    });
+    }
   }
 
   void _scrollToBottom() {

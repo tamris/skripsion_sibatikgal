@@ -32,7 +32,8 @@ dependencies:
     sdk: flutter
   get_storage: ^2.1.1
   google_fonts: ^6.2.1
-  share_plus: ^10.0.0
+  share_plus: ^11.1.0
+  dio: ^5.4.0
   
 
 
@@ -45,7 +46,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  carousel_slider: ^4.2.1
+  carousel_slider: ^5.1.1
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -80,6 +88,7 @@ flutter:
   - assets/images/news8.jpg
   - assets/images/news9.jpg
   - assets/images/avatar.png
+  - assets/images/logo.png
   - assets/images/Kembang Pacar.jpg
   - assets/images/Poci Tahu Aci.jpg
   - assets/images/Sidomulyo.jpg

@@ -19,6 +19,8 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
         backgroundColor: const Color(0xFFF5F5F5),
         foregroundColor: Colors.black87,
         elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Column(
         children: [

@@ -135,6 +135,40 @@ class PengaturanPageView extends GetView<PengaturanPageController> {
                     const Divider(height: 1, color: Color(0xFFE5E7EB)),
 
                     // Switch row (custom biar mirip desain)
+                    Obx(() => SizedBox(
+                          height: 84,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: const Color(0xFFF2F2F2),
+                                ),
+                                child: const Icon(Icons.notifications_none,
+                                    size: 20, color: Color(0xFF6B7280)),
+                              ),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Text(
+                                  'Push Notification',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF111827),
+                                  ),
+                                ),
+                              ),
+                              Switch.adaptive(
+                                value: controller.pushNotif.value,
+                                onChanged: controller.toggleNotif,
+                              ),
+                            ],
+                          ),
+                        )),
                   ],
                 ),
               ),
