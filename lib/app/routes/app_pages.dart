@@ -1,4 +1,3 @@
-import 'package:batikara/app/widgets/navigation/main_wrapper.dart';
 import 'package:get/get.dart';
 
 import '../modules/chatbot_page/bindings/chatbot_page_binding.dart';
@@ -18,6 +17,9 @@ import '../modules/pengaturan_page/bindings/pengaturan_page_binding.dart';
 import '../modules/pengaturan_page/views/pengaturan_page_view.dart';
 import '../modules/profile_user/bindings/profile_user_binding.dart';
 import '../modules/profile_user/views/profile_user_view.dart';
+import '../modules/regsiter_page/bindings/regsiter_page_binding.dart';
+import '../modules/regsiter_page/views/regsiter_page_view.dart';
+import '../widgets/navigation/main_wrapper.dart';
 
 part 'app_routes.dart';
 
@@ -71,6 +73,11 @@ class AppPages {
       name: _Paths.DETEKSI_PAGE,
       page: () => const DeteksiPageView(),
       binding: DeteksiPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGSITER_PAGE,
+      page: () => const RegsiterPageView(),
+      binding: RegsiterPageBinding(),
     ),
   ];
 }

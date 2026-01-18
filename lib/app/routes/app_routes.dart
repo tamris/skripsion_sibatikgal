@@ -12,6 +12,7 @@ abstract class Routes {
   static const CHATBOT_PAGE = _Paths.CHATBOT_PAGE;
   static const PENGATURAN_PAGE = _Paths.PENGATURAN_PAGE;
   static const DETEKSI_PAGE = _Paths.DETEKSI_PAGE;
+  static const REGSITER_PAGE = _Paths.REGSITER_PAGE;
 }
 
 abstract class _Paths {
@@ -25,4 +26,5 @@ abstract class _Paths {
   static const CHATBOT_PAGE = '/chatbot-page';
   static const PENGATURAN_PAGE = '/pengaturan-page';
   static const DETEKSI_PAGE = '/deteksi-page';
+  static const REGSITER_PAGE = '/regsiter-page';
 }

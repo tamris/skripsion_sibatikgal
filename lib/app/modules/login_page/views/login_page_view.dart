@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/login_page_controller.dart';
@@ -155,17 +156,24 @@ class LoginPageView extends GetView<LoginPageController> {
                 width: double.infinity,
                 height: 55,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: Image.network(
-                    'https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg', // Google Logo dari Google Fonts
+                  onPressed: () {
+                    // Tambahkan logika di sini
+                    print('Tombol Google ditekan!');
+                  },
+                  icon: SvgPicture.asset(
+                    'assets/images/Google.svg', // Logo Google dari file assets lokal
                     height: 24,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.error), // Pencegah error jika link mati lagi
+                    semanticsLabel:
+                        'Google Logo', // Untuk keperluan aksesibilitas
+                    placeholderBuilder: (context) =>
+                        const CircularProgressIndicator(), // Placeholder loading
                   ),
                   label: Text(
                     'Lanjutkan dengan Google',
-                    style:
-                        GoogleFonts.poppins(color: Colors.grey, fontSize: 16),
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
                   ),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -184,7 +192,7 @@ class LoginPageView extends GetView<LoginPageController> {
                   children: [
                     Text('Belum punya akun? ', style: GoogleFonts.poppins()),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => Get.toNamed('/regsiter-page'),
                       child: Text(
                         'Daftar',
                         style: GoogleFonts.poppins(
