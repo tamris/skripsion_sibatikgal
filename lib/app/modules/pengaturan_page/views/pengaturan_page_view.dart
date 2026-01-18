@@ -82,10 +82,12 @@ class PengaturanPageView extends GetView<PengaturanPageController> {
                           )),
                     ),
                     IconButton(
-                      onPressed: controller.goToProfile,
-                      icon: const Icon(Icons.open_in_new_rounded,
-                          color: Color(0xFF6B7280)),
-                      tooltip: 'Lihat Profil',
+                      onPressed: controller.logout,
+                      icon: const Icon(
+                        Icons.logout_rounded,
+                        color: Color(0xFF6B7280),
+                      ),
+                      tooltip: 'Logout',
                     ),
                   ],
                 ),

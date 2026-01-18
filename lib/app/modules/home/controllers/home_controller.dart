@@ -32,11 +32,11 @@ class HomeController extends GetxController {
   late final actions = <QuickAction>[
     QuickAction(
         icon: Icons.style,
-        label: 'Galeri Batik',
+        label: 'Event',
         onTap: () => Get.toNamed('/galeri-page')),
     QuickAction(
         icon: Icons.center_focus_strong,
-        label: 'Deteksi',
+        label: 'Video',
         onTap: () => Get.toNamed('/detect')),
     QuickAction(
         icon: Icons.map_outlined,
@@ -44,7 +44,7 @@ class HomeController extends GetxController {
         onTap: () => Get.toNamed('/mapping')),
     QuickAction(
         icon: Icons.info_outline,
-        label: 'Informasi',
+        label: 'Sejarah',
         onTap: () => Get.toNamed('/news')),
   ];
 

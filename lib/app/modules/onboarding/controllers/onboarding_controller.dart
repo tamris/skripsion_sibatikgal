@@ -54,7 +54,7 @@ class OnboardingController extends GetxController {
 
   void start() {
     // TODO: tulis seen_onboarding kalau pakai GetStorage
-    Get.offAllNamed('/home');
+    Get.offAllNamed('/login-page');
   }
 
   @override

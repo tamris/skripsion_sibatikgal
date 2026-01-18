@@ -1,3 +1,4 @@
+import 'package:batikara/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,9 +13,14 @@ class PengaturanPageController extends GetxController {
 
   void toggleNotif(bool v) => pushNotif.value = v;
 
-  void goToProfile() => Get.toNamed('/profile-user'); // sesuaikan rute
+  void goToProfile() => Get.toNamed('/login_page'); // sesuaikan rute
   void goToChangePassword() => Get.toNamed('/change-password');
   void goToFaqs() => Get.toNamed('/faqs');
+
+  void logout() {
+    // TODO: clear auth/session data if available
+    Get.offAllNamed(Routes.LOGIN_PAGE);
+  }
 
   @override
   void onInit() {

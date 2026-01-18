@@ -1,23 +1,17 @@
+import 'package:batikara/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class LoginPageController extends GetxController {
-  //TODO: Implement LoginPageController
+  // State untuk melihat password
+  var isPasswordHidden = true.obs;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  void togglePasswordVisibility() {
+    isPasswordHidden.value = !isPasswordHidden.value;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void login() {
+    // Di sini nanti tempat validasi email/password atau hit ke API
+    // Jika berhasil, pindah ke Home:
+    Get.offAllNamed(Routes.HOME);
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

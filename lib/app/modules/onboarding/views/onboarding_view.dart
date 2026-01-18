@@ -103,7 +103,7 @@ class OnboardingView extends GetView<OnboardingController> {
                                       TextStyle(fontSize: isCompact ? 13 : 16),
                                 ),
                                 child: const Text(
-                                  "START",
+                                  "MULAI",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Mulish'),
@@ -124,7 +124,7 @@ class OnboardingView extends GetView<OnboardingController> {
                                     fontSize: isCompact ? 13 : 16,
                                   ),
                                 ),
-                                child: const Text("SKIP"),
+                                child: const Text("LEWATI"),
                               ),
                               ElevatedButton(
                                 onPressed: controller.next,
