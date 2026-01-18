@@ -1,3 +1,4 @@
+import 'package:batikara/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class RegsiterPageController extends GetxController {
@@ -11,5 +12,6 @@ class RegsiterPageController extends GetxController {
   void register() {
     // Logika pendaftaran di sini
     print("Mencoba mendaftar...");
+    Get.toNamed(Routes.OTP_VERIFIKASI);
   }
 }

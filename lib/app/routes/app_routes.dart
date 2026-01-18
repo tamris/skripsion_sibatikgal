@@ -13,6 +13,7 @@ abstract class Routes {
   static const PENGATURAN_PAGE = _Paths.PENGATURAN_PAGE;
   static const DETEKSI_PAGE = _Paths.DETEKSI_PAGE;
   static const REGSITER_PAGE = _Paths.REGSITER_PAGE;
+  static const OTP_VERIFIKASI = _Paths.OTP_VERIFIKASI;
 }
 
 abstract class _Paths {
@@ -27,4 +28,5 @@ abstract class _Paths {
   static const PENGATURAN_PAGE = '/pengaturan-page';
   static const DETEKSI_PAGE = '/deteksi-page';
   static const REGSITER_PAGE = '/regsiter-page';
+  static const OTP_VERIFIKASI = '/otp-verifikasi';
 }

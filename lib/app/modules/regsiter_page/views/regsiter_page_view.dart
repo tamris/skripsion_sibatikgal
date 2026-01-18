@@ -75,15 +75,17 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () => controller.register(),
+                  onPressed: () {
+                    controller.register(); // Panggil fungsi navigasi
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF8D5D46),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    elevation: 4,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: Text(
-                    'Daftar',
+                    'Daftar', // Sesuai desain kamu, atau ganti jadi 'Daftar'
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 18,

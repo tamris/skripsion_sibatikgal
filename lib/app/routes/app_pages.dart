@@ -13,6 +13,8 @@ import '../modules/login_page/bindings/login_page_binding.dart';
 import '../modules/login_page/views/login_page_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/otp_verifikasi/bindings/otp_verifikasi_binding.dart';
+import '../modules/otp_verifikasi/views/otp_verifikasi_view.dart';
 import '../modules/pengaturan_page/bindings/pengaturan_page_binding.dart';
 import '../modules/pengaturan_page/views/pengaturan_page_view.dart';
 import '../modules/profile_user/bindings/profile_user_binding.dart';
@@ -78,6 +80,11 @@ class AppPages {
       name: _Paths.REGSITER_PAGE,
       page: () => const RegsiterPageView(),
       binding: RegsiterPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTP_VERIFIKASI,
+      page: () => const OtpVerifikasiView(),
+      binding: OtpVerifikasiBinding(),
     ),
   ];
 }
