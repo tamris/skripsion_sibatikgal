@@ -1,3 +1,4 @@
+import 'package:batikara/app/data/service/oauth_service.dart';
 import 'package:batikara/app/data/service/register_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -114,6 +115,28 @@ class RegsiterPageController extends GetxController {
       }
     } catch (e) {
       showCustomSnackbar("Error", "Gagal terhubung ke server", isError: true);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void loginWithGoogle() async {
+    try {
+      isLoading.value = true;
+
+      final result = await OauthService.signInWithGoogle();
+
+      if (result != null) {
+        // Simpan token (misal pakai GetStorage)
+        // storage.write('token', result['access_token']);
+
+        showCustomSnackbar(
+            "Berhasil", "Selamat datang, ${result['user']['name']}!");
+        Get.offAllNamed(Routes.HOME);
+      }
+    } catch (e) {
+      showCustomSnackbar("Error", e.toString().replaceFirst('Exception: ', ''),
+          isError: true);
     } finally {
       isLoading.value = false;
     }

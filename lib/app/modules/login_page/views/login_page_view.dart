@@ -160,10 +160,9 @@ class LoginPageView extends GetView<LoginPageController> {
                 width: double.infinity,
                 height: 55,
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Tambahkan logika di sini
-                    print('Tombol Google ditekan!');
-                  },
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : () => controller.loginWithGoogle(),
                   icon: SvgPicture.asset(
                     'assets/images/Google.svg', // Logo Google dari file assets lokal
                     height: 24,

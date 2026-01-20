@@ -1,3 +1,4 @@
+import 'package:batikara/app/data/service/oauth_service.dart';
 import 'package:batikara/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,7 +18,8 @@ class PengaturanPageController extends GetxController {
   void goToChangePassword() => Get.toNamed('/ubah-sandi');
   void goToFaqs() => Get.toNamed('/faqs');
 
-  void logout() {
+  void logout() async {
+    await OauthService.logout();
     // TODO: clear auth/session data if available
     Get.offAllNamed(Routes.LOGIN_PAGE);
   }

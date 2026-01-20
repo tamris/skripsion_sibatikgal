@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:batikara/app/routes/app_pages.dart';
 import '../../../data/service/login_service.dart';
+import '../../../data/service/oauth_service.dart';
 
 class LoginPageController extends GetxController {
   // Controller untuk input text
@@ -105,6 +106,28 @@ class LoginPageController extends GetxController {
       }
     } catch (e) {
       showCustomSnackbar("Error", "Gagal terhubung ke server", isError: true);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void loginWithGoogle() async {
+    try {
+      isLoading.value = true;
+
+      final result = await OauthService.signInWithGoogle();
+
+      if (result != null) {
+        // Simpan token (misal pakai GetStorage)
+        // storage.write('token', result['access_token']);
+
+        showCustomSnackbar(
+            "Berhasil", "Selamat datang, ${result['user']['name']}!");
+        Get.offAllNamed(Routes.HOME);
+      }
+    } catch (e) {
+      showCustomSnackbar("Error", e.toString().replaceFirst('Exception: ', ''),
+          isError: true);
     } finally {
       isLoading.value = false;
     }
