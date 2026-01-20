@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/chatbot_page_controller.dart';
 import '../widgets/typing_indicator_widget.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatbotPageView extends GetView<ChatbotPageController> {
   const ChatbotPageView({super.key});
@@ -18,8 +19,8 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                 GoogleFonts.poppins(fontWeight: FontWeight.w800, fontSize: 28)),
         backgroundColor: const Color(0xFFF5F5F5),
         foregroundColor: Colors.black87,
-        elevation: 0,
-        shadowColor: Colors.transparent,
+        elevation: 1,
+        shadowColor: Colors.grey.withOpacity(0.3),
         surfaceTintColor: Colors.transparent,
       ),
       body: Column(
@@ -28,60 +29,110 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
           Expanded(
             child: Obx(() => ListView.builder(
                   controller: controller.scrollC,
+                  reverse: true,
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(12),
-                  // Tambah 1 untuk typing indicator jika sedang typing
                   itemCount: controller.messages.length +
                       (controller.isTyping.value ? 1 : 0),
                   itemBuilder: (context, index) {
-                    // Jika index adalah item terakhir dan sedang typing, tampilkan typing indicator
-                    if (index == controller.messages.length &&
-                        controller.isTyping.value) {
-                      return const TypingIndicatorWidget();
+                    if (controller.isTyping.value && index == 0) {
+                      // Custom Typing Indicator
+                      return const TypingIndicatorWidget(
+                        dotsColor: Color(0xFF8A5A44),
+                        animationDuration: Duration(milliseconds: 400),
+                      );
                     }
 
-                    final msg = controller.messages[index];
+                    final messageIndex =
+                        controller.isTyping.value ? index - 1 : index;
+                    final msg = controller.messages[messageIndex];
                     final isUser = msg.isUser;
 
                     return Align(
                       alignment:
                           isUser ? Alignment.centerRight : Alignment.centerLeft,
-                      child: ConstrainedBox(
-                        // bubble max 75% lebar layar
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.75,
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: isUser
-                                ? const Color(0xFF8A5A44)
-                                : Colors.grey.shade300,
-                            borderRadius: BorderRadius.only(
-                              topLeft: const Radius.circular(16),
-                              topRight: const Radius.circular(16),
-                              bottomLeft: isUser
-                                  ? const Radius.circular(16)
-                                  : const Radius.circular(6),
-                              bottomRight: isUser
-                                  ? const Radius.circular(6)
-                                  : const Radius.circular(16),
+                      child: Row(
+                        mainAxisAlignment: isUser
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (!isUser)
+                            CircleAvatar(
+                              backgroundColor: Colors.grey.shade400,
+                              child: Text(
+                                "AI",
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            msg.text,
-                            softWrap: true,
-                            style: GoogleFonts.plusJakartaSans(
-                              textStyle: TextStyle(
-                                color: isUser ? Colors.white : Colors.black87,
-                                height: 1.4,
-                                fontSize: 16,
+                          if (!isUser) const SizedBox(width: 8),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.75,
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: isUser
+                                    ? const Color(0xFF8A5A44)
+                                    : Colors.grey.shade300,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(16),
+                                  topRight: const Radius.circular(16),
+                                  bottomLeft: isUser
+                                      ? const Radius.circular(16)
+                                      : const Radius.circular(6),
+                                  bottomRight: isUser
+                                      ? const Radius.circular(6)
+                                      : const Radius.circular(16),
+                                ),
+                              ),
+                              child: MarkdownBody(
+                                data: msg.text,
+                                selectable: true,
+                                styleSheet: MarkdownStyleSheet(
+                                  p: GoogleFonts.plusJakartaSans(
+                                    color:
+                                        isUser ? Colors.white : Colors.black87,
+                                    fontSize: 16,
+                                    height: 1.4,
+                                  ),
+                                  strong: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        isUser ? Colors.white : Colors.black87,
+                                  ),
+                                  listBullet: TextStyle(
+                                    color:
+                                        isUser ? Colors.white : Colors.black87,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          if (isUser) const SizedBox(width: 8),
+                          if (isUser)
+                            CircleAvatar(
+                              backgroundColor: const Color(0xFF8A5A44),
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.white,
+                              ),
+                            ),
+                        ],
                       ),
                     );
                   },
@@ -121,9 +172,10 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                 const SizedBox(width: 8),
                 Obx(() => GestureDetector(
                       onTap: controller.isTyping.value
-                          ? null // Disable button saat typing
+                          ? null
                           : () => controller.sendMessage(controller.textC.text),
                       child: CircleAvatar(
+                        radius: 24,
                         backgroundColor: controller.isTyping.value
                             ? Colors.grey
                             : const Color(0xFF8A5A44),

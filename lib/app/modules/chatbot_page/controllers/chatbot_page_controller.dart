@@ -17,57 +17,40 @@ class ChatbotPageController extends GetxController {
 
     final userMessage = text.trim();
 
-    // Tambahkan pesan user
-    messages.add(Message(text: userMessage, isUser: true));
+    // 1. Ubah .add menjadi .insert(0, ...) agar pesan muncul di posisi paling bawah
+    messages.insert(0, Message(text: userMessage, isUser: true));
 
-    textC.clear(); // ✅ clear setelah kirim
-
-    // Reset input
+    textC.clear();
     userInput.value = '';
 
-    // Scroll ke bawah setelah update
-    _scrollToBottom();
+    // 2. Karena pakai reverse: true, kita tidak butuh lagi manual scroll ke bawah
+    // Pesan di index 0 otomatis terlihat di atas input bar.
 
-    // Tampilkan typing indicator
     isTyping.value = true;
 
-    // Panggil API untuk mendapatkan response bot
     try {
       final botResponse = await ChatbotService.getChatResponse(userMessage);
 
-      // Tambahkan response bot
-      messages.add(
+      // 3. Masukkan respon bot juga ke index 0
+      messages.insert(
+        0,
         Message(
           text: botResponse,
           isUser: false,
         ),
       );
     } catch (e) {
-      // Jika ada error, tampilkan pesan error
-      messages.add(
+      messages.insert(
+        0,
         Message(
           text: "Maaf, terjadi kesalahan. Silakan coba lagi nanti.",
           isUser: false,
         ),
       );
-      print('Error getting bot response: $e');
     } finally {
-      // Hilangkan typing indicator
       isTyping.value = false;
-      _scrollToBottom();
+      // _scrollToBottom() sudah tidak diperlukan
     }
-  }
-
-  void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (scrollC.hasClients) {
-        scrollC.animateTo(
-          scrollC.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
   }
 
   @override

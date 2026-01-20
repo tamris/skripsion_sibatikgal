@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TypingIndicatorWidget extends StatefulWidget {
-  const TypingIndicatorWidget({super.key});
+  const TypingIndicatorWidget({super.key, required Color dotsColor, required Duration animationDuration});
 
   @override
   State<TypingIndicatorWidget> createState() => _TypingIndicatorWidgetState();
