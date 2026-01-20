@@ -40,53 +40,51 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: controller.selectedImagePath.value == ''
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.image_outlined,
-                                  size: 80, color: Colors.black),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Pilih gambar untuk di deteksi!',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Stack(
-                            // Gunakan Stack agar bisa menaruh tombol hapus di pojok gambar
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.file(
-                                  File(controller.selectedImagePath.value),
-                                  width: double.infinity,
-                                  height: 350,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              // Tombol Hapus di pojok kanan atas gambar
-                              Positioned(
-                                top: 10,
-                                right: 10,
-                                child: GestureDetector(
-                                  onTap: () => controller.resetDetection(),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
+                    child: controller.isLoading.value
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                                color: Color(0xFF8D5D46))) // Tampilkan loading
+                        : controller.selectedImagePath.value == ''
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.image_outlined,
+                                      size: 80, color: Colors.black),
+                                  const SizedBox(height: 16),
+                                  Text('Pilih gambar untuk di deteksi!',
+                                      style: GoogleFonts.poppins(
+                                          color: Colors.grey)),
+                                ],
+                              )
+                            : Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.file(
+                                      File(controller.selectedImagePath.value),
+                                      width: double.infinity,
+                                      height: 350,
+                                      fit: BoxFit.cover,
                                     ),
-                                    child: const Icon(Icons.delete_outline,
-                                        color: Colors.white, size: 20),
                                   ),
-                                ),
+                                  // Tombol Hapus
+                                  Positioned(
+                                    top: 10,
+                                    right: 10,
+                                    child: GestureDetector(
+                                      onTap: () => controller.resetDetection(),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle),
+                                        child: const Icon(Icons.delete_outline,
+                                            color: Colors.white, size: 20),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
                   )),
 
               const SizedBox(height: 20), // Jarak disesuaikan
