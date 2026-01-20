@@ -15,12 +15,72 @@ class LoginPageController extends GetxController {
     isPasswordHidden.value = !isPasswordHidden.value;
   }
 
+  void showCustomSnackbar(String title, String message,
+      {bool isError = false}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: isError ? Color(0xFFFFEBEE) : Color(0xFFFFF3E0),
+      colorText: isError ? Color(0xFFC62828) : Color(0xFF8D5D46),
+      borderRadius: 16,
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      icon: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isError
+              ? Color(0xFFC62828).withOpacity(0.1)
+              : Color(0xFF8D5D46).withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          isError
+              ? Icons.error_outline_rounded
+              : Icons.check_circle_outline_rounded,
+          color: isError ? Color(0xFFC62828) : Color(0xFF8D5D46),
+          size: 24,
+        ),
+      ),
+      shouldIconPulse: false,
+      duration: Duration(seconds: 3),
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      forwardAnimationCurve: Curves.easeOutBack,
+      reverseAnimationCurve: Curves.easeInCirc,
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 12,
+          offset: Offset(0, 4),
+        ),
+      ],
+      titleText: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: isError ? Color(0xFFC62828) : Color(0xFF8D5D46),
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: TextStyle(
+          fontSize: 14,
+          color: isError ? Color(0xFFD32F2F) : Color(0xFF6D4C41),
+          height: 1.4,
+        ),
+      ),
+    );
+  }
+
   void login() async {
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar("Error", "Email dan password tidak boleh kosong");
+      showCustomSnackbar("Error", "Email dan password tidak boleh kosong",
+          isError: true);
       return;
     }
 
@@ -34,16 +94,17 @@ class LoginPageController extends GetxController {
         Get.offAllNamed(Routes.HOME);
       } else if (response.statusCode == 403) {
         // User belum verifikasi OTP
-        Get.snackbar("Verifikasi", response.data['msg']);
+        showCustomSnackbar("Verifikasi", response.data['msg']);
         // Arahkan ke halaman OTP jika perlu
         Get.toNamed(Routes.OTP_VERIFIKASI, arguments: email);
       } else {
         // Email atau password salah
-        Get.snackbar(
-            "Login Gagal", response.data['msg'] ?? "Terjadi kesalahan");
+        showCustomSnackbar(
+            "Login Gagal", response.data['msg'] ?? "Terjadi kesalahan",
+            isError: true);
       }
     } catch (e) {
-      Get.snackbar("Error", "Gagal terhubung ke server");
+      showCustomSnackbar("Error", "Gagal terhubung ke server", isError: true);
     } finally {
       isLoading.value = false;
     }
