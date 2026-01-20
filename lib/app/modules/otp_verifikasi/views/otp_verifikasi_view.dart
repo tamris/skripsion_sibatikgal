@@ -37,13 +37,14 @@ class OtpVerifikasiView extends GetView<OtpVerifikasiController> {
               RichText(
                 text: TextSpan(
                   style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
-                  children: const [
-                    TextSpan(
+                  children: [
+                    const TextSpan(
                         text:
                             'Kami telah mengirimkan kode verifikasi ke email '),
                     TextSpan(
-                      text: 'gf.cruz@gmail.com',
-                      style: TextStyle(
+                      text: controller
+                          .email, // Ambil email dinamis dari controller
+                      style: const TextStyle(
                         color: Color(0xFF4285F4),
                         fontWeight: FontWeight.w500,
                       ),
@@ -91,7 +92,7 @@ class OtpVerifikasiView extends GetView<OtpVerifikasiController> {
                       const SizedBox(height: 4),
                       controller.enableResend.value
                           ? GestureDetector(
-                              onTap: () => controller.startTimer(),
+                              onTap: () => controller.resendOtp(),
                               child: Text(
                                 'Kirim ulang kode',
                                 style: GoogleFonts.poppins(

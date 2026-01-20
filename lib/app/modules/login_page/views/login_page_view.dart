@@ -44,6 +44,7 @@ class LoginPageView extends GetView<LoginPageController> {
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: controller.emailC,
                 decoration: InputDecoration(
                   hintText: 'email',
                   contentPadding: const EdgeInsets.symmetric(
@@ -69,6 +70,7 @@ class LoginPageView extends GetView<LoginPageController> {
               ),
               const SizedBox(height: 8),
               Obx(() => TextField(
+                    controller: controller.passwordC,
                     obscureText: controller.isPasswordHidden.value,
                     decoration: InputDecoration(
                       hintText: 'Password',
@@ -111,30 +113,30 @@ class LoginPageView extends GetView<LoginPageController> {
               const SizedBox(height: 20),
 
               // Tombol Login
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: () {
-                    controller.login(); // Memanggil fungsi login di controller
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8D5D46),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              Obx(() => SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () => controller.login(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8D5D46),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 4,
+                      ),
+                      child: Text(
+                        'Login',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    elevation: 4,
-                  ),
-                  child: Text(
-                    'Login',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
+                  )),
               const SizedBox(height: 30),
 
               // Divider "atau"

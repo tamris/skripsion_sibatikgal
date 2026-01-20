@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:batikara/app/routes/app_pages.dart';
+import '../../../data/service/otp_service.dart';
 
 class OtpVerifikasiController extends GetxController {
   final otp1 = TextEditingController();
@@ -17,36 +19,70 @@ class OtpVerifikasiController extends GetxController {
   final fn5 = FocusNode();
   final fn6 = FocusNode();
 
-  var secondsRemaining = 30.obs;
-  var enableResend = false.obs;
+  final String email = Get.arguments ?? "user@email.com";
+
+  // Ubah: secondsRemaining ke 60 (1 menit)
+  var secondsRemaining = 60.obs; 
+  // Ubah: enableResend jadi true agar bisa diklik langsung saat masuk halaman
+  var enableResend = true.obs; 
+  var isLoading = false.obs;
   Timer? timer;
 
   @override
   void onInit() {
     super.onInit();
-    startTimer();
+    // JANGAN panggil startTimer() di sini agar tombol langsung aktif
   }
 
   void startTimer() {
-    secondsRemaining.value = 30;
-    enableResend.value = false;
+    secondsRemaining.value = 60;
+    enableResend.value = false; // Tombol jadi mati saat timer jalan
     timer?.cancel();
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (secondsRemaining.value > 0) {
         secondsRemaining.value--;
       } else {
-        enableResend.value = true;
+        enableResend.value = true; // Tombol aktif lagi setelah 1 menit
         t.cancel();
       }
     });
   }
 
-  void verifyOtp() {
-    String code =
-        otp1.text + otp2.text + otp3.text + otp4.text + otp5.text + otp6.text;
+  void resendOtp() async {
+    isLoading.value = true;
+    try {
+      final response = await OtpService.resendOtp(email);
+      if (response.statusCode == 200) {
+        Get.snackbar("Sukses", "Kode OTP baru telah dikirim");
+        // Panggil startTimer HANYA setelah user klik kirim ulang
+        startTimer(); 
+      } else {
+        Get.snackbar("Gagal", response.data['msg'] ?? "Gagal kirim ulang");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Gagal terhubung ke server");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void verifyOtp() async {
+    String code = otp1.text + otp2.text + otp3.text + otp4.text + otp5.text + otp6.text;
     if (code.length == 6) {
-      Get.offAllNamed(
-          '/login-page'); // Ganti dengan rute tujuan setelah verifikasi
+      isLoading.value = true;
+      try {
+        final response = await OtpService.verifyOtp(email, code);
+        if (response.statusCode == 200) {
+          Get.snackbar("Sukses", "Verifikasi berhasil. Silakan login.");
+          Get.offAllNamed(Routes.LOGIN_PAGE);
+        } else {
+          Get.snackbar("Verifikasi Gagal", response.data['msg'] ?? "Kode tidak valid");
+        }
+      } catch (e) {
+        Get.snackbar("Error", "Gagal terhubung ke server");
+      } finally {
+        isLoading.value = false;
+      }
     } else {
       Get.snackbar("Error", "Masukkan 6 digit kode lengkap");
     }

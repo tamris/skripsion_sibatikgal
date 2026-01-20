@@ -1,3 +1,3 @@
 class AppConfig {
-  static const String baseUrl = 'http://192.168.18.9:5000';
+  static const String baseUrl = 'https://ethical-ape-oddly.ngrok-free.app';
 }

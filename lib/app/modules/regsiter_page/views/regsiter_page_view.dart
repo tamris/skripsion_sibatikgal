@@ -35,14 +35,15 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
               Text('Username',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
-              _buildTextField(hint: 'Username'),
+              _buildTextField(
+                  hint: 'Username', controller: controller.usernameC),
               const SizedBox(height: 20),
 
               // --- Field Email ---
               Text('Email',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
-              _buildTextField(hint: 'Email'),
+              _buildTextField(hint: 'Email', controller: controller.emailC),
               const SizedBox(height: 20),
 
               // --- Field Password ---
@@ -51,6 +52,7 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
               const SizedBox(height: 8),
               Obx(() => _buildTextField(
                     hint: 'Password',
+                    controller: controller.passwordC,
                     isPassword: true,
                     obscureText: controller.isPasswordHidden.value,
                     onToggle: controller.togglePasswordVisibility,
@@ -63,6 +65,7 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
               const SizedBox(height: 8),
               Obx(() => _buildTextField(
                     hint: 'Konfirmasi Password',
+                    controller: controller.confirmPasswordC,
                     isPassword: true,
                     obscureText: controller.isConfirmPasswordHidden.value,
                     onToggle: controller.toggleConfirmPasswordVisibility,
@@ -75,9 +78,9 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
-                    controller.register(); // Panggil fungsi navigasi
-                  },
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : () => controller.register(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF8D5D46),
                     shape: RoundedRectangleBorder(
@@ -174,10 +177,12 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
   // Helper Widget agar kode lebih bersih
   Widget _buildTextField(
       {required String hint,
+      TextEditingController? controller,
       bool isPassword = false,
       bool obscureText = false,
       VoidCallback? onToggle}) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hint,
