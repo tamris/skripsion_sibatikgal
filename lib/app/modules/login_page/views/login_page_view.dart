@@ -103,7 +103,9 @@ class LoginPageView extends GetView<LoginPageController> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed('/reset-password-page');
+                  },
                   child: Text(
                     'Lupa kata sandi?',
                     style: GoogleFonts.poppins(color: Colors.black),

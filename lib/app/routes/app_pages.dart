@@ -1,5 +1,3 @@
-import 'package:batikara/app/modules/regsiter_page/bindings/regsiter_page_binding.dart';
-import 'package:batikara/app/modules/regsiter_page/views/regsiter_page_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/chatbot_page/bindings/chatbot_page_binding.dart';
@@ -21,6 +19,10 @@ import '../modules/pengaturan_page/bindings/pengaturan_page_binding.dart';
 import '../modules/pengaturan_page/views/pengaturan_page_view.dart';
 import '../modules/profile_user/bindings/profile_user_binding.dart';
 import '../modules/profile_user/views/profile_user_view.dart';
+import '../modules/regsiter_page/bindings/regsiter_page_binding.dart';
+import '../modules/regsiter_page/views/regsiter_page_view.dart';
+import '../modules/reset_password_page/bindings/reset_password_page_binding.dart';
+import '../modules/reset_password_page/views/reset_password_page_view.dart';
 import '../modules/ubah_sandi/bindings/ubah_sandi_binding.dart';
 import '../modules/ubah_sandi/views/ubah_sandi_view.dart';
 import '../widgets/navigation/main_wrapper.dart';
@@ -92,6 +94,11 @@ class AppPages {
       name: _Paths.UBAH_SANDI,
       page: () => const UbahSandiView(),
       binding: UbahSandiBinding(),
+    ),
+    GetPage(
+      name: _Paths.RESET_PASSWORD_PAGE,
+      page: () => const ResetPasswordPageView(),
+      binding: ResetPasswordPageBinding(),
     ),
   ];
 }
