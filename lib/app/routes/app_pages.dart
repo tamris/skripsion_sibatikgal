@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../modules/chatbot_page/bindings/chatbot_page_binding.dart';
 import '../modules/chatbot_page/views/chatbot_page_view.dart';
@@ -30,9 +31,11 @@ import '../widgets/navigation/main_wrapper.dart';
 part 'app_routes.dart';
 
 class AppPages {
+  static final storage = GetStorage();
   AppPages._();
 
-  static const INITIAL = Routes.ONBOARDING;
+  static final INITIAL =
+      storage.read('token') != null ? Routes.HOME : Routes.ONBOARDING;
 
   static final routes = [
     GetPage(

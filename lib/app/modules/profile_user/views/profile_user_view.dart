@@ -96,7 +96,7 @@ class ProfileUserView extends StatelessWidget {
                   ),
                   onPressed: () {},
                   child: Text(
-                    'SAVE',
+                    'SIMPAN',
                     style: GoogleFonts.mulish(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

@@ -155,7 +155,7 @@ class OtpVerifikasiController extends GetxController {
         if (response.statusCode == 200) {
           showCustomSnackbar("Sukses", "Verifikasi berhasil. Silakan login.",
               isSuccess: true);
-          Get.offAllNamed(Routes.LOGIN_PAGE);
+          Get.until((route) => Get.currentRoute == Routes.LOGIN_PAGE);
         } else {
           showCustomSnackbar("Verifikasi Gagal",
               response.data['msg'] ?? "Kode OTP tidak valid",

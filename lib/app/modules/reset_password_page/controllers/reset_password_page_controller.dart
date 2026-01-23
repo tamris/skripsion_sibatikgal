@@ -116,7 +116,7 @@ class ResetPasswordPageController extends GetxController {
 
     if (res.statusCode == 200) {
       showCustomSnackbar("Sukses", "Kata sandi berhasil diubah");
-      Get.offAllNamed(Routes.LOGIN_PAGE);
+      Get.until((route) => Get.currentRoute == Routes.LOGIN_PAGE);
     } else {
       showCustomSnackbar("Gagal", res.data['msg'] ?? "Terjadi kesalahan",
           isError: true);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:batikara/app/routes/app_pages.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../../data/service/login_service.dart';
 import '../../../data/service/oauth_service.dart';
 
@@ -8,7 +9,7 @@ class LoginPageController extends GetxController {
   // Controller untuk input text
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
-
+  final storage = GetStorage();
   var isPasswordHidden = true.obs;
   var isLoading = false.obs;
 
@@ -90,8 +91,11 @@ class LoginPageController extends GetxController {
       final response = await LoginService.login(email, password);
 
       if (response.statusCode == 200) {
-        // Simpan token (bisa pakai GetStorage) lalu pindah ke Home
-        // Contoh: storage.write('token', response.data['access_token']);
+        storage.write('token', response.data['access_token']);
+        storage.write('user_data', response.data['user']);
+        
+        showCustomSnackbar("Berhasil",
+            "Selamat datang, ${response.data['user']['username']}!");
         Get.offAllNamed(Routes.HOME);
       } else if (response.statusCode == 403) {
         // User belum verifikasi OTP

@@ -47,6 +47,7 @@ class LoginPageView extends GetView<LoginPageController> {
                 controller: controller.emailC,
                 decoration: InputDecoration(
                   hintText: 'email',
+                  hintStyle: GoogleFonts.poppins(),
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 16, // Memperbesar tinggi field
                     horizontal: 16, // Memperbesar jarak teks dari kiri/kanan

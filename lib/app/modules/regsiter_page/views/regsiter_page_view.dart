@@ -185,7 +185,7 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey.shade400),
+        hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         suffixIcon: isPassword
