@@ -1,7 +1,8 @@
+import 'package:batikara/app/modules/informasi_page/views/informasi_detail_page.dart';
 import 'package:batikara/app/modules/informasi_page/widgets/informasi_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../home/views/news_detail_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/informasi_page_controller.dart';
 
 class InformasiPageView extends GetView<InformasiPageController> {
@@ -27,32 +28,50 @@ class InformasiPageView extends GetView<InformasiPageController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 16),
+                  // MENGGUNAKAN PADDING DAN WRAP UNTUK TAMPILAN VERTIKAL
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Wrap(
-                      spacing: 8,
-                      children: controller.categories.map((cat) {
-                        final selected =
-                            controller.selectedCategory.value.isEmpty
-                                ? cat == 'Semua'
-                                : controller.selectedCategory.value == cat;
-                        return ChoiceChip(
-                          label: Text(cat,
-                              style: const TextStyle(fontFamily: 'Poppins')),
-                          selected: selected,
-                          selectedColor: Colors.brown[100],
-                          backgroundColor: Colors.white,
-                          labelStyle: TextStyle(
-                            color: selected
-                                ? Colors.brown[800]
-                                : Colors.brown[400],
-                            fontWeight:
-                                selected ? FontWeight.bold : FontWeight.normal,
-                          ),
-                          onSelected: (_) => controller.onCategoryChanged(cat),
-                        );
-                      }).toList(),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Obx(() => Wrap(
+                          spacing: 8.0, // Jarak horizontal antar chip
+                          runSpacing: 4.0, // Jarak vertikal antar baris chip
+                          children: controller.categories.map((cat) {
+                            final selected =
+                                controller.selectedCategory.value == cat ||
+                                    (controller
+                                            .selectedCategory.value.isEmpty &&
+                                        cat == 'Semua');
+
+                            return ChoiceChip(
+                              label: Text(
+                                cat,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: selected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: selected
+                                      ? Colors.brown[800]
+                                      : Colors.brown[400],
+                                ),
+                              ),
+                              selected: selected,
+                              selectedColor: Colors.brown[100],
+                              backgroundColor: Colors.white,
+                              pressElevation: 0,
+                              side: BorderSide(
+                                color: selected
+                                    ? Colors.brown[300]!
+                                    : Colors.transparent,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              onSelected: (_) =>
+                                  controller.onCategoryChanged(cat),
+                            );
+                          }).toList(),
+                        )),
                   ),
                   InformasiSearchBar(
                     onChanged: controller.onSearchChanged,
@@ -61,29 +80,29 @@ class InformasiPageView extends GetView<InformasiPageController> {
               ),
             ),
             SliverList.separated(
-              itemCount: controller.news.length,
+              itemCount: controller.filteredNews.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, i) {
-                final n = controller.news[i];
+                final n = controller.filteredNews[i];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: GestureDetector(
-                    onTap: () => Get.to(() => NewsDetailPage(), arguments: i),
+                    // Kirim data Map secara utuh atau ID-nya saja
+                    onTap: () =>
+                        Get.to(() => InformasiDetailPage(), arguments: n),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: SizedBox(
                         height: 200,
-                        width: double.infinity,
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            // Gambar background
-                            Image.asset(
-                              n.image,
+                            // Gunakan Image.network karena gambar berasal dari server
+                            Image.network(
+                              n.gambarUrl ?? '',
                               fit: BoxFit.cover,
-                              alignment: Alignment.center,
                               errorBuilder: (_, __, ___) =>
-                                  Container(color: const Color(0xFFF1F1F1)),
+                                  Container(color: Colors.grey[300]),
                             ),
                             // Gradient overlay
                             Container(
@@ -107,7 +126,7 @@ class InformasiPageView extends GetView<InformasiPageController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    n.title,
+                                    n.title ?? 'Tanpa Judul',
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
                                     style: const TextStyle(
@@ -120,7 +139,7 @@ class InformasiPageView extends GetView<InformasiPageController> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    n.subtitle,
+                                    n.deskripsi ?? 'Deskripsi tidak tersedia',
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
                                     style: const TextStyle(

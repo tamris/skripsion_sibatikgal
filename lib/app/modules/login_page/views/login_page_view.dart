@@ -75,6 +75,7 @@ class LoginPageView extends GetView<LoginPageController> {
                     obscureText: controller.isPasswordHidden.value,
                     decoration: InputDecoration(
                       hintText: 'Password',
+                      hintStyle: GoogleFonts.poppins(),
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 16, // Memperbesar tinggi field
                         horizontal:

@@ -1,7 +1,7 @@
+import 'package:batikara/app/modules/informasi_page/views/informasi_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
-import '../views/news_detail_page.dart';
 
 class HomeNewsList extends GetView<HomeController> {
   const HomeNewsList({super.key});
@@ -18,7 +18,7 @@ class HomeNewsList extends GetView<HomeController> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => NewsDetailPage(), arguments: i);
+                  Get.to(() => InformasiDetailPage(), arguments: n);
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -29,12 +29,11 @@ class HomeNewsList extends GetView<HomeController> {
                       fit: StackFit.expand,
                       children: [
                         // Background image
-                        Image.asset(
-                          n.image,
+                        Image.network(
+                          n.gambarUrl ?? '', // Gunakan field dari model baru
                           fit: BoxFit.cover,
-                          alignment: Alignment.center,
                           errorBuilder: (_, __, ___) =>
-                              Container(color: const Color(0xFFF1F1F1)),
+                              Container(color: Colors.grey[200]),
                         ),
 
                         // Overlay gradient (atas tipis, bawah pekat)
@@ -60,7 +59,7 @@ class HomeNewsList extends GetView<HomeController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                n.title,
+                                n.title ?? '',
                                 maxLines: 2,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -73,7 +72,7 @@ class HomeNewsList extends GetView<HomeController> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                n.subtitle,
+                                n.deskripsi ?? '',
                                 maxLines: 2,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
