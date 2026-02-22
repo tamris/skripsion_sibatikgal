@@ -42,7 +42,12 @@ class GaleriPageController extends GetxController {
     if (banners.isEmpty) return;
 
     _autoTimer = Timer.periodic(autoPlayInterval, (_) {
-      pageC.nextPage(duration: slideDuration, curve: slideCurve);
+      if (!pageC.hasClients) return;
+
+      pageC.nextPage(
+        duration: slideDuration,
+        curve: slideCurve,
+      );
     });
   }
 
@@ -57,8 +62,8 @@ class GaleriPageController extends GetxController {
   }
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     startAutoPlay();
   }
 

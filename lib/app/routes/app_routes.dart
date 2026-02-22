@@ -16,6 +16,7 @@ abstract class Routes {
   static const OTP_VERIFIKASI = _Paths.OTP_VERIFIKASI;
   static const UBAH_SANDI = _Paths.UBAH_SANDI;
   static const RESET_PASSWORD_PAGE = _Paths.RESET_PASSWORD_PAGE;
+  static const VIDEO_PAGE = _Paths.VIDEO_PAGE;
 }
 
 abstract class _Paths {
@@ -33,4 +34,5 @@ abstract class _Paths {
   static const OTP_VERIFIKASI = '/otp-verifikasi';
   static const UBAH_SANDI = '/ubah-sandi';
   static const RESET_PASSWORD_PAGE = '/reset-password-page';
+  static const VIDEO_PAGE = '/video-page';
 }

@@ -65,19 +65,19 @@ class HomeBottomNav extends StatelessWidget {
                   HapticFeedback.selectionClick();
                   switch (i) {
                     case 0:
-                      Get.offNamed('/home'); // atau Get.toNamed('/home')
+                      Get.offAllNamed('/home'); // atau Get.toNamed('/home')
                       break;
                     case 1:
-                      Get.offNamed('/galeri-page');
+                      Get.offAllNamed('/galeri-page');
                       break;
                     case 2:
-                      Get.offNamed('/detect');
+                      Get.offAllNamed('/detect');
                       break;
                     case 3:
-                      Get.offNamed('/chatbot-page');
+                      Get.offAllNamed('/chatbot-page');
                       break;
                     case 4:
-                      Get.offNamed('/profile');
+                      Get.offAllNamed('/profile');
                       break;
                   }
                 },

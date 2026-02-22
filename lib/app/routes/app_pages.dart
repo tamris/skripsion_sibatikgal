@@ -26,6 +26,8 @@ import '../modules/reset_password_page/bindings/reset_password_page_binding.dart
 import '../modules/reset_password_page/views/reset_password_page_view.dart';
 import '../modules/ubah_sandi/bindings/ubah_sandi_binding.dart';
 import '../modules/ubah_sandi/views/ubah_sandi_view.dart';
+import '../modules/video_page/bindings/video_page_binding.dart';
+import '../modules/video_page/views/video_page_view.dart';
 import '../widgets/navigation/main_wrapper.dart';
 
 part 'app_routes.dart';
@@ -102,6 +104,11 @@ class AppPages {
       name: _Paths.RESET_PASSWORD_PAGE,
       page: () => const ResetPasswordPageView(),
       binding: ResetPasswordPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIDEO_PAGE,
+      page: () => const VideoPageView(),
+      binding: VideoPageBinding(),
     ),
   ];
 }

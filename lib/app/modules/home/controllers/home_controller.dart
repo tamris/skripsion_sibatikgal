@@ -39,9 +39,9 @@ class HomeController extends GetxController {
         label: 'Event',
         onTap: () => Get.toNamed('/galeri-page')),
     QuickAction(
-        icon: Icons.center_focus_strong,
+      icon: Icons.videocam_outlined,
         label: 'Video',
-        onTap: () => Get.toNamed('/detect')),
+        onTap: () => Get.toNamed('/video-page')),
     QuickAction(
         icon: Icons.map_outlined,
         label: 'Peta',
