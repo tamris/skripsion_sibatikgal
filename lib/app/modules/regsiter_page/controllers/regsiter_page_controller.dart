@@ -35,8 +35,8 @@ class RegsiterPageController extends GetxController {
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isError
-              ? Color(0xFFC62828).withOpacity(0.1)
-              : Color(0xFF8D5D46).withOpacity(0.1),
+              ? Color(0xFFC62828).withValues(alpha: 0.1)
+              : Color(0xFF8D5D46).withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -55,7 +55,7 @@ class RegsiterPageController extends GetxController {
       reverseAnimationCurve: Curves.easeInCirc,
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.1),
+          color: Colors.black.withValues(alpha: 0.1),
           blurRadius: 12,
           offset: Offset(0, 4),
         ),

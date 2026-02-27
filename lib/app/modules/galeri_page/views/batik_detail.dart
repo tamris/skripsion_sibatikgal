@@ -122,7 +122,12 @@ class BatikDetailPage extends StatelessWidget {
                   onTap: () async {
                     final text =
                         '${item.image}\n\n${item.title}\n\n${item.deskripsi}\n\n(Sumber: Aplikasi Batikara)';
-                    await Share.share(text, subject: item.title);
+                    await SharePlus.instance.share(
+                      ShareParams(
+                        text: text,
+                        subject: item.title,
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(width: 10),
@@ -156,7 +161,8 @@ class _SquareIconButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.35), // abu-abu gelap transparan
+          color:
+              Colors.black.withValues(alpha: 0.35), // abu-abu gelap transparan
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(10),

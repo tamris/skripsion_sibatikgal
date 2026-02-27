@@ -82,7 +82,7 @@ class OtpVerifikasiController extends GetxController {
       icon: Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: iconColor.withOpacity(0.1),
+          color: iconColor.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -99,7 +99,7 @@ class OtpVerifikasiController extends GetxController {
       reverseAnimationCurve: Curves.easeInCirc,
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.1),
+          color: Colors.black.withValues(alpha: 0.1),
           blurRadius: 12,
           offset: Offset(0, 4),
         ),
@@ -116,7 +116,7 @@ class OtpVerifikasiController extends GetxController {
         message,
         style: TextStyle(
           fontSize: 14,
-          color: textColor.withOpacity(0.8),
+          color: textColor.withValues(alpha: 0.8),
           height: 1.4,
         ),
       ),

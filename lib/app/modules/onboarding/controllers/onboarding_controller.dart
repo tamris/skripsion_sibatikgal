@@ -53,7 +53,6 @@ class OnboardingController extends GetxController {
   void skipToEnd() => pageC.jumpToPage(contents.length - 1);
 
   void start() {
-    // TODO: tulis seen_onboarding kalau pakai GetStorage
     Get.offAllNamed('/login-page');
   }
 

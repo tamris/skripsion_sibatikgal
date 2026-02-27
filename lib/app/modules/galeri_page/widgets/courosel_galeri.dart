@@ -100,7 +100,7 @@ class _CarouselDots extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 3),
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 138, 90, 68)
-                .withOpacity(active ? 0.9 : 0.4),
+                .withValues(alpha: active ? 0.9 : 0.4),
             borderRadius: BorderRadius.circular(8),
           ),
         );

@@ -32,8 +32,8 @@ class LoginPageController extends GetxController {
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isError
-              ? Color(0xFFC62828).withOpacity(0.1)
-              : Color(0xFF8D5D46).withOpacity(0.1),
+              ? Color(0xFFC62828).withValues(alpha: 0.1)
+              : Color(0xFF8D5D46).withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -52,7 +52,7 @@ class LoginPageController extends GetxController {
       reverseAnimationCurve: Curves.easeInCirc,
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.1),
+          color: Colors.black.withValues(alpha: 0.1),
           blurRadius: 12,
           offset: Offset(0, 4),
         ),
@@ -93,7 +93,7 @@ class LoginPageController extends GetxController {
       if (response.statusCode == 200) {
         storage.write('token', response.data['access_token']);
         storage.write('user_data', response.data['user']);
-        
+
         showCustomSnackbar("Berhasil",
             "Selamat datang, ${response.data['user']['username']}!");
         Get.offAllNamed(Routes.HOME);

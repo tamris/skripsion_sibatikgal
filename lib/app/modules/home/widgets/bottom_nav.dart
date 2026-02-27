@@ -23,7 +23,7 @@ class HomeBottomNav extends StatelessWidget {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 18,
                   offset: const Offset(0, 8),
                 ),
@@ -34,7 +34,7 @@ class HomeBottomNav extends StatelessWidget {
                 height: 64,
                 backgroundColor: Colors.white,
                 surfaceTintColor: Colors.transparent,
-                indicatorColor: terracotta.withOpacity(0.12),
+                indicatorColor: terracotta.withValues(alpha: 0.12),
                 indicatorShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -20,17 +20,17 @@ class BottomNav extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Container(
-        color: canvasBg, 
+        color: canvasBg,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.white, 
+                color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 18,
                     offset: const Offset(0, 8),
                   ),
@@ -41,7 +41,7 @@ class BottomNav extends StatelessWidget {
                   height: 64,
                   backgroundColor: Colors.white,
                   surfaceTintColor: Colors.transparent,
-                  indicatorColor: terracotta.withOpacity(0.12),
+                  indicatorColor: terracotta.withValues(alpha: 0.12),
                   indicatorShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

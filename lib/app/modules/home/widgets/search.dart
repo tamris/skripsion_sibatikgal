@@ -17,7 +17,7 @@ class HomeSearchBar extends GetView<HomeController> {
             fontFamily: 'Poppins',
             fontSize: 16,
             // 1. Ganti warna hint agar lebih hangat
-            color: Colors.brown.withOpacity(0.5),
+            color: Colors.brown.withValues(alpha: 0.5),
           ),
           filled: true,
           // 2. Warna latar ini sudah bagus, bisa dipertahankan

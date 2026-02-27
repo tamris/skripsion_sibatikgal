@@ -20,7 +20,7 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
         backgroundColor: const Color(0xFFF5F5F5),
         foregroundColor: Colors.black87,
         elevation: 1,
-        shadowColor: Colors.grey.withOpacity(0.3),
+        shadowColor: Colors.grey.withValues(alpha: 0.3),
         surfaceTintColor: Colors.transparent,
       ),
       body: Column(
@@ -84,7 +84,7 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                                     : Colors.grey.shade300,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 0.1),
                                     blurRadius: 5,
                                     offset: const Offset(0, 3),
                                   ),

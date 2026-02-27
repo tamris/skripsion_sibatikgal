@@ -53,7 +53,7 @@ class VideoPageView extends GetView<VideoPageController> {
                       hintStyle: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
-                        color: Colors.brown.withOpacity(0.5),
+                        color: Colors.brown.withValues(alpha: 0.5),
                       ),
                       filled: true,
                       fillColor: const Color.fromARGB(255, 255, 246, 241),
@@ -70,7 +70,7 @@ class VideoPageView extends GetView<VideoPageController> {
                             color: Color(0xFF8A5A44), width: 1.5),
                       ),
                       prefixIcon: Icon(Icons.search,
-                          color: Colors.brown.withOpacity(0.7)),
+                          color: Colors.brown.withValues(alpha: 0.7)),
                     ),
                     onChanged: (value) => controller
                         .onSearchChanged(value), // Hubungkan ke controller
@@ -138,7 +138,7 @@ class VideoPageView extends GetView<VideoPageController> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10)
                         ],
                       ),
@@ -171,7 +171,8 @@ class VideoPageView extends GetView<VideoPageController> {
                                 ),
                               ),
                               CircleAvatar(
-                                backgroundColor: Colors.white.withOpacity(0.9),
+                                backgroundColor:
+                                    Colors.white.withValues(alpha: 0.9),
                                 radius: 30,
                                 child: Icon(Icons.play_arrow_rounded,
                                     size: 40, color: Colors.brown[800]),

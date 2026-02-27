@@ -16,7 +16,7 @@ class BatikSearchBar extends StatelessWidget {
             hintStyle: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,
-              color: Colors.brown.withOpacity(0.5),
+              color: Colors.brown.withValues(alpha: 0.5),
             ),
             filled: true,
             fillColor: const Color.fromARGB(255, 255, 246, 241),
@@ -32,7 +32,7 @@ class BatikSearchBar extends StatelessWidget {
                   const BorderSide(color: Color(0xFF8A5A44), width: 1.5),
             ),
             prefixIcon:
-                Icon(Icons.search, color: Colors.brown.withOpacity(0.7)),
+                Icon(Icons.search, color: Colors.brown.withValues(alpha: 0.7)),
           ),
           onChanged: onChanged,
           style: const TextStyle(fontFamily: 'Poppins', fontSize: 16),

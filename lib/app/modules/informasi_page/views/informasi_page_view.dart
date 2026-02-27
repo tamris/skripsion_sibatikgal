@@ -111,8 +111,8 @@ class InformasiPageView extends GetView<InformasiPageController> {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    Colors.black.withOpacity(0.10),
-                                    Colors.black.withOpacity(0.65),
+                                    Colors.black.withValues(alpha: 0.10),
+                                    Colors.black.withValues(alpha: 0.65),
                                   ],
                                 ),
                               ),

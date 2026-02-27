@@ -26,7 +26,6 @@ class PengaturanPageController extends GetxController {
 
     Get.until((route) => Get.currentRoute == Routes.LOGIN_PAGE);
     await OauthService.logout();
-    // TODO: clear auth/session data if available
     Get.offAllNamed(Routes.LOGIN_PAGE);
   }
 

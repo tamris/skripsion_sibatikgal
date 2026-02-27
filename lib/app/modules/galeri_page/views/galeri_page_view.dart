@@ -69,7 +69,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
 
                         return InkWell(
                           borderRadius: BorderRadius.circular(22),
-                          overlayColor: const MaterialStatePropertyAll(
+                          overlayColor: const WidgetStatePropertyAll(
                               Colors.transparent), // ⬅️ no overlay gelap
                           splashColor: Colors.black12, // halus
                           highlightColor: Colors.transparent,
@@ -84,7 +84,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                   Border.all(color: const Color(0xFFE7EAEE)),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.06),
+                                  color: Colors.black.withValues(alpha: 0.06),
                                   blurRadius: 18,
                                   offset: const Offset(0, 8),
                                 ),

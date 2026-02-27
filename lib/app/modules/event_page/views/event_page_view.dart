@@ -58,7 +58,7 @@ class EventPageView extends GetView<EventPageController> {
                         hintStyle: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 14,
-                          color: Colors.brown.withOpacity(0.5),
+                          color: Colors.brown.withValues(alpha: 0.5),
                         ),
                         filled: true,
                         fillColor: Colors.white,
@@ -75,7 +75,7 @@ class EventPageView extends GetView<EventPageController> {
                               color: Color(0xFF8A5A44), width: 1.5),
                         ),
                         prefixIcon: Icon(Icons.search,
-                            color: Colors.brown.withOpacity(0.6)),
+                            color: Colors.brown.withValues(alpha: 0.6)),
                       ),
                     ),
                   ),
@@ -109,8 +109,8 @@ class EventPageView extends GetView<EventPageController> {
                                   boxShadow: isSelected
                                       ? [
                                           BoxShadow(
-                                              color:
-                                                  Colors.brown.withOpacity(0.3),
+                                              color: Colors.brown
+                                                  .withValues(alpha: 0.3),
                                               blurRadius: 8,
                                               offset: const Offset(0, 4))
                                         ]
@@ -185,7 +185,7 @@ class EventPageView extends GetView<EventPageController> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 20,
             offset: const Offset(0, 10),
           )
@@ -238,7 +238,7 @@ class EventPageView extends GetView<EventPageController> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3E2723).withOpacity(0.9),
+                    color: const Color(0xFF3E2723).withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(

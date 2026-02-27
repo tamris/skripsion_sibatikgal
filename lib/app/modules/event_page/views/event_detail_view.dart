@@ -169,7 +169,7 @@ class EventDetailView extends GetView<EventPageController> {
     return GestureDetector(
       onTap: onTap,
       child: CircleAvatar(
-        backgroundColor: Colors.white.withOpacity(0.9),
+        backgroundColor: Colors.white.withValues(alpha: 0.9),
         radius: 22,
         child: Icon(icon, color: Colors.black, size: 20),
       ),
@@ -243,7 +243,7 @@ class EventDetailView extends GetView<EventPageController> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 20,
               offset: const Offset(0, -5))
         ],
