@@ -17,6 +17,7 @@ abstract class Routes {
   static const UBAH_SANDI = _Paths.UBAH_SANDI;
   static const RESET_PASSWORD_PAGE = _Paths.RESET_PASSWORD_PAGE;
   static const VIDEO_PAGE = _Paths.VIDEO_PAGE;
+  static const EVENT_PAGE = _Paths.EVENT_PAGE;
 }
 
 abstract class _Paths {
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const UBAH_SANDI = '/ubah-sandi';
   static const RESET_PASSWORD_PAGE = '/reset-password-page';
   static const VIDEO_PAGE = '/video-page';
+  static const EVENT_PAGE = '/event-page';
 }
