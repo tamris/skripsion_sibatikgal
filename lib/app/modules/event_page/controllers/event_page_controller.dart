@@ -1,4 +1,3 @@
-// lib/app/modules/event_page/controllers/event_page_controller.dart
 import 'package:get/get.dart';
 import '../../../data/models/event_model.dart';
 import '../../../data/service/event_service.dart';
@@ -68,4 +67,6 @@ class EventPageController extends GetxController {
   void onCategoryChanged(String cat) {
     selectedCategory.value = cat;
   }
+
+  
 }

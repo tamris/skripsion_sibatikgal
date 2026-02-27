@@ -8,14 +8,24 @@ import '../controllers/event_page_controller.dart';
 class EventDetailView extends GetView<EventPageController> {
   const EventDetailView({super.key});
 
-  // Fungsi untuk membuka Google Maps berdasarkan koordinat
   Future<void> _openMap(String lat, String lng) async {
-    final String url =
+    // Format URL resmi Google Maps untuk koordinat spesifik
+    final String googleMapsUrl =
         "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url, mode: LaunchMode.externalApplication);
-    } else {
-      Get.snackbar("Peringatan", "Gagal membuka aplikasi peta");
+
+    try {
+      if (await canLaunchUrlString(googleMapsUrl)) {
+        await launchUrlString(
+          googleMapsUrl,
+          mode: LaunchMode
+              .externalApplication, // Memaksa buka aplikasi luar (Google Maps)
+        );
+      } else {
+        // Jika tidak bisa buka aplikasi, coba buka lewat browser biasa
+        await launchUrlString(googleMapsUrl, mode: LaunchMode.platformDefault);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Tidak dapat membuka peta: $e");
     }
   }
 
@@ -125,6 +135,7 @@ class EventDetailView extends GetView<EventPageController> {
                         event.description ?? 'Tidak ada deskripsi tersedia.',
                         style: GoogleFonts.mulish(
                             color: Colors.grey[700], fontSize: 15, height: 1.6),
+                        textAlign: TextAlign.justify,
                       ),
 
                       const SizedBox(
@@ -191,11 +202,11 @@ class EventDetailView extends GetView<EventPageController> {
             Icon(icon, color: const Color(0xFFD4AF37), size: 20),
             const SizedBox(height: 8),
             Text(label,
-                style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                style: GoogleFonts.mulish(color: Colors.grey, fontSize: 12)),
             const SizedBox(height: 4),
             Text(value,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                style: GoogleFonts.mulish(
+                    fontWeight: FontWeight.bold, fontSize: 14)),
           ],
         ),
       ),
@@ -220,11 +231,17 @@ class EventDetailView extends GetView<EventPageController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Lokasi",
-                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  "Lokasi",
+                  style: GoogleFonts.mulish(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(address,
-                    style: const TextStyle(
+                    style: GoogleFonts.mulish(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
                         height: 1.4)),
@@ -255,12 +272,13 @@ class EventDetailView extends GetView<EventPageController> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Harga Tiket",
-                    style: TextStyle(color: Colors.grey, fontSize: 13)),
+                Text("Harga Tiket",
+                    style:
+                        GoogleFonts.mulish(color: Colors.grey, fontSize: 13)),
                 const SizedBox(height: 4),
                 Text(
                   event.isFree == true ? "Gratis" : "Rp ${event.price}",
-                  style: const TextStyle(
+                  style: GoogleFonts.mulish(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF3E2723)),
@@ -272,7 +290,8 @@ class EventDetailView extends GetView<EventPageController> {
             onPressed: () =>
                 _openMap(event.latitude ?? '0', event.longitude ?? '0'),
             icon: const Icon(Icons.near_me_outlined, size: 20),
-            label: const Text("Petunjuk Arah"),
+            label:
+                Text("Petunjuk Arah", style: GoogleFonts.mulish(fontSize: 14)),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4E342E),
               foregroundColor: Colors.white,
