@@ -165,6 +165,8 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                           ),
                           const SizedBox(height: 8),
                           Text(
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
                             controller.filosofi.value,
                             style: GoogleFonts.poppins(fontSize: 14),
                             textAlign: TextAlign.justify,

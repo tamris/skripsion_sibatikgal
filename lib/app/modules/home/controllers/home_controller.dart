@@ -13,7 +13,7 @@ class QuickAction {
 
 class HomeController extends GetxController {
   // greeting/user
-  final userName = 'Rizqi Pratama'.obs;
+  final text = 'Jelajahi & deteksi motif batik hari ini'.obs;
   var greeting = ''.obs;
 
   // Search

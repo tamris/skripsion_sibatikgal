@@ -7,44 +7,57 @@ class HomeHeader extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final greetingStyle = TextStyle(
+      color: Colors.grey.shade600,
+      fontSize: 14,
+      fontFamily: 'Poppins',
+    );
+
+    const headlineStyle = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'Poppins',
+      color: Color(0xFF5A3E36), // sedikit lebih gelap biar kuat
+    );
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Obx(() => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(() => Text(controller.greeting.value,
-                        style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 16,
-                            fontFamily: 'Poppins'))),
-                    const SizedBox(height: 2),
-                    Text(controller.userName.value,
-                        style: const TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            color: Color.fromARGB(255, 138, 90, 68))),
-                  ],
-                )),
+            child: Obx(() {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.greeting.value,
+                    style: greetingStyle,
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    "Eksplor Batik Tegalan",
+                    style: headlineStyle,
+                  ),
+                ],
+              );
+            }),
           ),
+          const SizedBox(width: 12),
           GestureDetector(
             onTap: () => Get.toNamed('/profile-user'),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: Container(
-                height: 60,
-                width: 60,
-                // Hapus properti 'color' dan 'child' dari sini
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    // Arahkan ke gambar di folder assets Anda
-                    image: AssetImage('assets/images/avatar.png'),
-                    // Membuat gambar mengisi seluruh container
-                    fit: BoxFit.cover,
-                  ),
+            child: Container(
+              height: 52,
+              width: 52,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: const Color(0xFF8A5A44),
+                  width: 1.2,
+                ),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/avatar.png'),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
