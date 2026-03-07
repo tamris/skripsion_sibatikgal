@@ -49,7 +49,7 @@ class GalleryCarousel extends GetView<GaleriPageController> {
 
             itemCount: totalVirtual, // CHANGED
             itemBuilder: (_, i) {
-              final img = assetForVirtualIndex(i); // NEW
+              final img = assetForVirtualIndex(i);
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 11),
                 child: ClipRRect(
@@ -58,7 +58,7 @@ class GalleryCarousel extends GetView<GaleriPageController> {
                     decoration: BoxDecoration(
                       color: const Color(0xFFF7EFE9),
                       image: DecorationImage(
-                        image: AssetImage(img), // CHANGED
+                        image: NetworkImage(img), // UBAH KE NETWORK
                         fit: BoxFit.cover,
                       ),
                     ),

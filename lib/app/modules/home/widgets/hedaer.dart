@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/home_controller.dart';
 
 class HomeHeader extends GetView<HomeController> {
@@ -13,10 +14,9 @@ class HomeHeader extends GetView<HomeController> {
       fontFamily: 'Poppins',
     );
 
-    const headlineStyle = TextStyle(
+    final headlineStyle = GoogleFonts.lora(
       fontSize: 20,
       fontWeight: FontWeight.w700,
-      fontFamily: 'Poppins',
       color: Color(0xFF5A3E36), // sedikit lebih gelap biar kuat
     );
 
@@ -35,7 +35,7 @@ class HomeHeader extends GetView<HomeController> {
                     style: greetingStyle,
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     "Eksplor Batik Tegalan",
                     style: headlineStyle,
                   ),

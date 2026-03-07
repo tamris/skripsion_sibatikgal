@@ -53,7 +53,7 @@ class BatikDetailPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                             child: AspectRatio(
                               aspectRatio: 1 / 1,
-                              child: Image.asset(
+                              child: Image.network(
                                 item.image,
                                 fit: BoxFit.cover,
                                 // (opsional) Fade-in halus

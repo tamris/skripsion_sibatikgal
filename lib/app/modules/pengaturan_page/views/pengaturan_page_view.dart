@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/pengaturan_page_controller.dart';
 import '../widgets/settings_title.dart';
 
@@ -21,10 +22,9 @@ class PengaturanPageView extends GetView<PengaturanPageController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title
-              const Text(
+              Text(
                 'Pengaturan',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.lora(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: terracotta,
