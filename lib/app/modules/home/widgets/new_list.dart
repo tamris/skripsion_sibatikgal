@@ -30,7 +30,7 @@ class HomeNewsList extends GetView<HomeController> {
                       children: [
                         // Background image
                         Image.network(
-                          n.gambarUrl ?? '', // Gunakan field dari model baru
+                          n.imageUrl ?? '', // Gunakan field dari model baru
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) =>
                               Container(color: Colors.grey[200]),

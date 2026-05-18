@@ -1,12 +1,14 @@
 class BatikModel {
   String? id;
   String title;
+  String category;
   String deskripsi;
   String image;
 
   BatikModel({
     this.id,
     required this.title,
+    required this.category,
     required this.deskripsi,
     required this.image,
   });
@@ -15,10 +17,11 @@ class BatikModel {
   factory BatikModel.fromJson(Map<String, dynamic> json) {
     return BatikModel(
       id: json['_id'],
-      title: json['nama'] ?? '',
+      title: json['name'] ?? '',
+      category: json['category'] ?? '',
       deskripsi: json['makna'] ?? json['makna'] ?? '',
       // Jika dari API, biasanya image berupa URL
-      image: json['gambar_url'] ?? '',
+      image: json['image_url'] ?? '',
     );
   }
 }

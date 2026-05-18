@@ -30,7 +30,7 @@ class InformasiDetailPage extends StatelessWidget {
                 tag:
                     'news_image_${newsItem.id}', // Gunakan ID unik untuk animasi Hero
                 child: Image.network(
-                  newsItem.gambarUrl ?? '', // Gunakan URL dari API
+                  newsItem.imageUrl ?? '', // Gunakan URL dari API
                   fit: BoxFit.cover,
                   width: double.infinity,
                   errorBuilder: (_, __, ___) => Container(

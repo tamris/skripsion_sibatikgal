@@ -99,7 +99,7 @@ class InformasiPageView extends GetView<InformasiPageController> {
                           children: [
                             // Gunakan Image.network karena gambar berasal dari server
                             Image.network(
-                              n.gambarUrl ?? '',
+                              n.imageUrl ?? '',
                               fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) =>
                                   Container(color: Colors.grey[300]),

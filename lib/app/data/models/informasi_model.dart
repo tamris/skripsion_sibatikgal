@@ -5,7 +5,7 @@ class InformasiModel {
   String? title;
   String? deskripsi;
   String? categori;
-  String? gambarUrl;
+  String? imageUrl;
   DateTime? createdAt;
 
   InformasiModel({
@@ -13,17 +13,17 @@ class InformasiModel {
     this.title,
     this.deskripsi,
     this.categori,
-    this.gambarUrl,
+    this.imageUrl,
     this.createdAt,
   });
 
   factory InformasiModel.fromJson(Map<String, dynamic> json) {
     return InformasiModel(
       id: json['_id'],
-      title: json['judul'],
-      deskripsi: json['deskripsi'],
-      categori: json['kategori'],
-      gambarUrl: json['gambar_url'],
+      title: json['title'],
+      deskripsi: json['description'],
+      categori: json['category'],
+      imageUrl: json['image_url'],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,

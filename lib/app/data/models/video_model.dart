@@ -14,9 +14,9 @@ class VideoModel {
   factory VideoModel.fromJson(Map<String, dynamic> json) {
     return VideoModel(
       id: json['_id']?.toString(),
-      judul: json['judul'], // Sesuai image_11d821.png
-      deskripsi: json['deskripsi'],
-      kategori: json['kategori'],
+      judul: json['title'], // Sesuai image_11d821.png
+      deskripsi: json['description'],
+      kategori: json['category'],
       youtubeUrl: json['youtube_url'], // Sesuai image_11d821.png
       // Gunakan pengecekan tipe data untuk menghindari error _Map
       createdAt: json['created_at'] != null && json['created_at'] is String
