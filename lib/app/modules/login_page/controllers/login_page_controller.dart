@@ -123,7 +123,7 @@ class LoginPageController extends GetxController {
 
       if (result != null) {
         // Simpan token (misal pakai GetStorage)
-        // storage.write('token', result['access_token']);
+        storage.write('token', result['access_token']);
 
         showCustomSnackbar(
             "Berhasil", "Selamat datang, ${result['user']['name']}!");

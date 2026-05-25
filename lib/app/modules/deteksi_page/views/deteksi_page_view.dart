@@ -1,8 +1,11 @@
-import 'dart:io';
+import 'package:batikara/app/modules/deteksi_page/views/detail_history.dart';
+import 'package:batikara/app/modules/deteksi_page/views/riwayat_deteksi.dart';
+import 'package:batikara/app/modules/deteksi_page/widget/hasil_deteksi_view.dart';
+import 'package:batikara/app/modules/deteksi_page/widget/idle_view.dart';
+import 'package:batikara/app/modules/deteksi_page/widget/loading_stepper.view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import '../controllers/deteksi_page_controller.dart';
 
 class DeteksiPageView extends GetView<DeteksiPageController> {
@@ -10,217 +13,261 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
 
   @override
   Widget build(BuildContext context) {
+    const colorPrimary = Color(0xFF795548);
+    const colorBgScreen = Color(0xFFFCF9F6);
+    const colorCardBg = Color(0xFFF5EFE6);
+    const colorSecondaryBg = Color(0xFFEFE7DD);
+    const textDark = Color(0xFF3E2723);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F7),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Deteksi Motif',
-          style: GoogleFonts.lora(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
+      backgroundColor: colorBgScreen,
+      body: SafeArea(
+        child: Obx(() {
+          // ==========================================
+          // KONDISI 1: HALAMAN FULL HASIL DETEKSI (DESAIN BARU)
+          // ==========================================
+          if (controller.isDetected.value && !controller.isLoading.value) {
+            return HasilDeteksiView(
+              controller: controller,
+              colorPrimary: colorPrimary,
+              colorCardBg: colorCardBg,
+              textDark: textDark,
+            );
+          }
 
-              // --- Area Gambar / Placeholder ---
-              Obx(() => Container(
-                    width: double.infinity,
-                    height: 350,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: controller.isLoading.value
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                                color: Color(0xFF8D5D46))) // Tampilkan loading
-                        : controller.selectedImagePath.value == ''
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.image_outlined,
-                                      size: 80, color: Colors.black),
-                                  const SizedBox(height: 16),
-                                  Text('Pilih gambar untuk di deteksi!',
-                                      style: GoogleFonts.poppins(
-                                          color: Colors.grey)),
-                                ],
-                              )
-                            : Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.file(
-                                      File(controller.selectedImagePath.value),
-                                      width: double.infinity,
-                                      height: 350,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  // Tombol Hapus
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: GestureDetector(
-                                      onTap: () => controller.resetDetection(),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle),
-                                        child: const Icon(Icons.delete_outline,
-                                            color: Colors.white, size: 20),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                  )),
-
-              const SizedBox(height: 20), // Jarak disesuaikan
-
-              // Obx(
-              //   () => controller.selectedImagePath.value != ''
-              //       ? Padding(
-              //           padding: const EdgeInsets.only(bottom: 20),
-              //           child: OutlinedButton.icon(
-              //             onPressed: () => controller.resetDetection(),
-              //             icon: const Icon(Icons.delete, color: Colors.red),
-              //             label: Text(
-              //               'Hapus Foto',
-              //               style: GoogleFonts.poppins(
-              //                   color: Colors.red, fontWeight: FontWeight.bold),
-              //             ),
-              //             style: OutlinedButton.styleFrom(
-              //               side: const BorderSide(color: Colors.red),
-              //               shape: RoundedRectangleBorder(
-              //                   borderRadius: BorderRadius.circular(10)),
-              //             ),
-              //           ),
-              //         )
-              //       : const SizedBox.shrink(),
-              // ),
-
-              // --- Tombol Kamera & Galeri ---
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildActionButton(
-                      icon: Icons.camera_alt_outlined,
-                      label: 'Kamera',
-                      onPressed: () => controller.pickImage(ImageSource.camera),
-                    ),
+          // ==========================================
+          // KONDISI 2 & 3: HALAMAN UTAMA (IDLE / LOADING STEPPER)
+          // Memiliki Header Fitur & Komponen Riwayat Deteksi di bawah
+          // ==========================================
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // --- HEADER UTAMA ---
+                Text(
+                  'Fitur',
+                  style: GoogleFonts.lora(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildActionButton(
-                      icon: Icons.image_outlined,
-                      label: 'Galeri',
-                      onPressed: () =>
-                          controller.pickImage(ImageSource.gallery),
-                    ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Deteksi Motif',
+                  style: GoogleFonts.lora(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: textDark,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
 
-              const SizedBox(height: 30),
+                // Switch antara Loading Stepper atau Tampilan Idle awal
+                controller.isLoading.value
+                    ? LoadingStepperView(
+                        controller: controller,
+                        colorPrimary: colorPrimary,
+                        textDark: textDark,
+                      )
+                    : IdleView(
+                        controller: controller,
+                        colorPrimary: colorPrimary,
+                        colorCardBg: colorCardBg,
+                        colorSecondaryBg: colorSecondaryBg,
+                        textDark: textDark,
+                      ),
+                const SizedBox(height: 28),
 
-              // --- Hasil Deteksi (Hanya muncul jika isDetected = true) ---
-              Obx(() => controller.isDetected.value
-                  ? Container(
-                      padding: const EdgeInsets.all(20),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFFF2E4DF), // Warna krem sesuai desain
-                        borderRadius: BorderRadius.circular(15),
+                // --- SECTION RIWAYAT DETEKSI ---
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Riwayat Deteksi',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: textDark,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Motif : ${controller.motifName.value}',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Filosofi Makna :',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                            controller.filosofi.value,
-                            style: GoogleFonts.poppins(fontSize: 14),
-                            textAlign: TextAlign.justify,
-                          ),
-                          const SizedBox(height: 12),
-                          GestureDetector(
-                            onTap: () {
-                              // Navigasi ke detail jika perlu
-                            },
-                            child: Text(
-                              'Lihat selengkapnya',
-                              style: GoogleFonts.poppins(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.to(() => const RiwayatDeteksiView());
+                      },
+                      child: Text(
+                        'Lihat semua',
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
                       ),
-                    )
-                  : const SizedBox.shrink()),
-              const SizedBox(height: 100), // Ruang ekstra untuk navigasi bawah
-            ],
-          ),
-        ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // --- LIST KARTU RIWAYAT ---
+                _buildHistorySection(
+                  cardWidthCalc(context),
+                  colorPrimary,
+                  colorSecondaryBg,
+                  textDark,
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  // Helper Widget untuk tombol Kamera/Galeri
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, color: Colors.black),
-      label: Text(
-        label,
-        style: GoogleFonts.poppins(
-          color: Colors.black,
-          fontWeight: FontWeight.w600,
+  // Helper hitung lebar kartu riwayat biar ga numpuk kodenya
+  double cardWidthCalc(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    return (screenWidth - 48.0 - 24.0) / 3;
+  }
+
+  Widget _buildHistorySection(
+    double cardWidth,
+    Color colorPrimary,
+    Color colorSecondaryBg,
+    Color textDark,
+  ) {
+    if (controller.isLoadingHistory.value) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(colorPrimary),
+          ),
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFE0E0E0),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+      );
+    }
+
+    if (controller.historyList.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'Belum ada riwayat deteksi.',
+            style: TextStyle(color: Colors.grey),
+          ),
         ),
-        elevation: 0,
-      ),
+      );
+    }
+
+    final displayedHistory = controller.historyList.take(3).toList();
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(displayedHistory.length, (index) {
+        final item = displayedHistory[index];
+        final String namaMotif = item['nama_motif'] ?? 'Batik';
+        final String tanggal = item['waktu_relatif'] ?? 'Baru saja';
+        final String fullImageUrl = item['full_image_url'] ?? '';
+
+        return InkWell(
+          onTap: () {
+            // --- AKSI TAP SEKARANG JADI SUPER MUDAH & BERSIH ---
+            Get.to(
+              () => DetailHistoryView(
+                historyData: {
+                  'nama_motif': namaMotif,
+                  'waktu_relatif': tanggal,
+                  'full_image_url': fullImageUrl,
+                  'makna': item['makna'],
+                  'confidence': item['confidence'],
+                },
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(
+            16,
+          ), // Biar efek riak air (splash effect) rapi mengikuti bentuk kartu
+          child: Container(
+            width: cardWidth,
+            margin: EdgeInsets.only(
+              right: index == displayedHistory.length - 1 ? 0 : 12,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colorPrimary.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                  child: Container(
+                    height: 100,
+                    width: double.infinity,
+                    color: colorSecondaryBg.withOpacity(0.4),
+                    child: fullImageUrl.isNotEmpty
+                        ? Image.network(
+                            fullImageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, e, s) => Center(
+                              child: Icon(
+                                Icons.broken_image_outlined,
+                                color: colorPrimary,
+                                size: 24,
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              color: colorPrimary,
+                              size: 24,
+                            ),
+                          ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        namaMotif,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: textDark,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        tanggal,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
     );
   }
 }
