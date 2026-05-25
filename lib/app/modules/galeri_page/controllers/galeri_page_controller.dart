@@ -1,92 +1,209 @@
-import 'dart:async';
+import 'package:batikara/app/data/models/batik_model.dart';
+import 'package:batikara/app/data/service/galeri_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../data/models/batik_model.dart';
-import '../../../data/service/galeri_service.dart';
 
 class GaleriPageController extends GetxController {
-  var batikList = <BatikModel>[].obs;
-  var filteredBatik = <BatikModel>[].obs;
-  var isLoading = false.obs;
-  
-  // Ubah banners jadi RxList agar bisa diupdate dinamis
-  final RxList<String> banners = <String>[].obs;
-  
-  final RxString searchQuery = ''.obs;
-  final currentBanner = 0.obs;
-  final PageController pageC = PageController(initialPage: 1);
+  final ScrollController scrollController = ScrollController();
 
-  Timer? _autoTimer;
+  var isLoading = true.obs;
+  var isLoadMore = false.obs;
+  var isError = false.obs; 
+  var totalBatikCount = 0.obs;
+
+  var batikList = <BatikModel>[].obs;
+  var filteredBatikList = <BatikModel>[].obs;
+  var selectedCategory = 'Semua'.obs;
+
+  int currentPage = 1;
+  bool hasMoreData = true;
+
+  // 1. VARIABEL BARU: Menyimpan kata kunci pencarian aktif secara global
+  String currentSearchQuery = '';
+
+  List<String> get categories {
+    final uniqueCategories = batikList
+        .map((batik) => batik.category)
+        .toSet()
+        .toList();
+    uniqueCategories.sort();
+    return ['Semua', ...uniqueCategories];
+  }
 
   @override
   void onInit() {
+    fetchInitialBatikData();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        fetchNextPage();
+      }
+    });
     super.onInit();
-    fetchBatiks(); // Ambil data saat init
   }
 
-  Future<void> fetchBatiks() async {
-    isLoading.value = true;
+  @override
+  void onClose() {
+    scrollController.dispose();
+    super.onClose();
+  }
+
+  // Fungsi dipanggil saat user narik layar ke bawah atau klik tombol retry
+  Future<void> refreshData() async {
+    currentPage = 1;
+    hasMoreData = true;
+    selectedCategory.value = 'Semua';
+    currentSearchQuery = ''; // Reset kata kunci pencarian saat halaman dimuat ulang
+    await fetchInitialBatikData(isRefresh: true);
+  }
+
+  // 2. REVISI: Mengirimkan kata kunci pencarian aktif (currentSearchQuery) ke service
+  Future<void> fetchInitialBatikData({bool isRefresh = false}) async {
     try {
-      final response = await GaleriService.fetchAllBatiks();
+      if (!isRefresh) isLoading(true);
+      isError(false); // Reset status error sebelum menembak API
+
+      // Sekarang mempassing currentPage DAN currentSearchQuery ke Backend Flask
+      var response = await GaleriService.fetchBatikWithPagination(currentPage, currentSearchQuery);
+
       if (response.statusCode == 200) {
-        List data = response.data['data'];
-        batikList.assignAll(data.map((e) => BatikModel.fromJson(e)).toList());
-        filteredBatik.assignAll(batikList);
-        
-        // SETELAH DATA ADA, BUAT BANNER ACAK
-        _generateBanners();
-        
-        // Mulai autoplay setelah banner siap
-        startAutoPlay();
+        List<dynamic> data = response.data['data'] ?? [];
+        var batiks = data.map((json) => BatikModel.fromJson(json)).toList();
+
+        totalBatikCount.value = _extractTotalCount(
+          response.data,
+          batiks.length,
+        );
+
+        batiks.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
+        batikList.assignAll(batiks);
+
+        int totalPages = response.data['meta']['total_pages'] ?? 1;
+        if (currentPage >= totalPages) {
+          hasMoreData = false;
+        }
+
+        applyFilter();
+      } else {
+        isError(true); 
       }
     } catch (e) {
-      print("Error Fetch Galeri: $e");
+      isError(true); 
+      Get.snackbar(
+        'Koneksi Gagal',
+        'Periksa kembali jaringan internet Anda.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withValues(alpha: 0.8),
+        colorText: Colors.white,
+      );
     } finally {
-      isLoading.value = false;
+      isLoading(false);
     }
   }
 
-  void _generateBanners() {
-    if (batikList.isEmpty) return;
-    
-    // Ambil copy dari list lalu acak
-    List<BatikModel> shuffled = List<BatikModel>.from(batikList)..shuffle();
-    
-    // Ambil 4 gambar pertama hasil acak untuk dijadikan banner
-    banners.value = shuffled.take(4).map((e) => e.image).toList();
+  // 3. REVISI: Pastikan proses Load More halaman berikutnya tetap membawa kata kunci pencarian yang sama
+  void fetchNextPage() async {
+    if (isLoading.value || isLoadMore.value || !hasMoreData || isError.value) {
+      return;
+    }
+
+    try {
+      isLoadMore(true);
+      currentPage++;
+
+      // Membawa parameter search query saat menarik data halaman selanjutnya
+      var response = await GaleriService.fetchBatikWithPagination(currentPage, currentSearchQuery);
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data['data'] ?? [];
+        var newBatiks = data.map((json) => BatikModel.fromJson(json)).toList();
+
+        totalBatikCount.value = _extractTotalCount(
+          response.data,
+          batikList.length + newBatiks.length,
+        );
+
+        if (newBatiks.isNotEmpty) {
+          batikList.addAll(newBatiks);
+          batikList.sort(
+            (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+          );
+
+          int totalPages = response.data['meta']['total_pages'] ?? 1;
+          if (currentPage >= totalPages) {
+            hasMoreData = false;
+          }
+
+          applyFilter();
+        } else {
+          hasMoreData = false;
+        }
+      }
+    } catch (e) {
+      print("Error load more data: $e");
+    } finally {
+      isLoadMore(false);
+    }
   }
 
-  void onSearchChanged(String query) {
-    searchQuery.value = query;
-    if (query.isEmpty) {
-      filteredBatik.assignAll(batikList);
+  void filterByCategory(String category) {
+    selectedCategory.value = category;
+    applyFilter();
+  }
+
+  void applyFilter() {
+    if (selectedCategory.value == 'Semua') {
+      filteredBatikList.assignAll(batikList);
     } else {
-      filteredBatik.assignAll(
-        batikList.where((b) => b.title.toLowerCase().contains(query.toLowerCase())).toList()
+      filteredBatikList.assignAll(
+        batikList
+            .where(
+              (batik) =>
+                  batik.category.toLowerCase() ==
+                  selectedCategory.value.toLowerCase(),
+            )
+            .toList(),
       );
     }
   }
 
-  // ========== Logic Auto-play Carousel ==========
-  void startAutoPlay() {
-    _autoTimer?.cancel();
-    if (banners.isEmpty) return;
-    _autoTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-      if (pageC.hasClients) {
-        pageC.nextPage(
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
+  // 4. ROMBAK TOTAL: Mengubah pencarian lokal menjadi pencarian berbasis request ke Server Flask
+  void searchBatik(String query) {
+    currentSearchQuery = query; // Simpan teks pencarian ke variabel global
+    currentPage = 1;            // Reset halaman kembali ke halaman pertama untuk pencarian baru
+    hasMoreData = true;         // Reset status pagination data baru
+
+    // Tembak ulang API. Flask & MongoDB akan menyaring seluruh database berdasarkan teks query ini
+    fetchInitialBatikData(isRefresh: true);
   }
 
-  void onBannerChanged(int index) => currentBanner.value = index;
+  int _extractTotalCount(dynamic responseData, int fallbackCount) {
+    if (responseData is Map<String, dynamic>) {
+      final meta = responseData['meta'];
+      if (meta is Map<String, dynamic>) {
+        final candidate =
+            meta['total'] ??
+            meta['total_items'] ??
+            meta['total_data'] ??
+            meta['count'];
+        if (candidate is int) return candidate;
+        if (candidate is String)
+          return int.tryParse(candidate) ?? fallbackCount;
+      }
 
-  @override
-  void onClose() {
-    _autoTimer?.cancel();
-    pageC.dispose();
-    super.onClose();
+      final directCandidate =
+          responseData['total'] ??
+          responseData['total_items'] ??
+          responseData['total_data'] ??
+          responseData['count'];
+      if (directCandidate is int) return directCandidate;
+      if (directCandidate is String)
+        return int.tryParse(directCandidate) ?? fallbackCount;
+    }
+
+    return fallbackCount;
   }
 }
