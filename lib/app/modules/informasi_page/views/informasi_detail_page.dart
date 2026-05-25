@@ -1,165 +1,232 @@
+import 'package:batikara/app/data/models/informasi_model.dart';
+import 'package:batikara/app/modules/informasi_page/widgets/related_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../data/models/informasi_model.dart'; // Pastikan import model baru
+import '../controllers/informasi_page_controller.dart';
 
 class InformasiDetailPage extends StatelessWidget {
-  // Langsung ambil objek model yang dikirim lewat arguments
-  final InformasiModel newsItem = Get.arguments;
-
-  InformasiDetailPage({super.key});
+  const InformasiDetailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<InformasiPageController>();
+    final InformasiModel info = Get.arguments;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          // Header Gambar yang bisa di-scroll (SliverAppBar)
-          SliverAppBar(
-            expandedHeight: 350.0,
-            floating: false,
-            pinned: true,
-            backgroundColor: Colors.brown[800],
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Get.back(),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Hero(
-                tag:
-                    'news_image_${newsItem.id}', // Gunakan ID unik untuk animasi Hero
-                child: Image.network(
-                  newsItem.imageUrl ?? '', // Gunakan URL dari API
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.image_not_supported, size: 50),
-                  ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- TOP BAR ---
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildTopBarButton(Icons.arrow_back, () => Get.back()),
+                    Text(
+                      "Detail Artikel",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    _buildTopBarButton(
+                      Icons.share_outlined,
+                      () => controller.shareArtikel(info),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ),
+              const Divider(),
 
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title Berita
-                  Text(
-                    newsItem.title ?? 'Tanpa Judul',
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.brown[800],
-                      height: 1.3,
+              // --- CONTENT ---
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Badge Kategori
+                    _buildCategoryBadge(info.categori ?? "Event"),
+                    const SizedBox(height: 12),
+
+                    // Judul
+                    Text(
+                      info.title ?? "",
+                      style: GoogleFonts.lora(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF333333),
+                        height: 1.3,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  // Meta info (Kategori)
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.brown[600],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          newsItem.categori ?? 'Umum',
-                          style: GoogleFonts.mulish(
-                            fontSize: 12,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Icon(Icons.access_time,
-                          size: 16, color: Colors.grey[600]),
-                      const SizedBox(width: 4),
-                      Text(
-                        // Langsung panggil fungsi helper dari model
-                        newsItem.timeAgo,
-                        style: GoogleFonts.mulish(
-                            color: Colors.grey[600], fontSize: 13),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
+                    // Info Author / Admin
+                    _buildAuthorRow(info),
+                    const SizedBox(height: 10),
+                    const Divider(),
+                    const SizedBox(height: 10),
 
-                  // Isi Deskripsi
-                  Text(
-                    newsItem.deskripsi ?? 'Tidak ada deskripsi tersedia.',
-                    style: GoogleFonts.mulish(
-                      fontSize: 16,
-                      color: Colors.grey[800],
-                      height: 1.7,
+                    // Gambar Utama
+                    _buildMainImage(info.imageUrl),
+                    const SizedBox(height: 20),
+
+                    // Deskripsi
+                    Text(
+                      info.deskripsi ?? "",
+                      textAlign: TextAlign.justify,
+                      style: GoogleFonts.mulish(
+                        fontSize: 16,
+                        color: const Color(0xFF666666),
+                        height: 1.6,
+                      ),
                     ),
-                    textAlign: TextAlign.justify,
-                  ),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const SizedBox(height: 15),
 
-                  const SizedBox(height: 40),
+                    // --- SECTION ARTIKEL TERKAIT ---
+                    Text(
+                      "Artikel Terkait",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
 
-                  // Tombol Aksi
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _showSnackbar(
-                              'Share', 'Fitur bagikan akan segera hadir'),
-                          icon: const Icon(Icons.share_outlined),
-                          label: const Text('Bagikan'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.brown[600],
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                    Obx(() {
+                      var relatedItems = controller.getRelatedItems(
+                        info.id!,
+                        info.categori,
+                      );
+                      List<Color> bgColors = [
+                        const Color(0xFFFDECE8),
+                        const Color(0xFFE8F3E8),
+                        const Color(0xFFE8EEF3),
+                      ];
+
+                      if (relatedItems.isEmpty) {
+                        return const Text(
+                          "Tidak ada artikel terkait lainnya.",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => _showSnackbar(
-                              'Simpan', 'Artikel berhasil disimpan'),
-                          icon: const Icon(Icons.bookmark_border_rounded),
-                          label: const Text('Simpan'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.brown[600],
-                            side: BorderSide(color: Colors.brown[600]!),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                ],
+                        );
+                      }
+
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: relatedItems.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          return RelatedCardWidget(
+                            item: relatedItems[index],
+                            baseColor: bgColors[index % bgColors.length],
+                          );
+                        },
+                      );
+                    }),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  void _showSnackbar(String title, String msg) {
-    Get.snackbar(
-      title,
-      msg,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.brown[50],
-      colorText: Colors.brown[900],
-      margin: const EdgeInsets.all(15),
+  // --- HELPER COMPONENT WIDGETS (Agar build utama tetap clean) ---
+  Widget _buildTopBarButton(IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5EFE1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, size: 20, color: const Color(0xFFB08968)),
+      ),
+    );
+  }
+
+  Widget _buildCategoryBadge(String category) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDECE8),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        category,
+        style: GoogleFonts.poppins(
+          color: const Color(0xFFD48166),
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAuthorRow(InformasiModel info) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 17,
+          backgroundColor: const Color(0xFFB08968),
+          child: Text(
+            // Inisial dinamis (Contoh: "Ahmad Dani" otomatis jadi "AD")
+            info.authorInitial,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          info.authorName ?? "Admin Batik Tegal",
+          style: GoogleFonts.poppins(
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const Spacer(),
+        const Icon(Icons.calendar_today_outlined, size: 14, color: Colors.grey),
+        const SizedBox(width: 5),
+        Text(
+          info.timeAgo,
+          style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMainImage(String? url) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        width: double.infinity,
+        height: 200,
+        color: const Color(0xFFF5EFE1),
+        child: url != null && url.isNotEmpty
+            ? Image.network(url, fit: BoxFit.cover)
+            : const Icon(Icons.image_outlined, size: 80, color: Colors.white38),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:batikara/app/modules/informasi_page/controllers/informasi_page_controller.dart';
 import 'package:batikara/app/modules/informasi_page/views/informasi_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,14 @@ class HomeNewsList extends GetView<HomeController> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => InformasiDetailPage(), arguments: n);
+                  Get.to(
+                    () => InformasiDetailPage(),
+                    binding: BindingsBuilder(() {
+                      // Inisialisasi controller secara manual saat berpindah halaman
+                      Get.lazyPut(() => InformasiPageController());
+                    }),
+                    arguments: n,
+                  );
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
