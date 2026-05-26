@@ -47,9 +47,9 @@ class HomeController extends GetxController {
         label: 'Peta',
         onTap: () => Get.toNamed('/mapping')),
     QuickAction(
-        icon: Icons.info_outline,
+        icon: Icons.history_edu_outlined,
         label: 'Sejarah',
-        onTap: () => Get.toNamed('/news')),
+        onTap: () => Get.toNamed('/sejarah-page')),
   ];
 
   // informasi / news
