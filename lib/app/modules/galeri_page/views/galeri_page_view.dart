@@ -11,9 +11,10 @@ class GaleriPageView extends GetView<GaleriPageController> {
   Widget build(BuildContext context) {
     const Color bgPrimary = Color(0xFFFAF6F0);
     const Color textDark = Color(0xFF3E2723);
-    const Color searchBg = Color(0xFFF0E5D8);
-    const Color activeTabColor = Color(0xFF7A5C43);
-    const Color inactiveTabColor = Color(0xFFF0E5D8);
+    const Color textLight = Color(0xFFFFD264);
+    const Color searchBg = Color(0xFFF0EAD8);
+    const Color activeTabColor = Color(0xFF1A1208);
+    const Color inactiveTabColor = Color(0xFFF0EAD8);
 
     return Scaffold(
       backgroundColor: bgPrimary,
@@ -97,18 +98,17 @@ class GaleriPageView extends GetView<GaleriPageController> {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: isSelected
-                                ? activeTabColor
-                                : inactiveTabColor,
+                            color:
+                                isSelected ? activeTabColor : inactiveTabColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             category == 'Semua'
                                 ? category
                                 : category[0].toUpperCase() +
-                                      category.substring(1),
+                                    category.substring(1),
                             style: GoogleFonts.poppins(
-                              color: isSelected ? Colors.white : textDark,
+                              color: isSelected ? textLight : textDark,
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
                             ),
@@ -147,7 +147,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Gagal Menghubungkan ke Server',
+                            'Oops! Terjadi Kendala',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                               color: textDark,
@@ -157,11 +157,11 @@ class GaleriPageView extends GetView<GaleriPageController> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Pastikan internet Anda aktif atau coba muat ulang halaman.',
+                            'Tidak ada koneksi internet. Pastikan Anda terhubung ke jaringan.',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                               color: textDark.withValues(alpha: 0.6),
-                              fontSize: 13,
+                              fontSize: 14,
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -235,11 +235,11 @@ class GaleriPageView extends GetView<GaleriPageController> {
                           ),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 15,
-                                mainAxisSpacing: 15,
-                                childAspectRatio: 0.72,
-                              ),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 15,
+                            childAspectRatio: 0.72,
+                          ),
                           itemBuilder: (context, index) {
                             final batik = controller.filteredBatikList[index];
 
@@ -272,8 +272,8 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                         child: ClipRRect(
                                           borderRadius:
                                               const BorderRadius.vertical(
-                                                top: Radius.circular(20),
-                                              ),
+                                            top: Radius.circular(20),
+                                          ),
                                           child: Stack(
                                             children: [
                                               Positioned.fill(
@@ -281,22 +281,20 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                                     ? Image.network(
                                                         batik.image,
                                                         fit: BoxFit.cover,
-                                                        errorBuilder:
-                                                            (
-                                                              c,
-                                                              e,
-                                                              s,
-                                                            ) => Container(
-                                                              color: Colors
-                                                                  .grey[200],
-                                                              child: const Icon(
-                                                                Icons
-                                                                    .broken_image,
-                                                                size: 40,
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                            ),
+                                                        errorBuilder: (
+                                                          c,
+                                                          e,
+                                                          s,
+                                                        ) =>
+                                                            Container(
+                                                          color:
+                                                              Colors.grey[200],
+                                                          child: const Icon(
+                                                            Icons.broken_image,
+                                                            size: 40,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
                                                       )
                                                     : Container(
                                                         color: Colors.grey[200],
