@@ -1,3 +1,4 @@
+import 'package:batikara/app/data/provider/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +12,7 @@ void main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
-
+  ApiProvider.init();
   await initializeDateFormatting('id_ID', null);
 
   // 3. Tambahkan blok kode ini untuk mengatur gaya status bar

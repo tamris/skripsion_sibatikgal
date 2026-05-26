@@ -92,6 +92,7 @@ class LoginPageController extends GetxController {
 
       if (response.statusCode == 200) {
         storage.write('token', response.data['access_token']);
+        storage.write('refresh_token', response.data['refresh_token']);
         storage.write('user_data', response.data['user']);
 
         showCustomSnackbar("Berhasil",
