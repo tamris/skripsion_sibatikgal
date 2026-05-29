@@ -11,6 +11,7 @@ class EventModel {
   String? longitude;
   dynamic address;
   bool? isFree;
+  String? registrationUrl;
   String? price;
 
   EventModel({
@@ -25,13 +26,14 @@ class EventModel {
     this.address,
     this.isFree,
     this.price,
+    this.registrationUrl,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
       id: json['_id']?.toString(), // Pastikan ID selalu string
       title: json['title'],
-      kategori: json['kategori'],
+      kategori: json['category']?.toString() ?? '',
       description: json['description'],
       bannerImageUrl: json['banner_image_url'],
       // Cek tipe data sebelum parse untuk menghindari crash
@@ -41,6 +43,7 @@ class EventModel {
       address: json['address'],
       isFree: json['is_free'] ?? false,
       price: json['price']?.toString(),
+      registrationUrl: json['registration_url']?.toString(),
     );
   }
 
@@ -85,4 +88,51 @@ class EventModel {
 
     return "Lokasi tidak tersedia";
   }
+
+  // Tambahkan di dalam class EventModel kamu
+  String get formattedPrice {
+    if (price == null || price == '0' || price!.isEmpty) {
+      return '0';
+    }
+
+    // Hapus karakter non-angka jika API mengirimkan string seperti "Rp 25.000"
+    final cleanPrice = price!.replaceAll(RegExp(r'[^0-9]'), '');
+    final double numPrice = double.tryParse(cleanPrice) ?? 0;
+
+    if (numPrice == 0) return '0';
+
+    if (numPrice >= 1000000) {
+      // Jika 1.000.000+ -> 1M atau 1.5M
+      double result = numPrice / 1000000;
+      // Menghilangkan .0 jika angka bulat (misal 1.0 M jadi 1M)
+      return result % 1 == 0
+          ? '${result.toInt()}M'
+          : '${result.toStringAsFixed(1)}M';
+    } else if (numPrice >= 1000) {
+      // Jika 1.000+ -> 25K atau 150K
+      double result = numPrice / 1000;
+      return result % 1 == 0
+          ? '${result.toInt()}K'
+          : '${result.toStringAsFixed(1)}K';
+    }
+
+    return cleanPrice;
+  }
+
+  /// Formatted currency in Indonesian locale, e.g. "Rp 50.000"
+  String get formattedCurrency {
+    try {
+      if (price == null || price == '0' || price!.isEmpty) return 'Rp 0';
+      final cleanPrice = price!.replaceAll(RegExp(r'[^0-9]'), '');
+      final double numPrice = double.tryParse(cleanPrice) ?? 0;
+      final formatter = NumberFormat.currency(
+          locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+      return formatter.format(numPrice);
+    } catch (_) {
+      return 'Rp 0';
+    }
+  }
+
+  bool get hasRegistrationUrl =>
+      registrationUrl != null && registrationUrl!.trim().isNotEmpty;
 }

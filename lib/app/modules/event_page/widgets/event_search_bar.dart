@@ -12,11 +12,11 @@ class EventSearchBar extends GetView<EventPageController> {
       child: TextField(
         onChanged: controller.onSearchChanged,
         decoration: InputDecoration(
-          hintText: 'Cari acara batik...',
+          hintText: 'Cari event...',
           hintStyle: TextStyle(
             fontFamily: 'Poppins',
             fontSize: 14,
-            color: Colors.brown.withValues(alpha: 0.5),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
           filled: true,
           fillColor: Colors.white,
@@ -25,22 +25,22 @@ class EventSearchBar extends GetView<EventPageController> {
             horizontal: 20,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(
               color: Colors.grey.shade200,
               width: 1.0,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(
-              color: Color(0xFF8A5A44),
+              color: Colors.black,
               width: 1.5,
             ),
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: Colors.brown.withValues(alpha: 0.6),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
         ),
       ),
