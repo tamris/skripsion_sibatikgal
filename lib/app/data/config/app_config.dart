@@ -1,3 +1,3 @@
 class AppConfig {
-  static const String baseUrl = 'http://192.168.18.9:5000';
+  static const String baseUrl = 'https://delphia-formulable-kristyn.ngrok-free.dev';
 }

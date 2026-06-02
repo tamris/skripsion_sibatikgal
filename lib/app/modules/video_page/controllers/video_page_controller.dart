@@ -1,15 +1,19 @@
-// lib/app/modules/video_page/controllers/video_page_controller.dart
+import 'package:flutter/material.dart';
+import 'package:batikara/app/data/service/video_service.dart';
 import 'package:get/get.dart';
 import '../../../data/models/video_model.dart';
-import '../../../data/service/video_service.dart';
 
 class VideoPageController extends GetxController {
-  var videoList = <VideoModel>[].obs;
-  var isLoading = false.obs;
+  final RxList<VideoModel> allVideos = <VideoModel>[].obs;
+  final RxList<VideoModel> filteredVideos = <VideoModel>[].obs;
 
-  // Variabel untuk Search dan Kategori
-  final RxString selectedCategory = 'Semua'.obs;
+  final RxBool isLoading = false.obs;
+  final RxString selectedKategori = 'Semua'.obs;
   final RxString searchQuery = ''.obs;
+
+  final TextEditingController searchController = TextEditingController();
+
+  final RxList<String> kategoriList = <String>['Semua'].obs;
 
   @override
   void onInit() {
@@ -17,43 +21,80 @@ class VideoPageController extends GetxController {
     fetchVideos();
   }
 
-  void fetchVideos() async {
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
+  }
+
+  // ── Fetch pakai VideoService yang udah ada ────────────────────────────────
+  Future<void> fetchVideos() async {
     isLoading.value = true;
     try {
       final response = await VideoService.fetchAllVideos(
-        search: searchQuery.value, // Kirim query pencarian ke API
+        search: searchQuery.value,
       );
 
       if (response.statusCode == 200) {
-        List data = response.data['data'];
-        videoList.assignAll(data.map((e) => VideoModel.fromJson(e)).toList());
+        final List data = response.data['data'] ?? [];
+        allVideos.value = data.map((e) => VideoModel.fromJson(e)).toList();
+
+        // Extract kategori unik dari DB, selalu awali 'Semua'
+        final uniqueKategori =
+            allVideos
+                .map((v) => v.kategori ?? '')
+                .where((k) => k.isNotEmpty)
+                .toSet()
+                .toList()
+              ..sort();
+        kategoriList.value = ['Semua', ...uniqueKategori];
+
+        _applyFilter();
+      } else {
+        Get.snackbar(
+          'Error',
+          'Gagal memuat video',
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } catch (e) {
-      print("Error Fetching Video: $e");
+      Get.snackbar(
+        'Error',
+        'Tidak dapat terhubung ke server',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Filter list berdasarkan kategori yang dipilih user
-  List<VideoModel> get filteredVideos {
-    if (selectedCategory.value == 'Semua') return videoList;
-    return videoList.where((v) => v.kategori == selectedCategory.value).toList();
+  // ── Filter kategori — dilakukan di client, search sudah di-handle API ─────
+  void _applyFilter() {
+    List<VideoModel> result = List.from(allVideos);
+
+    if (selectedKategori.value != 'Semua') {
+      result = result
+          .where((v) => v.kategori == selectedKategori.value)
+          .toList();
+    }
+
+    filteredVideos.value = result;
   }
 
-  // Ambil daftar kategori unik langsung dari data database
-  List<String> get categories {
-    final all = videoList.map((v) => v.kategori ?? 'Umum').toSet().toList();
-    all.insert(0, 'Semua');
-    return all;
+  void setKategori(String kategori) {
+    selectedKategori.value = kategori;
+    _applyFilter();
   }
 
-  void onSearchChanged(String query) {
+  // Search — kirim ke API langsung biar hasil lebih akurat
+  void onSearch(String query) {
     searchQuery.value = query;
-    fetchVideos(); // Panggil API setiap kali mengetik
+    fetchVideos(); // re-fetch dengan query baru
   }
 
-  void onCategoryChanged(String cat) {
-    selectedCategory.value = cat;
+  void clearSearch() {
+    searchController.clear();
+    searchQuery.value = '';
+    fetchVideos();
   }
 }
