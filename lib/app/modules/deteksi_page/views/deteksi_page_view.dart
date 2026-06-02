@@ -1,6 +1,7 @@
-import 'package:batikara/app/modules/deteksi_page/views/detail_history.dart';
+import 'package:batikara/app/modules/deteksi_page/views/detail_history_view.dart';
+import 'package:batikara/app/modules/deteksi_page/views/hasil_deteksi_view.dart';
 import 'package:batikara/app/modules/deteksi_page/views/riwayat_deteksi.dart';
-import 'package:batikara/app/modules/deteksi_page/widget/hasil_deteksi_view.dart';
+import 'package:batikara/app/modules/deteksi_page/widget/deteksi_shared_components.dart';
 import 'package:batikara/app/modules/deteksi_page/widget/idle_view.dart';
 import 'package:batikara/app/modules/deteksi_page/widget/loading_stepper.view.dart';
 import 'package:flutter/material.dart';
@@ -13,26 +14,15 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
 
   @override
   Widget build(BuildContext context) {
-    const colorPrimary = Color(0xFF795548);
-    const colorBgScreen = Color(0xFFFCF9F6);
-    const colorCardBg = Color(0xFFF5EFE6);
-    const colorSecondaryBg = Color(0xFFEFE7DD);
-    const textDark = Color(0xFF3E2723);
-
     return Scaffold(
-      backgroundColor: colorBgScreen,
+      backgroundColor: DeteksiColors.cKrem,
       body: SafeArea(
         child: Obx(() {
           // ==========================================
           // KONDISI 1: HALAMAN FULL HASIL DETEKSI (DESAIN BARU)
           // ==========================================
           if (controller.isDetected.value && !controller.isLoading.value) {
-            return HasilDeteksiView(
-              controller: controller,
-              colorPrimary: colorPrimary,
-              colorCardBg: colorCardBg,
-              textDark: textDark,
-            );
+            return HasilDeteksiView(controller: controller);
           }
 
           // ==========================================
@@ -49,10 +39,10 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
               children: [
                 // --- HEADER UTAMA ---
                 Text(
-                  'Fitur',
+                  'Fitur AI',
                   style: GoogleFonts.lora(
                     fontSize: 14,
-                    color: Colors.grey,
+                    color: DeteksiColors.cBrown,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -62,7 +52,7 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                   style: GoogleFonts.lora(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: textDark,
+                    color: DeteksiColors.cDark,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -71,15 +61,15 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                 controller.isLoading.value
                     ? LoadingStepperView(
                         controller: controller,
-                        colorPrimary: colorPrimary,
-                        textDark: textDark,
+                        colorPrimary: DeteksiColors.cDark,
+                        textDark: DeteksiColors.cDark,
                       )
                     : IdleView(
                         controller: controller,
-                        colorPrimary: colorPrimary,
-                        colorCardBg: colorCardBg,
-                        colorSecondaryBg: colorSecondaryBg,
-                        textDark: textDark,
+                        colorPrimary: DeteksiColors.cDark,
+                        colorCardBg: DeteksiColors.cKremChip,
+                        colorSecondaryBg: DeteksiColors.cKremChip,
+                        textDark: DeteksiColors.cDark,
                       ),
                 const SizedBox(height: 28),
 
@@ -92,19 +82,30 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: textDark,
+                        color: DeteksiColors.cDark,
                       ),
                     ),
                     TextButton(
                       onPressed: () {
                         Get.to(() => const RiwayatDeteksiView());
                       },
-                      child: Text(
-                        'Lihat semua',
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Lihat semua',
+                            style: GoogleFonts.poppins(
+                              color: DeteksiColors.cBrown,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 14,
+                            color: DeteksiColors.cBrown,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -114,9 +115,9 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                 // --- LIST KARTU RIWAYAT ---
                 _buildHistorySection(
                   cardWidthCalc(context),
-                  colorPrimary,
-                  colorSecondaryBg,
-                  textDark,
+                  DeteksiColors.cDark,
+                  DeteksiColors.cKremChip,
+                  DeteksiColors.cDark,
                 ),
               ],
             ),
@@ -198,7 +199,7 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: colorPrimary.withOpacity(0.1),
+                color: colorPrimary.withValues(alpha: 0.1),
                 width: 1,
               ),
             ),
@@ -213,7 +214,7 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                   child: Container(
                     height: 100,
                     width: double.infinity,
-                    color: colorSecondaryBg.withOpacity(0.4),
+                    color: colorSecondaryBg.withValues(alpha: 0.4),
                     child: fullImageUrl.isNotEmpty
                         ? Image.network(
                             fullImageUrl,

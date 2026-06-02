@@ -1,4 +1,4 @@
-import 'package:batikara/app/modules/deteksi_page/views/detail_history.dart';
+import 'package:batikara/app/modules/deteksi_page/views/detail_history_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

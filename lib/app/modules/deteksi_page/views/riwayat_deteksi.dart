@@ -7,319 +7,412 @@ import '../controllers/deteksi_page_controller.dart';
 class RiwayatDeteksiView extends GetView<DeteksiPageController> {
   const RiwayatDeteksiView({super.key});
 
+  // ── Brand Colors — sama dengan fitur deteksi ─────────────
+  static const Color cDark = Color(0xFF1A1208);
+  static const Color cKrem = Color(0xFFF7F4EE);
+  static const Color cKremChip = Color(0xFFF0EAD8);
+  static const Color cBorder = Color(0xFFE8E4DC);
+  static const Color cGold = Color(0xFFFFD264);
+  static const Color cBrown = Color(0xFF7A3B10);
+  static const Color cTextSub = Color(0xFF9C8B7A);
+  static const Color cDelete = Color(0xFFD32F2F);
+
   @override
   Widget build(BuildContext context) {
-    const colorPrimary = Color(0xFF795548);
-    const colorBgScreen = Color(0xFFFCF9F6);
-    const colorIconBoxBg = Color(0xFFF5EFE6);
-    const textDark = Color(0xFF3E2723);
-    const colorTimelineLine = Color(0xFFEFE7DD);
-    const colorDelete = Color(0xFFD32F2F);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    // --- BEST PRACTICE: Deklarasikan tipe data Map secara eksplisit ---
+    // State selection — sama persis logic lama
     final isSelectionMode = false.obs;
     final selectedItems = <Map<String, dynamic>>[].obs;
 
     return Scaffold(
-      backgroundColor: colorBgScreen,
+      backgroundColor: cKrem,
       body: SafeArea(
         child: Obx(() {
           return Column(
             children: [
-              // --- 1. APP BAR REGION ---
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 12.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: colorIconBoxBg,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          if (isSelectionMode.value) {
-                            isSelectionMode.value = false;
-                            selectedItems.clear();
-                          } else {
-                            Get.back();
-                          }
-                        },
-                        icon: Icon(
-                          isSelectionMode.value
-                              ? Icons.close
-                              : Icons.arrow_back,
-                          color: textDark,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      isSelectionMode.value
-                          ? 'Dipilih: ${selectedItems.length}'
-                          : 'Riwayat Deteksi',
-                      style: GoogleFonts.lora(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: textDark,
-                      ),
-                    ),
-                    isSelectionMode.value
-                        ? TextButton(
-                            onPressed: () {
-                              if (selectedItems.length ==
-                                  controller.historyList.length) {
-                                selectedItems.clear();
-                              } else {
-                                // Konversi massal seluruh isi list ke tipe Map<String, dynamic> secara aman
-                                final allConverted = controller.historyList
-                                    .map(
-                                      (e) =>
-                                          Map<String, dynamic>.from(e as Map),
-                                    )
-                                    .toList();
-                                selectedItems.assignAll(allConverted);
-                              }
-                            },
-                            child: Text(
-                              selectedItems.length ==
-                                      controller.historyList.length
-                                  ? 'Batal Semua'
-                                  : 'Pilih Semua',
-                              style: GoogleFonts.poppins(
-                                color: colorPrimary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            decoration: BoxDecoration(
-                              color: colorIconBoxBg,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: IconButton(
-                              onPressed: () => isSelectionMode.value = true,
-                              icon: const Icon(
-                                Icons.delete_outline,
-                                color: textDark,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                  ],
-                ),
-              ),
-              const Divider(height: 1, color: colorTimelineLine),
+              // ── HEADER ──────────────────────────────────
+              _buildHeader(isSelectionMode, selectedItems),
 
-              // --- 2. LIST VIEW TIMELINE REGION ---
+              // ── LIST / LOADING / EMPTY ───────────────────
               Expanded(
-                child: () {
-                  if (controller.isLoadingHistory.value) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: colorPrimary),
-                    );
-                  }
-
-                  if (controller.historyList.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'Belum ada riwayat deteksi.',
-                        style: GoogleFonts.poppins(color: Colors.grey),
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(
-                      left: 24.0,
-                      right: 24.0,
-                      top: 16.0,
-                      bottom: 24.0,
-                    ),
-                    itemCount: controller.historyList.length,
-                    itemBuilder: (context, index) {
-                      // Ambil objek mentah lalu lakukan konversi Type-Safe secara eksplisit
-                      final rawItem = controller.historyList[index];
-                      final Map<String, dynamic> item =
-                          Map<String, dynamic>.from(rawItem as Map);
-
-                      String tanggalHeader = 'Tanggal';
-                      if (item['created_at'] != null) {
-                        try {
-                          DateTime dateTime = DateTime.parse(
-                            item['created_at'].toString(),
-                          ).toLocal();
-                          List<String> namaBulan = [
-                            'Januari',
-                            'Februari',
-                            'Maret',
-                            'April',
-                            'Mei',
-                            'Juni',
-                            'Juli',
-                            'Agustus',
-                            'September',
-                            'Oktober',
-                            'November',
-                            'Desember',
-                          ];
-                          tanggalHeader =
-                              "${dateTime.day} ${namaBulan[dateTime.month - 1]} ${dateTime.year}";
-                        } catch (_) {}
-                      }
-
-                      bool showDateHeader = false;
-                      if (index == 0) {
-                        showDateHeader = true;
-                      } else {
-                        final prevRawItem = controller.historyList[index - 1];
-                        final Map<String, dynamic> prevItem =
-                            Map<String, dynamic>.from(prevRawItem as Map);
-
-                        if (prevItem['created_at'] != null &&
-                            item['created_at'] != null) {
-                          try {
-                            DateTime currentDt = DateTime.parse(
-                              item['created_at'].toString(),
-                            ).toLocal();
-                            DateTime prevDt = DateTime.parse(
-                              prevItem['created_at'].toString(),
-                            ).toLocal();
-                            if (currentDt.day != prevDt.day ||
-                                currentDt.month != prevDt.month ||
-                                currentDt.year != prevDt.year) {
-                              showDateHeader = true;
-                            }
-                          } catch (_) {}
-                        }
-                      }
-
-                      // Cek status menggunakan perbandingan nilai ID atau key unik agar presisi
-                      final bool isItemChecked = selectedItems.any(
-                        (element) => element['_id'] == item['_id'],
-                      );
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (showDateHeader)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 14.0,
-                                bottom: 16.0,
-                              ),
-                              child: Text(
-                                tanggalHeader,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  color: textDark.withValues(alpha: 0.4),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          RiwayatItemWidget(
-                            item: item,
-                            index: index,
-                            isSelectionMode: isSelectionMode.value,
-                            isChecked: isItemChecked,
-                            onCheckboxChanged: (bool? value) {
-                              if (value == true) {
-                                selectedItems.add(item);
-                              } else {
-                                selectedItems.removeWhere(
-                                  (element) => element['_id'] == item['_id'],
-                                );
-                              }
-                            },
-                            onCardTapInSelection: () {
-                              if (isItemChecked) {
-                                selectedItems.removeWhere(
-                                  (element) => element['_id'] == item['_id'],
-                                );
-                              } else {
-                                selectedItems.add(item);
-                              }
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }(),
-              ),
-
-              // --- 3. FLOATING BOTTOM BAR EXECUTOR ---
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                height: (isSelectionMode.value && selectedItems.isNotEmpty)
-                    ? 80
-                    : 0,
-                width: double.infinity,
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 14,
+                child: _buildBody(
+                  isSelectionMode,
+                  selectedItems,
+                  bottomPadding,
                 ),
-                child: (isSelectionMode.value && selectedItems.isNotEmpty)
-                    ? ElevatedButton.icon(
-                        onPressed: () {
-                          Get.defaultDialog(
-                            title: "Hapus Riwayat",
-                            middleText:
-                                "Apakah kamu yakin ingin menghapus ${selectedItems.length} riwayat deteksi terpilih?",
-                            textConfirm: "Hapus",
-                            textCancel: "Batal",
-                            confirmTextColor: Colors.white,
-                            buttonColor: colorDelete,
-                            onConfirm: () {
-                              // Mengambil semua ID terpilih untuk dieksekusi hapus di database
-                              final selectedIds =
-                                  selectedItems.map((e) => e['_id']).toList();
-
-                              // Sinkronisasi hapus lokal di controller
-                              controller.historyList.removeWhere(
-                                (element) =>
-                                    selectedIds.contains(element['_id']),
-                              );
-
-                              isSelectionMode.value = false;
-                              selectedItems.clear();
-                              Get.back();
-                              Get.snackbar(
-                                "Sukses",
-                                "Riwayat berhasil dihapus",
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.delete, color: Colors.white),
-                        label: Text(
-                          'Hapus Riwayat (${selectedItems.length})',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorDelete,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          elevation: 0,
-                        ),
-                      )
-                    : const SizedBox.shrink(),
               ),
+
+              // ── BOTTOM DELETE BAR — muncul saat ada yg dipilih
+              _buildDeleteBar(isSelectionMode, selectedItems, bottomPadding),
             ],
           );
         }),
+      ),
+    );
+  }
+
+  // ── HEADER ───────────────────────────────────────────────
+  Widget _buildHeader(
+    RxBool isSelectionMode,
+    RxList<Map<String, dynamic>> selectedItems,
+  ) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Tombol back / cancel selection
+              _CircleBtn(
+                child: Icon(
+                  isSelectionMode.value ? Icons.close : Icons.arrow_back,
+                  size: 18,
+                  color: cDark,
+                ),
+                onTap: () {
+                  if (isSelectionMode.value) {
+                    isSelectionMode.value = false;
+                    selectedItems.clear();
+                  } else {
+                    Get.back();
+                  }
+                },
+              ),
+
+              // Judul — berubah saat selection mode
+              Text(
+                isSelectionMode.value
+                    ? '${selectedItems.length} dipilih'
+                    : 'Riwayat Deteksi',
+                style: GoogleFonts.lora(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: cDark,
+                ),
+              ),
+
+              // Kanan: pilih semua / tombol delete
+              isSelectionMode.value
+                  ? GestureDetector(
+                      onTap: () {
+                        if (selectedItems.length ==
+                            controller.historyList.length) {
+                          selectedItems.clear();
+                        } else {
+                          final all = controller.historyList
+                              .map((e) => Map<String, dynamic>.from(e as Map))
+                              .toList();
+                          selectedItems.assignAll(all);
+                        }
+                      },
+                      child: Text(
+                        selectedItems.length == controller.historyList.length
+                            ? 'Batal Semua'
+                            : 'Pilih Semua',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: cBrown,
+                        ),
+                      ),
+                    )
+                  : _CircleBtn(
+                      child: const Icon(
+                        Icons.delete_outline_rounded,
+                        size: 18,
+                        color: cDark,
+                      ),
+                      onTap: () => isSelectionMode.value = true,
+                    ),
+            ],
+          ),
+        ),
+        // Divider tipis
+        const Divider(height: 1, color: cBorder, thickness: 0.5),
+      ],
+    );
+  }
+
+  // ── BODY ─────────────────────────────────────────────────
+  Widget _buildBody(
+    RxBool isSelectionMode,
+    RxList<Map<String, dynamic>> selectedItems,
+    double bottomPadding,
+  ) {
+    if (controller.isLoadingHistory.value) {
+      return const Center(
+        child: CircularProgressIndicator(color: cBrown, strokeWidth: 2),
+      );
+    }
+
+    if (controller.historyList.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 24 + bottomPadding),
+      itemCount: controller.historyList.length,
+      itemBuilder: (context, index) {
+        final rawItem = controller.historyList[index];
+        final Map<String, dynamic> item = Map<String, dynamic>.from(
+          rawItem as Map,
+        );
+
+        // ── Date header logic — sama persis lama ──────────
+        String tanggalHeader = '';
+        bool showDateHeader = false;
+
+        if (item['created_at'] != null) {
+          try {
+            final dt = DateTime.parse(item['created_at'].toString()).toLocal();
+            const bulan = [
+              'Januari',
+              'Februari',
+              'Maret',
+              'April',
+              'Mei',
+              'Juni',
+              'Juli',
+              'Agustus',
+              'September',
+              'Oktober',
+              'November',
+              'Desember',
+            ];
+            tanggalHeader = '${dt.day} ${bulan[dt.month - 1]} ${dt.year}';
+          } catch (_) {}
+        }
+
+        if (index == 0) {
+          showDateHeader = true;
+        } else {
+          final prev = Map<String, dynamic>.from(
+            controller.historyList[index - 1] as Map,
+          );
+          if (prev['created_at'] != null && item['created_at'] != null) {
+            try {
+              final cur = DateTime.parse(
+                item['created_at'].toString(),
+              ).toLocal();
+              final pre = DateTime.parse(
+                prev['created_at'].toString(),
+              ).toLocal();
+              if (cur.day != pre.day ||
+                  cur.month != pre.month ||
+                  cur.year != pre.year) {
+                showDateHeader = true;
+              }
+            } catch (_) {}
+          }
+        }
+
+        final bool isChecked = selectedItems.any(
+          (e) => e['_id'] == item['_id'],
+        );
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Date header dengan style baru
+            if (showDateHeader)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 12),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: cDark,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        tanggalHeader,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: cGold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: Container(height: 0.5, color: cBorder)),
+                  ],
+                ),
+              ),
+
+            // Item widget — logic onTap & checkbox tetap
+            RiwayatItemWidget(
+              item: item,
+              index: index,
+              isSelectionMode: isSelectionMode.value,
+              isChecked: isChecked,
+              onCheckboxChanged: (val) {
+                if (val == true) {
+                  selectedItems.add(item);
+                } else {
+                  selectedItems.removeWhere((e) => e['_id'] == item['_id']);
+                }
+              },
+              onCardTapInSelection: () {
+                if (isChecked) {
+                  selectedItems.removeWhere((e) => e['_id'] == item['_id']);
+                } else {
+                  selectedItems.add(item);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ── EMPTY STATE ──────────────────────────────────────────
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: cKremChip,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Icon(Icons.history_rounded, size: 30, color: cBrown),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'Belum ada riwayat deteksi',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: cDark,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Coba deteksi motif batik dulu yuk!',
+            style: GoogleFonts.poppins(fontSize: 12, color: cTextSub),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── DELETE BAR — animasi muncul/hilang ───────────────────
+  Widget _buildDeleteBar(
+    RxBool isSelectionMode,
+    RxList<Map<String, dynamic>> selectedItems,
+    double bottomPadding,
+  ) {
+    final bool show = isSelectionMode.value && selectedItems.isNotEmpty;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOut,
+      height: show ? (60 + bottomPadding) : 0,
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 8 + bottomPadding * 0.5),
+      decoration: const BoxDecoration(
+        color: Color(0xFAF7F4EE),
+        border: Border(top: BorderSide(color: cBorder, width: 0.5)),
+      ),
+      child: show
+          ? GestureDetector(
+              onTap: () => _showDeleteDialog(selectedItems),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: cDelete,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.delete_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Hapus ${selectedItems.length} Riwayat',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+
+  // ── DIALOG KONFIRMASI HAPUS — logic sama persis lama ─────
+  void _showDeleteDialog(RxList<Map<String, dynamic>> selectedItems) {
+    Get.defaultDialog(
+      title: 'Hapus Riwayat',
+      titleStyle: GoogleFonts.poppins(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: cDark,
+      ),
+      middleText: 'Hapus ${selectedItems.length} riwayat deteksi yang dipilih?',
+      middleTextStyle: GoogleFonts.poppins(fontSize: 12, color: cTextSub),
+      textConfirm: 'Hapus',
+      textCancel: 'Batal',
+      confirmTextColor: Colors.white,
+      buttonColor: cDelete,
+      cancelTextColor: cDark,
+      radius: 16,
+      onConfirm: () {
+        final ids = selectedItems.map((e) => e['_id']).toList();
+        // Hapus dari list lokal — sama persis logic lama
+        controller.historyList.removeWhere((e) => ids.contains(e['_id']));
+        selectedItems.clear();
+        Get.back();
+        Get.snackbar(
+          'Sukses',
+          'Riwayat berhasil dihapus',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: cDark,
+          colorText: cGold,
+        );
+      },
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// REUSABLE WIDGETS
+// ════════════════════════════════════════════════════════════
+class _CircleBtn extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onTap;
+  const _CircleBtn({required this.child, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 45,
+        height: 45,
+        decoration: const BoxDecoration(
+          color: Color(0xFFF0EAD8),
+          shape: BoxShape.circle,
+        ),
+        child: Center(child: child),
       ),
     );
   }
