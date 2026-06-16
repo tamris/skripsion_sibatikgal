@@ -45,7 +45,7 @@ class HomeController extends GetxController {
     QuickAction(
         icon: Icons.map_outlined,
         label: 'Peta',
-        onTap: () => Get.toNamed('/mapping')),
+        onTap: () => Get.toNamed('/mapping-page')),
     QuickAction(
         icon: Icons.history_edu_outlined,
         label: 'Sejarah',

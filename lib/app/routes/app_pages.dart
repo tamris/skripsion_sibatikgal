@@ -1,3 +1,4 @@
+import 'package:batikara/app/modules/mapping_page/views/detail_page_view.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -15,6 +16,8 @@ import '../modules/informasi_page/bindings/informasi_page_binding.dart';
 import '../modules/informasi_page/views/informasi_page_view.dart';
 import '../modules/login_page/bindings/login_page_binding.dart';
 import '../modules/login_page/views/login_page_view.dart';
+import '../modules/mapping_page/bindings/mapping_page_binding.dart';
+import '../modules/mapping_page/views/mapping_page_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/otp_verifikasi/bindings/otp_verifikasi_binding.dart';
@@ -129,6 +132,15 @@ class AppPages {
       name: _Paths.SEJARAH_PAGE,
       page: () => const SejarahPageView(),
       binding: SejarahPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAPPING_PAGE,
+      page: () => const MappingPageView(),
+      binding: MappingPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_PAGE,
+      page: () => const DetailPageView(),
     ),
   ];
 }
