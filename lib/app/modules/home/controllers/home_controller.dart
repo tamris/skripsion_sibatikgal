@@ -43,9 +43,9 @@ class HomeController extends GetxController {
         label: 'Video',
         onTap: () => Get.toNamed('/video-page')),
     QuickAction(
-        icon: Icons.map_outlined,
-        label: 'Peta',
-        onTap: () => Get.toNamed('/mapping-page')),
+        icon: Icons.brush_outlined,
+        label: 'Batik Art',
+        onTap: () => Get.toNamed('/studio-canvas-page')),
     QuickAction(
         icon: Icons.history_edu_outlined,
         label: 'Sejarah',

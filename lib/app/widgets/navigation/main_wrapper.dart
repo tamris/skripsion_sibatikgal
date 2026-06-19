@@ -3,6 +3,8 @@ import 'package:batikara/app/modules/deteksi_page/controllers/deteksi_page_contr
 import 'package:batikara/app/modules/deteksi_page/views/deteksi_page_view.dart';
 import 'package:batikara/app/modules/galeri_page/views/galeri_page_view.dart';
 import 'package:batikara/app/modules/home/views/home_view.dart';
+import 'package:batikara/app/modules/mapping_page/controllers/mapping_page_controller.dart';
+import 'package:batikara/app/modules/mapping_page/views/mapping_page_view.dart';
 import 'package:batikara/app/modules/pengaturan_page/controllers/pengaturan_page_controller.dart';
 import 'package:batikara/app/modules/pengaturan_page/views/pengaturan_page_view.dart';
 import 'package:batikara/app/widgets/navigation/bottom_nav.dart';
@@ -32,8 +34,8 @@ class MainWrapper extends StatelessWidget {
             Get.put(DeteksiPageController());
             return const DeteksiPageView();
           case 3:
-            Get.put(ChatbotPageController());
-            return const ChatbotPageView();
+            Get.put(MappingPageController());
+            return const MappingPageView();
           case 4:
             Get.put(PengaturanPageController());
             return const PengaturanPageView();

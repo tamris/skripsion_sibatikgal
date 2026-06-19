@@ -1,4 +1,3 @@
-import 'package:batikara/app/modules/mapping_page/views/detail_page_view.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -17,6 +16,7 @@ import '../modules/informasi_page/views/informasi_page_view.dart';
 import '../modules/login_page/bindings/login_page_binding.dart';
 import '../modules/login_page/views/login_page_view.dart';
 import '../modules/mapping_page/bindings/mapping_page_binding.dart';
+import '../modules/mapping_page/views/detail_page_view.dart';
 import '../modules/mapping_page/views/mapping_page_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
@@ -32,6 +32,8 @@ import '../modules/reset_password_page/bindings/reset_password_page_binding.dart
 import '../modules/reset_password_page/views/reset_password_page_view.dart';
 import '../modules/sejarah_page/bindings/sejarah_page_binding.dart';
 import '../modules/sejarah_page/views/sejarah_page_view.dart';
+import '../modules/studio_canvas_page/bindings/studio_canvas_page_binding.dart';
+import '../modules/studio_canvas_page/views/studio_canvas_page_view.dart';
 import '../modules/ubah_sandi/bindings/ubah_sandi_binding.dart';
 import '../modules/ubah_sandi/views/ubah_sandi_view.dart';
 import '../modules/video_page/bindings/video_page_binding.dart';
@@ -141,6 +143,11 @@ class AppPages {
     GetPage(
       name: _Paths.DETAIL_PAGE,
       page: () => const DetailPageView(),
+    ),
+    GetPage(
+      name: _Paths.STUDIO_CANVAS_PAGE,
+      page: () => const StudioCanvasPageView(),
+      binding: StudioCanvasPageBinding(),
     ),
   ];
 }

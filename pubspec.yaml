@@ -45,6 +45,10 @@ dependencies:
   geolocator: ^11.0.0
   cached_network_image: ^3.3.1
   jwt_decoder: ^2.0.1
+  flutter_painter_v2: ^2.0.1
+  flex_color_picker: ^3.7.2
+  flutter_colorpicker: ^1.1.0
+  shimmer_animation: ^2.2.2+1
 
 
   # The following adds the Cupertino Icons font to your application.

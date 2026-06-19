@@ -21,6 +21,7 @@ abstract class Routes {
   static const SEJARAH_PAGE = _Paths.SEJARAH_PAGE;
   static const MAPPING_PAGE = _Paths.MAPPING_PAGE;
   static const DETAIL_PAGE = _Paths.DETAIL_PAGE;
+  static const STUDIO_CANVAS_PAGE = _Paths.STUDIO_CANVAS_PAGE;
 }
 
 abstract class _Paths {
@@ -43,4 +44,5 @@ abstract class _Paths {
   static const SEJARAH_PAGE = '/sejarah-page';
   static const MAPPING_PAGE = '/mapping-page';
   static const DETAIL_PAGE = '/detail-page';
+  static const STUDIO_CANVAS_PAGE = '/studio-canvas-page';
 }

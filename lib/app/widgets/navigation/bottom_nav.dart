@@ -87,9 +87,9 @@ class BottomNav extends StatelessWidget {
                       label: 'Deteksi',
                     ),
                     NavigationDestination(
-                      icon: Icon(Icons.chat_bubble_outline),
-                      selectedIcon: Icon(Icons.chat_bubble),
-                      label: 'TikAI',
+                      icon: Icon(Icons.map_outlined),
+                      selectedIcon: Icon(Icons.map),
+                      label: 'Peta',
                     ),
                     NavigationDestination(
                       icon: Icon(Icons.settings_outlined),
