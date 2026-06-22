@@ -1,6 +1,7 @@
 import 'package:batikara/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({super.key});
@@ -9,6 +10,9 @@ class OnboardingView extends GetView<OnboardingController> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final isCompact = width <= 550;
+    const Color cGold = Color(0xFFFFD264);
+    const Color cDark = Color(0xFF1A1208);
+    const Color cBg = Color(0xFFF9F8F4);
 
     return Obx(() => Scaffold(
           backgroundColor: controller.bgColors[controller.currentPage.value],
@@ -43,8 +47,7 @@ class OnboardingView extends GetView<OnboardingController> {
                             Text(
                               item.title,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: "Mulish",
+                              style: GoogleFonts.lora(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 30,
                               ),
@@ -53,8 +56,7 @@ class OnboardingView extends GetView<OnboardingController> {
                             Text(
                               item.desc,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Mulish",
+                              style: GoogleFonts.mulish(
                                 fontWeight: FontWeight.w300,
                                 fontSize: isCompact ? 16 : 18,
                                 height: 1.45,
@@ -92,7 +94,7 @@ class OnboardingView extends GetView<OnboardingController> {
                               child: ElevatedButton(
                                 onPressed: controller.start,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF8A5A44),
+                                  backgroundColor: cDark,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50)),
                                   padding: EdgeInsets.symmetric(
@@ -102,11 +104,12 @@ class OnboardingView extends GetView<OnboardingController> {
                                   textStyle:
                                       TextStyle(fontSize: isCompact ? 13 : 16),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   "MULAI",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Mulish'),
+                                  style: GoogleFonts.poppins(
+                                      color: cGold,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
                                 ),
                               ),
                             );
@@ -117,11 +120,10 @@ class OnboardingView extends GetView<OnboardingController> {
                               TextButton(
                                 onPressed: controller.skipToEnd,
                                 style: TextButton.styleFrom(
-                                  foregroundColor: const Color(0xFF8A5A44),
-                                  textStyle: TextStyle(
-                                    fontFamily: "Mulish",
+                                  foregroundColor: cDark,
+                                  textStyle: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: isCompact ? 13 : 16,
+                                    fontSize: 16,
                                   ),
                                 ),
                                 child: const Text("LEWATI"),
@@ -129,18 +131,19 @@ class OnboardingView extends GetView<OnboardingController> {
                               ElevatedButton(
                                 onPressed: controller.next,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF8A5A44),
+                                  backgroundColor: cDark,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50)),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 30, vertical: 18),
-                                  textStyle: TextStyle(
-                                      fontSize: isCompact ? 13 : 16,
-                                      fontFamily: "Mulish"),
+                                  textStyle: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 child: const Text("NEXT",
-                                    style: TextStyle(color: Colors.white)),
+                                    style: TextStyle(color: cGold)),
                               ),
                             ],
                           );
@@ -169,7 +172,7 @@ class _Dot extends StatelessWidget {
       height: 10,
       width: active ? 22 : 10,
       decoration: BoxDecoration(
-        color: const Color(0xFF8A5A44),
+        color: const Color(0xFF1A1208),
         borderRadius: BorderRadius.circular(50),
       ),
     );

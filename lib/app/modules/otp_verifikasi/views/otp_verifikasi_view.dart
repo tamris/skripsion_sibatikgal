@@ -8,8 +8,12 @@ class OtpVerifikasiView extends GetView<OtpVerifikasiController> {
 
   @override
   Widget build(BuildContext context) {
+    const Color cGold = Color(0xFFFFD264);
+    const Color cDark = Color(0xFF1A1208);
+    const Color cBg = Color(0xFFF9F8F4);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F7),
+      backgroundColor: cBg,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -117,11 +121,11 @@ class OtpVerifikasiView extends GetView<OtpVerifikasiController> {
               // Tombol Verifikasi
               SizedBox(
                 width: double.infinity,
-                height: 55,
+                height: 60,
                 child: ElevatedButton(
                   onPressed: () => controller.verifyOtp(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8D5D46),
+                    backgroundColor: cDark,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 4,
@@ -129,7 +133,7 @@ class OtpVerifikasiView extends GetView<OtpVerifikasiController> {
                   child: Text(
                     'Verifikasi',
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: cGold,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),

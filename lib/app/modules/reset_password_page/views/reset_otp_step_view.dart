@@ -5,6 +5,9 @@ import '../controllers/reset_password_page_controller.dart';
 
 class ResetOtpStepView extends GetView<ResetPasswordPageController> {
   const ResetOtpStepView({super.key});
+  static const Color cGold = Color(0xFFFFD264);
+  static const Color cDark = Color(0xFF1A1208);
+  static const Color cBg = Color(0xFFF9F8F4);
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +103,11 @@ class ResetOtpStepView extends GetView<ResetPasswordPageController> {
   Widget _buildButton({required String label, required VoidCallback onTap}) {
     return Obx(() => SizedBox(
           width: double.infinity,
-          height: 55,
+          height: 60,
           child: ElevatedButton(
             onPressed: controller.isLoading.value ? null : onTap,
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8D5D46),
+                backgroundColor: cDark,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
             child: controller.isLoading.value
@@ -112,7 +115,7 @@ class ResetOtpStepView extends GetView<ResetPasswordPageController> {
                 : Text(
                     label,
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: cGold,
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),

@@ -9,8 +9,12 @@ class LoginPageView extends GetView<LoginPageController> {
 
   @override
   Widget build(BuildContext context) {
+    const Color cGold = Color(0xFFFFD264);
+    const Color cDark = Color(0xFF1A1208);
+    const Color cBg = Color(0xFFF9F8F4);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F7), // Warna background putih tulang
+      backgroundColor: cBg, // Warna background putih tulang
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -24,7 +28,7 @@ class LoginPageView extends GetView<LoginPageController> {
                 style: GoogleFonts.poppins(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: cDark,
                 ),
               ),
               Text(
@@ -32,7 +36,7 @@ class LoginPageView extends GetView<LoginPageController> {
                 style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: cDark,
                 ),
               ),
               const SizedBox(height: 40),
@@ -119,13 +123,13 @@ class LoginPageView extends GetView<LoginPageController> {
               // Tombol Login
               Obx(() => SizedBox(
                     width: double.infinity,
-                    height: 55,
+                    height: 60,
                     child: ElevatedButton(
                       onPressed: controller.isLoading.value
                           ? null
                           : () => controller.login(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8D5D46),
+                        backgroundColor: cDark,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -134,7 +138,7 @@ class LoginPageView extends GetView<LoginPageController> {
                       child: Text(
                         'Login',
                         style: GoogleFonts.poppins(
-                          color: Colors.white,
+                          color: cGold,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -201,7 +205,7 @@ class LoginPageView extends GetView<LoginPageController> {
                       child: Text(
                         'Daftar',
                         style: GoogleFonts.poppins(
-                          color: Color(0xFF8D5D46),
+                          color: cGold,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

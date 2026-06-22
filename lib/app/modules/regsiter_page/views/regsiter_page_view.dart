@@ -9,8 +9,11 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
 
   @override
   Widget build(BuildContext context) {
+    const Color cGold = Color(0xFFFFD264);
+    const Color cDark = Color(0xFF1A1208);
+    const Color cBg = Color(0xFFF9F8F4);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F7),
+      backgroundColor: cBg,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -25,7 +28,7 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
                   style: GoogleFonts.poppins(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: cDark,
                   ),
                 ),
               ),
@@ -73,16 +76,16 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
 
               const SizedBox(height: 40),
 
-              // Tombol Login (Sesuai teks di gambar desainmu)
+              // Tombol Register (Sesuai teks di gambar desainmu)
               SizedBox(
                 width: double.infinity,
-                height: 55,
+                height: 60,
                 child: ElevatedButton(
                   onPressed: controller.isLoading.value
                       ? null
                       : () => controller.register(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8D5D46),
+                    backgroundColor: cDark,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -90,7 +93,7 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
                   child: Text(
                     'Daftar', // Sesuai desain kamu, atau ganti jadi 'Daftar'
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: cGold,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -157,7 +160,7 @@ class RegsiterPageView extends GetView<RegsiterPageController> {
                       child: Text(
                         'Login',
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF8D5D46),
+                          color: cGold,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
