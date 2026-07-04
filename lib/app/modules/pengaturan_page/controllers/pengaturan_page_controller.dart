@@ -17,7 +17,8 @@ class PengaturanPageController extends GetxController {
 
   void goToProfile() => Get.toNamed('/profile-user'); // sesuaikan rute
   void goToChangePassword() => Get.toNamed('/ubah-sandi');
-  void goToFaqs() => Get.toNamed('/faqs');
+  void goToFaqs() => Get.toNamed('/faqs-page');
+  void goToAbout() => Get.toNamed('/tentang-aplikasi-page');
 
   void logout() async {
     final storage = GetStorage();

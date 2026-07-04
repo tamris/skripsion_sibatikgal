@@ -10,34 +10,91 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
 
   @override
   Widget build(BuildContext context) {
+    // Palet warna premium konsisten Batikara
+    const bgCanvas = Color(0xFFFAF7F2);
+    const darkBrown = Color(0xFF1C1308);
+    const textMuted = Color(0xFF7A7062);
+    const accentGold = Color(0xFFFBBF24);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: bgCanvas,
+      // ================= FIXED PREMIUM APP BAR =================
       appBar: AppBar(
         centerTitle: true,
-        title: Text("TikAI",
-            style: GoogleFonts.lora(fontWeight: FontWeight.w800, fontSize: 28)),
-        backgroundColor: const Color(0xFFF5F5F5),
-        foregroundColor: Colors.black87,
-        elevation: 1,
-        shadowColor: Colors.grey.withValues(alpha: 0.3),
+        automaticallyImplyLeading: false,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Center(
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: const Icon(Icons.arrow_back_rounded,
+                    color: darkBrown, size: 20),
+              ),
+            ),
+          ),
+        ),
+        title: Column(
+          children: [
+            Text(
+              "TikAI",
+              style: GoogleFonts.lora(
+                fontWeight: FontWeight.w800,
+                fontSize: 22,
+                color: darkBrown,
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF1E6F3B), // Indikator hijau aktif/online
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  "Asisten AI Aktif",
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: textMuted,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        backgroundColor: bgCanvas,
+        elevation: 0,
+        toolbarHeight: 70,
         surfaceTintColor: Colors.transparent,
       ),
+
+      // ================= BODY CONTENT =================
       body: Column(
         children: [
+          // Pembatas garis tipis estetik di bawah AppBar
+          Container(height: 1, color: const Color(0xFFE6DFD5).withOpacity(0.5)),
+
           // Daftar pesan
           Expanded(
             child: Obx(() => ListView.builder(
                   controller: controller.scrollC,
                   reverse: true,
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                   itemCount: controller.messages.length +
                       (controller.isTyping.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (controller.isTyping.value && index == 0) {
-                      // Custom Typing Indicator
+                      // Custom Typing Indicator bawaan Anda
                       return const TypingIndicatorWidget(
-                        dotsColor: Color(0xFF8A5A44),
+                        dotsColor: darkBrown,
                         animationDuration: Duration(milliseconds: 400),
                       );
                     }
@@ -50,97 +107,101 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                     return Align(
                       alignment:
                           isUser ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Row(
-                        mainAxisAlignment: isUser
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (!isUser)
-                            CircleAvatar(
-                              backgroundColor: Colors.grey.shade400,
-                              child: Text(
-                                "AI",
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          if (!isUser) const SizedBox(width: 8),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.75,
-                            ),
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 6),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: isUser
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
+                            // Inovasi Visual: Label nama kecil di atas bubble, menghemat ruang samping
+                            Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 12),
-                              decoration: BoxDecoration(
-                                color: isUser
-                                    ? const Color(0xFF8A5A44)
-                                    : Colors.grey.shade300,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.only(
-                                  topLeft: const Radius.circular(16),
-                                  topRight: const Radius.circular(16),
-                                  bottomLeft: isUser
-                                      ? const Radius.circular(16)
-                                      : const Radius.circular(6),
-                                  bottomRight: isUser
-                                      ? const Radius.circular(6)
-                                      : const Radius.circular(16),
+                                  horizontal: 6, vertical: 4),
+                              child: Text(
+                                isUser ? "Kamu" : "TikAI",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: textMuted,
                                 ),
                               ),
-                              child: MarkdownBody(
-                                data: msg.text,
-                                selectable: true,
-                                styleSheet: MarkdownStyleSheet(
-                                  p: GoogleFonts.plusJakartaSans(
-                                    color:
-                                        isUser ? Colors.white : Colors.black87,
-                                    fontSize: 16,
-                                    height: 1.4,
+                            ),
+
+                            // Gelembung Chat Asimetris Modern
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.78,
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: isUser ? darkBrown : Colors.white,
+                                  boxShadow: isUser
+                                      ? null
+                                      : [
+                                          BoxShadow(
+                                            color: darkBrown.withOpacity(0.03),
+                                            blurRadius: 15,
+                                            offset: const Offset(0, 6),
+                                          ),
+                                        ],
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: const Radius.circular(18),
+                                    topRight: const Radius.circular(18),
+                                    bottomLeft: isUser
+                                        ? const Radius.circular(18)
+                                        : const Radius.circular(
+                                            4), // Sudut ekor chat AI
+                                    bottomRight: isUser
+                                        ? const Radius.circular(
+                                            4) // Sudut ekor chat User
+                                        : const Radius.circular(18),
                                   ),
-                                  strong: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color:
-                                        isUser ? Colors.white : Colors.black87,
-                                  ),
-                                  listBullet: TextStyle(
-                                    color:
-                                        isUser ? Colors.white : Colors.black87,
+                                ),
+                                child: MarkdownBody(
+                                  data: msg.text,
+                                  selectable: true,
+                                  styleSheet: MarkdownStyleSheet(
+                                    p: GoogleFonts.poppins(
+                                      color: isUser ? Colors.white : darkBrown,
+                                      fontSize: 14,
+                                      height: 1.5,
+                                    ),
+                                    strong: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: isUser ? Colors.white : darkBrown,
+                                    ),
+                                    listBullet: TextStyle(
+                                      color: isUser ? Colors.white : darkBrown,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          if (isUser) const SizedBox(width: 8),
-                          if (isUser)
-                            CircleAvatar(
-                              backgroundColor: const Color(0xFF8A5A44),
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.white,
-                              ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
                 )),
           ),
 
-          // Input box
+          // ================= SLICK INPUT PANEL =================
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
+            decoration: BoxDecoration(
+              color: bgCanvas,
+              boxShadow: [
+                BoxShadow(
+                  color: darkBrown.withOpacity(0.02),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ],
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -148,47 +209,70 @@ class ChatbotPageView extends GetView<ChatbotPageController> {
                     controller: controller.textC,
                     minLines: 1,
                     maxLines: 4,
+                    cursorColor: darkBrown,
                     textInputAction: TextInputAction.send,
+                    style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: darkBrown,
+                        fontWeight: FontWeight.w500),
                     decoration: InputDecoration(
-                      hintText: "Kirim pesan ke TikAI",
+                      hintText: "Tulis pertanyaan ke TikAI...",
                       hintStyle: GoogleFonts.poppins(
-                        textStyle: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
+                        textStyle: TextStyle(
+                          color: textMuted.withOpacity(0.5),
+                          fontSize: 14,
                         ),
                       ),
                       filled: true,
-                      fillColor: Colors.grey.shade200,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 20),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: const BorderSide(
+                            color: Color(0xFFE6DFD5), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide:
+                            const BorderSide(color: darkBrown, width: 1.2),
                       ),
                     ),
                     onSubmitted: (val) => controller.sendMessage(val),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 Obx(() => GestureDetector(
                       onTap: controller.isTyping.value
                           ? null
                           : () => controller.sendMessage(controller.textC.text),
-                      child: CircleAvatar(
-                        radius: 24,
-                        backgroundColor: controller.isTyping.value
-                            ? Colors.grey
-                            : const Color(0xFF8A5A44),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: controller.isTyping.value
+                              ? const Color(0xFFD1C7BD)
+                              : darkBrown,
+                          shape: BoxShape.circle,
+                        ),
                         child: controller.isTyping.value
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
+                            ? const Center(
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        accentGold),
+                                  ),
                                 ),
                               )
-                            : const Icon(Icons.send, color: Colors.white),
+                            : const Icon(Icons.send_rounded,
+                                color: accentGold, size: 18),
                       ),
                     )),
               ],

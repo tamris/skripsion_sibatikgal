@@ -22,6 +22,8 @@ abstract class Routes {
   static const MAPPING_PAGE = _Paths.MAPPING_PAGE;
   static const DETAIL_PAGE = _Paths.DETAIL_PAGE;
   static const STUDIO_CANVAS_PAGE = _Paths.STUDIO_CANVAS_PAGE;
+  static const TENTANG_APLIKASI_PAGE = _Paths.TENTANG_APLIKASI_PAGE;
+  static const FAQS_PAGE = _Paths.FAQS_PAGE;
 }
 
 abstract class _Paths {
@@ -45,4 +47,6 @@ abstract class _Paths {
   static const MAPPING_PAGE = '/mapping-page';
   static const DETAIL_PAGE = '/detail-page';
   static const STUDIO_CANVAS_PAGE = '/studio-canvas-page';
+  static const TENTANG_APLIKASI_PAGE = '/tentang-aplikasi-page';
+  static const FAQS_PAGE = '/faqs-page';
 }

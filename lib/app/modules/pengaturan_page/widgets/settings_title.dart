@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SettingsTile extends StatelessWidget {
   final IconData icon;
@@ -16,38 +17,51 @@ class SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textMuted = Color(0xFF6B7280);
+    // Menyesuaikan palet warna cokelat & krem sesuai mockup baru
+    const darkBrown = Color(0xFF1C1308); 
+    const itemBgIcon = Color(0xFFF3EDE2); // Background krem lembut untuk kontainer ikon
+    const iconColor = Color(0xFF6B583D);   // Warna ikon cokelat hangat
+    const chevronColor = Color(0xFFD1C7BD); // Warna chevron yang lebih soft
 
     return InkWell(
       onTap: onTap,
-      child: SizedBox(
-        height: 84,
+      borderRadius: BorderRadius.circular(16), // Menjaga efek ripple tetap rapi di dalam card
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
+            // Kontainer Ikon Bulat Kotak (Squircle) sesuai Mockup
             Container(
               width: 44,
               height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFFF2F2F2),
+                borderRadius: BorderRadius.circular(12),
+                color: itemBgIcon,
               ),
-              child: Icon(icon, size: 20, color: textMuted),
+              child: Icon(icon, size: 22, color: iconColor),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
+            
+            // Label Menu
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF111827),
+                  color: darkBrown,
                 ),
               ),
             ),
+            
+            // Chevron Arrow / Tanda Panah Kanan
             if (hasChevron)
-              const Icon(Icons.chevron_right_rounded, color: textMuted),
+              Icon(
+                Icons.chevron_right_rounded, 
+                color: chevronColor,
+                size: 24,
+              ),
           ],
         ),
       ),

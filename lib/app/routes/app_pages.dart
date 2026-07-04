@@ -8,6 +8,8 @@ import '../modules/deteksi_page/views/deteksi_page_view.dart';
 import '../modules/event_page/bindings/event_page_binding.dart';
 import '../modules/event_page/views/event_detail_view.dart';
 import '../modules/event_page/views/event_page_view.dart';
+import '../modules/faqs_page/bindings/faqs_page_binding.dart';
+import '../modules/faqs_page/views/faqs_page_view.dart';
 import '../modules/galeri_page/bindings/galeri_page_binding.dart';
 import '../modules/galeri_page/views/galeri_page_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -34,6 +36,8 @@ import '../modules/sejarah_page/bindings/sejarah_page_binding.dart';
 import '../modules/sejarah_page/views/sejarah_page_view.dart';
 import '../modules/studio_canvas_page/bindings/studio_canvas_page_binding.dart';
 import '../modules/studio_canvas_page/views/studio_canvas_page_view.dart';
+import '../modules/tentang_aplikasi_page/bindings/tentang_aplikasi_page_binding.dart';
+import '../modules/tentang_aplikasi_page/views/tentang_aplikasi_page_view.dart';
 import '../modules/ubah_sandi/bindings/ubah_sandi_binding.dart';
 import '../modules/ubah_sandi/views/ubah_sandi_view.dart';
 import '../modules/video_page/bindings/video_page_binding.dart';
@@ -148,6 +152,16 @@ class AppPages {
       name: _Paths.STUDIO_CANVAS_PAGE,
       page: () => const StudioCanvasPageView(),
       binding: StudioCanvasPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.TENTANG_APLIKASI_PAGE,
+      page: () => const TentangAplikasiPageView(),
+      binding: TentangAplikasiPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.FAQS_PAGE,
+      page: () => const FaqsPageView(),
+      binding: FaqsPageBinding(),
     ),
   ];
 }

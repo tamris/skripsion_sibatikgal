@@ -41,17 +41,6 @@ class VideoPageView extends GetView<VideoPageController> {
               child: Container(
                 width: 40,
                 height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   icon: const Icon(Icons.arrow_back, size: 20),

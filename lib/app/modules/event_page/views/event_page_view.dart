@@ -50,12 +50,8 @@ class EventPageView extends GetView<EventPageController> {
             child: Container(
               width: 45,
               height: 45,
-              decoration: const BoxDecoration(
-                color: cKremChip,
-                shape: BoxShape.circle,
-              ),
               child: const Center(
-                child: Icon(Icons.arrow_back, size: 16, color: cDark),
+                child: Icon(Icons.arrow_back, size: 20, color: cDark),
               ),
             ),
           ),

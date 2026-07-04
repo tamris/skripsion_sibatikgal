@@ -15,7 +15,7 @@ class OnboardingView extends GetView<OnboardingController> {
     const Color cBg = Color(0xFFF9F8F4);
 
     return Obx(() => Scaffold(
-          backgroundColor: controller.bgColors[controller.currentPage.value],
+          backgroundColor: cBg,
           body: SafeArea(
             child: Column(
               children: [

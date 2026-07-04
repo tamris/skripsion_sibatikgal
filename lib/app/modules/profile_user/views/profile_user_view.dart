@@ -3,124 +3,217 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileUserView extends StatelessWidget {
-  const ProfileUserView({Key? key}) : super(key: key);
+  const ProfileUserView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Palette warna premium konsisten Batikara
+    const bgCanvas = Color(0xFFFAF7F2);
+    const darkBrown = Color(0xFF1C1308);
+    const textMuted = Color(0xFF7A7062);
+    const accentGold = Color(0xFFFBBF24);
+    const borderColor = Color(0xFFE6DFD5);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: bgCanvas,
+      // ================= FIXED APP BAR =================
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: bgCanvas,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
         centerTitle: true,
-        title: const Text(
-          'User Profile',
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
+        automaticallyImplyLeading: false,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Center(
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: const Icon(Icons.arrow_back, color: darkBrown, size: 20),
+              ),
+            ),
+          ),
+        ),
+        title: Text(
+          'Profil Pengguna',
+          style: GoogleFonts.lora(
+            color: darkBrown,
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
-              // Foto profil dengan ikon edit
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 68,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: const AssetImage(
-                        'assets/images/avatar.png'), // ganti dengan path foto profil
-                  ),
-                  Positioned(
-                    bottom: 4,
-                    right: 4,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(color: Colors.black12, blurRadius: 2)
+
+      // ================= BODY CONTENT =================
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Konten Form yang Scrollable
+            Expanded(
+              child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+
+                    // --- FOTO PROFIL STACK ---
+                    Center(
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: const Color(0xFFE6DFD5), width: 2),
+                            ),
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: const Color(0xFFF2ECE0),
+                              backgroundImage:
+                                  const AssetImage('assets/images/avatar.png'),
+                              // Fallback jika asset kosong
+                            ),
+                          ),
+                          // Tombol Ganti Foto Kustom
+                          Positioned(
+                            bottom: 2,
+                            right: 2,
+                            child: GestureDetector(
+                              onTap: () {}, // Aksi ganti foto
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                  color: darkBrown,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2))
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.camera_alt_outlined,
+                                  size: 18,
+                                  color: accentGold,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                      child: IconButton(
-                        icon: const Icon(Icons.camera_alt,
-                            size: 20, color: Color(0xFF8A5A44)),
-                        onPressed: () {}, // aksi ganti foto
-                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              // Form input
-              const _ProfileTextField(label: 'Nama', hint: 'Rizqi Pratama'),
-              const SizedBox(height: 16),
+                    const SizedBox(height: 36),
 
-              const _ProfileTextField(
-                  label: 'E-Mail',
-                  hint: 'johndoe@gmail.com',
-                  keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 16),
-              const _ProfileTextField(
-                  label: 'Jenis Kelamin',
-                  hint: 'Laki-laki',
-                  keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 16),
-              const _ProfileTextField(
-                  label: 'Tanggal Lahir',
-                  hint: '12 Desember 1998',
-                  keyboardType: TextInputType.datetime),
-              const SizedBox(height: 32),
-              // Tombol save
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8A5A44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    // --- FORM INPUT PROFILE ---
+                    _ProfileTextField(
+                      label: 'Nama Lengkap',
+                      hint: 'Rizqi Pratama',
+                      icon: Icons.person_outline_rounded,
+                      darkBrown: darkBrown,
+                      textMuted: textMuted,
+                      borderColor: borderColor,
                     ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'SIMPAN',
-                    style: GoogleFonts.mulish(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      letterSpacing: 1.2,
+                    const SizedBox(height: 20),
+
+                    _ProfileTextField(
+                      label: 'E-Mail',
+                      hint: 'johndoe@gmail.com',
+                      icon: Icons.mail_outline_rounded,
+                      keyboardType: TextInputType.emailAddress,
+                      darkBrown: darkBrown,
+                      textMuted: textMuted,
+                      borderColor: borderColor,
                     ),
-                  ),
+                    const SizedBox(height: 20),
+
+                    _ProfileTextField(
+                      label: 'Jenis Kelamin',
+                      hint: 'Laki-laki',
+                      icon: Icons.wc_rounded,
+                      darkBrown: darkBrown,
+                      textMuted: textMuted,
+                      borderColor: borderColor,
+                    ),
+                    const SizedBox(height: 20),
+
+                    _ProfileTextField(
+                      label: 'Tanggal Lahir',
+                      hint: '12 Desember 1998',
+                      icon: Icons.calendar_today_outlined,
+                      keyboardType: TextInputType.datetime,
+                      darkBrown: darkBrown,
+                      textMuted: textMuted,
+                      borderColor: borderColor,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // ================= BOTTOM BUTTON SIMPAN =================
+            Container(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+              color: bgCanvas, // Agar transisi scroll rapi di belakang button
+              child: ElevatedButton(
+                onPressed: () {
+                  // Aksi simpan profile
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      darkBrown, // Menggunakan warna gelap utama biar kontras
+                  foregroundColor: accentGold,
+                  minimumSize: const Size(double.infinity, 54),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.check_circle_outline_rounded,
+                        size: 18, color: accentGold),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Simpan Perubahan',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: accentGold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+// ================= CUSTOM INPUT COMPONENT =================
 class _ProfileTextField extends StatelessWidget {
   final String label;
   final String hint;
+  final IconData icon;
   final TextInputType? keyboardType;
+  final Color darkBrown;
+  final Color textMuted;
+  final Color borderColor;
+
   const _ProfileTextField({
     required this.label,
     required this.hint,
+    required this.icon,
+    required this.darkBrown,
+    required this.textMuted,
+    required this.borderColor,
     this.keyboardType,
   });
 
@@ -131,35 +224,38 @@ class _ProfileTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontFamily: 'Mulish',
-            fontWeight: FontWeight.w500,
+          style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Color(0xFF8A5A44),
+            fontWeight: FontWeight.w700,
+            color: darkBrown,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         TextFormField(
           keyboardType: keyboardType,
+          cursorColor: darkBrown,
+          style: GoogleFonts.poppins(
+              fontSize: 15, color: darkBrown, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(
-              fontFamily: 'Mulish',
-              color: Colors.grey,
-              fontSize: 15,
-            ),
+            hintStyle: GoogleFonts.poppins(
+                color: textMuted.withOpacity(0.5), fontSize: 14),
             filled: true,
             fillColor: Colors.white,
+            prefixIcon: Icon(icon, color: textMuted.withOpacity(0.7), size: 20),
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: borderColor, width: 1),
+            ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: borderColor, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: Color(0xFF2D3A6E), width: 1.5),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: darkBrown, width: 1.5),
             ),
           ),
         ),
