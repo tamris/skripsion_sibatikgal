@@ -8,22 +8,31 @@ class HomeHeader extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    final greetingStyle = TextStyle(
-      color: Colors.grey.shade600,
-      fontSize: 14,
-      fontFamily: 'Poppins',
+    // Palet warna premium konsisten Batikara
+    const darkBrown = Color(0xFF1C1308); // Cokelat gelap utama
+    const textMuted = Color(0xFF7A7062); // Warna teks pasif/sekunder
+    const borderColor = Color(0xFFE6DFD5); // Garis tepi tipis premium
+
+    // Mengoptimalkan style font dengan GoogleFonts global
+    final greetingStyle = GoogleFonts.poppins(
+      color: textMuted,
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
     );
 
     final headlineStyle = GoogleFonts.lora(
-      fontSize: 20,
+      fontSize: 24, // Sedikit dinaikkan dari 20 agar lebih tegas dan mengundang
       fontWeight: FontWeight.w700,
-      color: Color(0xFF5A3E36), // sedikit lebih gelap biar kuat
+      color: darkBrown, // Mengganti warna cokelat kemerahan lama
+      height: 1.2,
     );
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+      // Padding disesuaikan agar pas diletakkan di bagian paling atas beranda
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment
+            .center, // Diubah ke center agar sejajar vertikal dengan avatar
         children: [
           Expanded(
             child: Obx(() {
@@ -34,7 +43,7 @@ class HomeHeader extends GetView<HomeController> {
                     controller.greeting.value,
                     style: greetingStyle,
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Text(
                     "Eksplor Batik Tegalan",
                     style: headlineStyle,
@@ -43,17 +52,22 @@ class HomeHeader extends GetView<HomeController> {
               );
             }),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
+
+          // --- AVATAR BINGKAI PREMIUM (SMOOTH-SQUIRCLE) ---
           GestureDetector(
-            onTap: () => Get.toNamed('/profile-user'),
+            onTap: () => Get.toNamed('/profile-user'), // Navigasi tetap aman
             child: Container(
-              height: 52,
-              width: 52,
+              height: 48, // Ukuran dioptimalkan menjadi 48 agar proporsional
+              width: 48,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                color: const Color(0xFFF2ECE0),
+                borderRadius: BorderRadius.circular(
+                    16), // Kelengkungan sudut yang moderen dan rapi
                 border: Border.all(
-                  color: const Color(0xFF8A5A44),
-                  width: 1.2,
+                  color:
+                      borderColor, // Mengganti warna terracotta lama dengan krem gelap tipis
+                  width: 1.5,
                 ),
                 image: const DecorationImage(
                   image: AssetImage('assets/images/avatar.png'),

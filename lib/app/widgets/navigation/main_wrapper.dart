@@ -1,4 +1,3 @@
-import 'package:batikara/app/modules/chatbot_page/views/chatbot_page_view.dart';
 import 'package:batikara/app/modules/deteksi_page/controllers/deteksi_page_controller.dart';
 import 'package:batikara/app/modules/deteksi_page/views/deteksi_page_view.dart';
 import 'package:batikara/app/modules/galeri_page/views/galeri_page_view.dart';
@@ -11,7 +10,6 @@ import 'package:batikara/app/widgets/navigation/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../modules/chatbot_page/controllers/chatbot_page_controller.dart';
 import '../../modules/galeri_page/controllers/galeri_page_controller.dart';
 import 'bottom_nav_controller.dart';
 
