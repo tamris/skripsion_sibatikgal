@@ -23,10 +23,8 @@ class ApiProvider {
         // =========================
         // REQUEST
         // =========================
-
         onRequest: (options, handler) {
-          // Jangan inject access token
-          // ke endpoint refresh
+          // Jangan inject access token ke endpoint refresh
           if (options.path.contains('/refresh')) {
             return handler.next(options);
           }
@@ -43,8 +41,8 @@ class ApiProvider {
         // =========================
         // ERROR
         // =========================
-
         onError: (error, handler) async {
+          // 1. JIKA REFRESH TOKEN EXPIRED / GAGAL
           if (error.requestOptions.path.contains('/refresh')) {
             storage.erase();
 
@@ -55,7 +53,13 @@ class ApiProvider {
             return handler.next(error);
           }
 
-          // Token expired
+          // 2. TAMBAHAN FIX: JIKA EMAIL/PASSWORD SALAH (401 DI ENDPOINT LOGIN)
+          // Langsung loloskan error ke controller, jangan dicoba refresh token
+          if (error.requestOptions.path.contains('/api/auth/login')) {
+            return handler.next(error);
+          }
+
+          // 3. LOGIC REFRESH TOKEN UNTUK ENDPOINT LAIN (JIKA TOKEN EXPIRED)
           if (error.response?.statusCode == 401) {
             try {
               final refreshToken = storage.read(
@@ -75,7 +79,6 @@ class ApiProvider {
               // =========================
               // REFRESH TOKEN REQUEST
               // =========================
-
               final response = await dio.post(
                 '/api/auth/refresh',
                 options: Options(
