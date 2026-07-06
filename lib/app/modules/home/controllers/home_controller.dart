@@ -1,6 +1,8 @@
 import 'package:batikara/app/data/service/informasi_service.dart';
+import 'package:batikara/app/data/service/profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart'; // <--- Tambahkan import GetStorage
 
 import '../../../data/models/informasi_model.dart';
 
@@ -12,9 +14,15 @@ class QuickAction {
 }
 
 class HomeController extends GetxController {
+  // Instance GetStorage
+  final storage = GetStorage();
+
   // greeting/user
   final text = 'Jelajahi & deteksi motif batik hari ini'.obs;
   var greeting = ''.obs;
+  var username = ''.obs; // <--- Tambah Rx variable untuk menampung Nama
+  var profilePictureUrl =
+      ''.obs; // <--- Tambah Rx variable untuk URL Foto Profil
 
   // Search
   final searchC = TextEditingController();
@@ -82,20 +90,50 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadGreeting();
+    updateGreetingAndProfile(); // <--- Ganti loadGreeting() lama dengan fungsi gabungan baru
     fetchLatestNews();
   }
 
-  void loadGreeting() {
+  void syncUserProfileFromServer() async {
+    try {
+      final response = await ProfileService.getProfile();
+      if (response.statusCode == 200 && response.data['status'] == true) {
+        final userData = response.data['user'];
+
+        // Tulis ulang ke GetStorage agar tersimpan permanen
+        storage.write('user_data', userData);
+
+        // Perbarui variable reaktif secara realtime di halaman Beranda
+        username.value = userData['username'] ?? '';
+        profilePictureUrl.value = userData['profile_picture'] ?? '';
+
+        // Paksa refresh UI reaktif
+        profilePictureUrl.refresh();
+      }
+    } catch (e) {
+      print("Background sync profile gagal: $e");
+    }
+  }
+
+  // =========================================================
+  // FIX LOGIC: UPDATE GREETING & AMBIL DATA PROFILE DARI LOCAL
+  // =========================================================
+  void updateGreetingAndProfile() {
     final hour = DateTime.now().hour;
     if (hour < 11) {
-      greeting.value = "Sugeng Enjing!";
+      greeting.value = "Sugeng Enjing";
     } else if (hour < 15) {
-      greeting.value = "Sugeng Siang!";
+      greeting.value = "Sugeng Siang";
     } else if (hour < 18) {
-      greeting.value = "Sugeng Sonten!";
+      greeting.value = "Sugeng Sonten";
     } else {
-      greeting.value = "Sugeng Dalu!";
+      greeting.value = "Sugeng Dalu";
+    }
+
+    final userData = storage.read('user_data');
+    if (userData != null) {
+      username.value = userData['username'] ?? '';
+      profilePictureUrl.value = userData['profile_picture'] ?? '';
     }
   }
 }

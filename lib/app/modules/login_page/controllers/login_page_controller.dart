@@ -12,6 +12,7 @@ class LoginPageController extends GetxController {
   final storage = GetStorage();
   var isPasswordHidden = true.obs;
   var isLoading = false.obs;
+  var photoUrl = ''.obs;
 
   void togglePasswordVisibility() {
     isPasswordHidden.value = !isPasswordHidden.value;
@@ -94,7 +95,6 @@ class LoginPageController extends GetxController {
         storage.write('token', response.data['access_token']);
         storage.write('refresh_token', response.data['refresh_token']);
         storage.write('user_data', response.data['user']);
-
         showCustomSnackbar("Berhasil",
             "Selamat datang, ${response.data['user']['username']}!");
         Get.offAllNamed(Routes.HOME);

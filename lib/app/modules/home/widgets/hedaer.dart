@@ -8,12 +8,10 @@ class HomeHeader extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    // Palet warna premium konsisten Batikara
-    const darkBrown = Color(0xFF1C1308); // Cokelat gelap utama
-    const textMuted = Color(0xFF7A7062); // Warna teks pasif/sekunder
-    const borderColor = Color(0xFFE6DFD5); // Garis tepi tipis premium
+    const darkBrown = Color(0xFF1C1308);
+    const textMuted = Color(0xFF7A7062);
+    const borderColor = Color(0xFFE6DFD5);
 
-    // Mengoptimalkan style font dengan GoogleFonts global
     final greetingStyle = GoogleFonts.poppins(
       color: textMuted,
       fontSize: 13,
@@ -21,27 +19,30 @@ class HomeHeader extends GetView<HomeController> {
     );
 
     final headlineStyle = GoogleFonts.lora(
-      fontSize: 24, // Sedikit dinaikkan dari 20 agar lebih tegas dan mengundang
+      fontSize: 24,
       fontWeight: FontWeight.w700,
-      color: darkBrown, // Mengganti warna cokelat kemerahan lama
+      color: darkBrown,
       height: 1.2,
     );
 
     return Padding(
-      // Padding disesuaikan agar pas diletakkan di bagian paling atas beranda
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment
-            .center, // Diubah ke center agar sejajar vertikal dengan avatar
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Obx(() {
+              String displayGreeting = controller.username.value.isNotEmpty
+                  ? "${controller.greeting.value} ${controller.username.value}!"
+                  : controller.greeting.value;
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    controller.greeting.value,
+                    displayGreeting,
                     style: greetingStyle,
+                    maxLines: 1,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -54,27 +55,41 @@ class HomeHeader extends GetView<HomeController> {
           ),
           const SizedBox(width: 16),
 
-          // --- AVATAR BINGKAI PREMIUM (SMOOTH-SQUIRCLE) ---
+          // --- AVATAR BINGKAI LINGKARAN PREMIUM (CIRCLE) ---
           GestureDetector(
-            onTap: () => Get.toNamed('/profile-user'), // Navigasi tetap aman
-            child: Container(
-              height: 48, // Ukuran dioptimalkan menjadi 48 agar proporsional
-              width: 48,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF2ECE0),
-                borderRadius: BorderRadius.circular(
-                    16), // Kelengkungan sudut yang moderen dan rapi
-                border: Border.all(
-                  color:
-                      borderColor, // Mengganti warna terracotta lama dengan krem gelap tipis
-                  width: 1.5,
+            onTap: () async {
+              // Menunggu halaman profil ditutup, lalu refresh data local storage di beranda
+              await Get.toNamed('/profile-user');
+              controller.updateGreetingAndProfile();
+            },
+            child: Obx(() {
+              // MENGAMANKAN BINDING: Lakukan pengecekan validitas URL gambar secara ketat
+              final String photoUrl = controller.profilePictureUrl.value;
+
+              final ImageProvider imageProvider =
+                  (photoUrl.isNotEmpty && photoUrl.startsWith('http'))
+                      ? NetworkImage(photoUrl)
+                      : const AssetImage('assets/images/avatar.png')
+                          as ImageProvider;
+
+              return Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFF2ECE0),
+                  border: Border.all(
+                    color: borderColor,
+                    width: 1.5,
+                  ),
+                  image: DecorationImage(
+                    image:
+                        imageProvider, // Otomatis aman dari crash/blank data kosong saat login
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/avatar.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+              );
+            }),
           ),
         ],
       ),
