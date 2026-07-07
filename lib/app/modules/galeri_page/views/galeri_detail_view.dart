@@ -132,7 +132,7 @@ class GaleriDetailView extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // 4. Tombol Aksi Bawah
-                  const BatikActionButtons(),
+                  BatikActionButtons(batik: batik),
                   const SizedBox(height: 20),
                 ],
               ),

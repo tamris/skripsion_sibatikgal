@@ -32,6 +32,8 @@ import '../modules/regsiter_page/bindings/regsiter_page_binding.dart';
 import '../modules/regsiter_page/views/regsiter_page_view.dart';
 import '../modules/reset_password_page/bindings/reset_password_page_binding.dart';
 import '../modules/reset_password_page/views/reset_password_page_view.dart';
+import '../modules/save_item_page/bindings/save_item_page_binding.dart';
+import '../modules/save_item_page/views/save_item_page_view.dart';
 import '../modules/sejarah_page/bindings/sejarah_page_binding.dart';
 import '../modules/sejarah_page/views/sejarah_page_view.dart';
 import '../modules/studio_canvas_page/bindings/studio_canvas_page_binding.dart';
@@ -162,6 +164,11 @@ class AppPages {
       name: _Paths.FAQS_PAGE,
       page: () => const FaqsPageView(),
       binding: FaqsPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.SAVE_ITEM_PAGE,
+      page: () => const SaveItemPageView(),
+      binding: SaveItemPageBinding(),
     ),
   ];
 }

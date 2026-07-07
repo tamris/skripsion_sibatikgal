@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // <--- Tambahkan import GetX
 import 'package:google_fonts/google_fonts.dart';
+import '../../../data/models/batik_model.dart'; // <--- Sesuaikan path model batik kamu
+import '../controllers/galeri_page_controller.dart'; // <--- Sesuaikan path controller kamu
 
 class BatikActionButtons extends StatefulWidget {
-  const BatikActionButtons({super.key});
+  final BatikModel batik; // <--- TARUH DATA MODEL DI SINI
+  const BatikActionButtons({super.key, required this.batik});
 
   @override
   State<BatikActionButtons> createState() => _BatikActionButtonsState();
@@ -20,6 +24,13 @@ class _BatikActionButtonsState extends State<BatikActionButtons>
   @override
   void initState() {
     super.initState();
+
+    // --- TETAP AMAN: Mengambil state bawaan database awal ---
+    _isFavorite =
+        widget.batik.isLiked; // Mengisi status awal true/false dari backend
+
+    print(
+        "DEBUG BUTTON DETAIL -> Motif: ${widget.batik.title}, Status _isFavorite di UI: $_isFavorite");
 
     // Inisialisasi controller animasi dengan durasi kilat (150 milidetik)
     _animationController = AnimationController(
@@ -46,16 +57,26 @@ class _BatikActionButtonsState extends State<BatikActionButtons>
     super.dispose();
   }
 
-  void _handleFavoriteClick() {
-    // Jalankan animasi pop (membesar lalu mengecil)
-    _animationController.forward();
+  void _handleFavoriteClick() async {
+    _animationController.forward(); // Tetap jalankan animasi pop lu[cite: 5]
 
-    // Balikkan status favorit
     setState(() {
       _isFavorite = !_isFavorite;
     });
 
-    // Opsional: Kamu bisa taruh fungsi integrasi ke database/API lokal GetX di sini jika ada
+    if (Get.isRegistered<GaleriPageController>()) {
+      final controller = Get.find<GaleriPageController>();
+      bool finalStatus = await controller.toggleBatikLikeStatus(widget.batik);
+
+      // Paksa sinkronisasi object widget agar tidak reset saat re-render
+      widget.batik.isLiked = finalStatus;
+
+      if (mounted) {
+        setState(() {
+          _isFavorite = finalStatus;
+        });
+      }
+    }
   }
 
   @override
@@ -117,8 +138,8 @@ class _BatikActionButtonsState extends State<BatikActionButtons>
                   ), // Efek transisi perubahan icon
                   transitionBuilder:
                       (Widget child, Animation<double> animation) {
-                        return ScaleTransition(scale: animation, child: child);
-                      },
+                    return ScaleTransition(scale: animation, child: child);
+                  },
                   child: _isFavorite
                       ? const Icon(
                           Icons.favorite, // Icon hati full saat true

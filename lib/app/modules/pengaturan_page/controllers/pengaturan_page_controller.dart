@@ -5,14 +5,15 @@ import 'package:get_storage/get_storage.dart';
 import '../../../data/service/profile_service.dart'; // <--- Pastikan import ProfileService kamu ke sini
 
 class PengaturanPageController extends GetxController {
-  final storage = GetStorage(); // <--- Definisikan instance GetStorage secara global di class
+  final storage =
+      GetStorage(); // <--- Definisikan instance GetStorage secara global di class
 
   final RxBool pushNotif = true.obs;
   var greeting = ''.obs;
 
   // --- MURNI BEST PRACTICE: Menggunakan Observable kosong agar dinamis ---
   final RxString displayName = ''.obs;
-  final RxString photoUrl = ''.obs; 
+  final RxString photoUrl = ''.obs;
 
   void toggleNotif(bool v) => pushNotif.value = v;
 
@@ -24,10 +25,11 @@ class PengaturanPageController extends GetxController {
 
   void goToChangePassword() => Get.toNamed('/ubah-sandi');
   void goToFaqs() => Get.toNamed('/faqs-page');
+  void goToSaveItem() => Get.toNamed('/save-item-page');
   void goToAbout() => Get.toNamed('/tentang-aplikasi-page');
 
   void logout() async {
-    storage.remove('token'); 
+    storage.remove('token');
     storage.remove('user_data');
 
     Get.until((route) => Get.currentRoute == Routes.LOGIN_PAGE);
@@ -57,7 +59,8 @@ class PengaturanPageController extends GetxController {
     if (userData != null) {
       displayName.value = userData['username'] ?? '';
       photoUrl.value = userData['profile_picture'] ?? '';
-      photoUrl.refresh(); // Memaksa widget Obx di View melakukan pembaruan instan
+      photoUrl
+          .refresh(); // Memaksa widget Obx di View melakukan pembaruan instan
     }
   }
 
@@ -69,10 +72,10 @@ class PengaturanPageController extends GetxController {
       final response = await ProfileService.getProfile();
       if (response.statusCode == 200 && response.data['status'] == true) {
         final userData = response.data['user'];
-        
+
         // Simpan data paling segar dari server ke cache lokal
         storage.write('user_data', userData);
-        
+
         // Perbarui state reaktif
         displayName.value = userData['username'] ?? '';
         photoUrl.value = userData['profile_picture'] ?? '';

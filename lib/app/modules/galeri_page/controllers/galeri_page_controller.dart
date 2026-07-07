@@ -8,7 +8,7 @@ class GaleriPageController extends GetxController {
 
   var isLoading = true.obs;
   var isLoadMore = false.obs;
-  var isError = false.obs; 
+  var isError = false.obs;
   var totalBatikCount = 0.obs;
 
   var batikList = <BatikModel>[].obs;
@@ -22,10 +22,8 @@ class GaleriPageController extends GetxController {
   String currentSearchQuery = '';
 
   List<String> get categories {
-    final uniqueCategories = batikList
-        .map((batik) => batik.category)
-        .toSet()
-        .toList();
+    final uniqueCategories =
+        batikList.map((batik) => batik.category).toSet().toList();
     uniqueCategories.sort();
     return ['Semua', ...uniqueCategories];
   }
@@ -54,7 +52,8 @@ class GaleriPageController extends GetxController {
     currentPage = 1;
     hasMoreData = true;
     selectedCategory.value = 'Semua';
-    currentSearchQuery = ''; // Reset kata kunci pencarian saat halaman dimuat ulang
+    currentSearchQuery =
+        ''; // Reset kata kunci pencarian saat halaman dimuat ulang
     await fetchInitialBatikData(isRefresh: true);
   }
 
@@ -65,7 +64,8 @@ class GaleriPageController extends GetxController {
       isError(false); // Reset status error sebelum menembak API
 
       // Sekarang mempassing currentPage DAN currentSearchQuery ke Backend Flask
-      var response = await GaleriService.fetchBatikWithPagination(currentPage, currentSearchQuery);
+      var response = await GaleriService.fetchBatikWithPagination(
+          currentPage, currentSearchQuery);
 
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['data'] ?? [];
@@ -88,10 +88,10 @@ class GaleriPageController extends GetxController {
 
         applyFilter();
       } else {
-        isError(true); 
+        isError(true);
       }
     } catch (e) {
-      isError(true); 
+      isError(true);
       Get.snackbar(
         'Koneksi Gagal',
         'Periksa kembali jaringan internet Anda.',
@@ -115,7 +115,8 @@ class GaleriPageController extends GetxController {
       currentPage++;
 
       // Membawa parameter search query saat menarik data halaman selanjutnya
-      var response = await GaleriService.fetchBatikWithPagination(currentPage, currentSearchQuery);
+      var response = await GaleriService.fetchBatikWithPagination(
+          currentPage, currentSearchQuery);
 
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['data'] ?? [];
@@ -170,11 +171,42 @@ class GaleriPageController extends GetxController {
     }
   }
 
+  Future<bool> toggleBatikLikeStatus(BatikModel batik) async {
+    try {
+      // 1. Tembak API ke server
+      var response = await GaleriService.toggleLikeBatik(batik.id!);
+
+      if (response.statusCode == 200 && response.data['status'] == 'success') {
+        bool serverIsLiked = response.data['is_liked'] ?? false;
+
+        // =========================================================
+        // KUNCI UTAMA: Update langsung objek batik yang bersangkutan!
+        // Ini menjamin state 'isLiked' di dalam object ikut berubah secara permanen
+        // =========================================================
+        batik.isLiked = serverIsLiked;
+
+        // SINKRONISASI OPSIONAL: Tetap update list utama jika itemnya ada di sana
+        int index = batikList.indexWhere((element) => element.id == batik.id);
+        if (index != -1) {
+          batikList[index].isLiked = serverIsLiked;
+          batikList.refresh();
+        }
+
+        return serverIsLiked;
+      }
+      return batik.isLiked;
+    } catch (e) {
+      print("Error toggle like: $e");
+      return batik.isLiked;
+    }
+  }
+
   // 4. ROMBAK TOTAL: Mengubah pencarian lokal menjadi pencarian berbasis request ke Server Flask
   void searchBatik(String query) {
     currentSearchQuery = query; // Simpan teks pencarian ke variabel global
-    currentPage = 1;            // Reset halaman kembali ke halaman pertama untuk pencarian baru
-    hasMoreData = true;         // Reset status pagination data baru
+    currentPage =
+        1; // Reset halaman kembali ke halaman pertama untuk pencarian baru
+    hasMoreData = true; // Reset status pagination data baru
 
     // Tembak ulang API. Flask & MongoDB akan menyaring seluruh database berdasarkan teks query ini
     fetchInitialBatikData(isRefresh: true);
@@ -184,8 +216,7 @@ class GaleriPageController extends GetxController {
     if (responseData is Map<String, dynamic>) {
       final meta = responseData['meta'];
       if (meta is Map<String, dynamic>) {
-        final candidate =
-            meta['total'] ??
+        final candidate = meta['total'] ??
             meta['total_items'] ??
             meta['total_data'] ??
             meta['count'];
@@ -194,8 +225,7 @@ class GaleriPageController extends GetxController {
           return int.tryParse(candidate) ?? fallbackCount;
       }
 
-      final directCandidate =
-          responseData['total'] ??
+      final directCandidate = responseData['total'] ??
           responseData['total_items'] ??
           responseData['total_data'] ??
           responseData['count'];

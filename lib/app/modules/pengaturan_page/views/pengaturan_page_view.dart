@@ -191,9 +191,7 @@ class PengaturanPageView extends GetView<PengaturanPageController> {
                     SettingsTile(
                       icon: Icons.bookmark_border_rounded,
                       label: 'Item Tersimpan',
-                      onTap: () {
-                        // Tambahkan route atau fungsi jika diperlukan
-                      },
+                      onTap: controller.goToSaveItem,
                     ),
                   ],
                 ),

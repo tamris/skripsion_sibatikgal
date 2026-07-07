@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer_animation/shimmer_animation.dart'; // Tetap menggunakan package andalanmu
 import '../controllers/galeri_page_controller.dart';
 import 'galeri_detail_view.dart';
 
@@ -9,15 +11,15 @@ class GaleriPageView extends GetView<GaleriPageController> {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgPrimary = Color(0xFFFAF6F0);
-    const Color textDark = Color(0xFF3E2723);
-    const Color textLight = Color(0xFFFFD264);
-    const Color searchBg = Color(0xFFF0EAD8);
-    const Color activeTabColor = Color(0xFF1A1208);
-    const Color inactiveTabColor = Color(0xFFF0EAD8);
+    // Palet warna premium konsisten Batikara global
+    const bgCanvas = Color(0xFFFAF7F2);
+    const darkBrown = Color(0xFF1C1308);
+    const textMuted = Color(0xFF7A7062);
+    const accentGold = Color(0xFFFBBF24);
+    const borderColor = Color(0xFFE6DFD5);
 
     return Scaffold(
-      backgroundColor: bgPrimary,
+      backgroundColor: bgCanvas,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,45 +35,62 @@ class GaleriPageView extends GetView<GaleriPageController> {
                   Text(
                     'Galeri Motif Batik',
                     style: GoogleFonts.lora(
-                      color: textDark,
+                      color: darkBrown,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 2),
                   Obx(
                     () => Text(
                       '${controller.totalBatikCount.value} koleksi motif',
-                      style: GoogleFonts.lora(
-                        color: textDark.withValues(alpha: 0.6),
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
+                      style: GoogleFonts.poppins(
+                        color: textMuted,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // Search Bar (Diberi padding horizontal)
+            // ================= SINKRONISASI SEARCH BAR PREMIUM =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: TextField(
                 onChanged: (value) => controller.searchBatik(value),
+                cursorColor: darkBrown,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  color: darkBrown,
+                  fontWeight: FontWeight.w500,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Cari motif batik...',
                   hintStyle: GoogleFonts.poppins(
-                    color: textDark.withValues(alpha: 0.5),
+                    color: textMuted.withOpacity(0.5),
                     fontSize: 14,
                   ),
-                  prefixIcon: const Icon(Icons.search, color: textDark),
-                  filled: true,
-                  fillColor: searchBg,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: textMuted.withOpacity(0.7),
+                    size: 20,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: borderColor, width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: const BorderSide(color: darkBrown, width: 1.5),
+                  ),
                 ),
               ),
             ),
@@ -88,19 +107,21 @@ class GaleriPageView extends GetView<GaleriPageController> {
                     bool isSelected =
                         controller.selectedCategory.value == category;
                     return Padding(
-                      padding: const EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 8),
                       child: InkWell(
                         onTap: () => controller.filterByCategory(category),
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
+                        borderRadius: BorderRadius.circular(14),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 8,
-                          ),
+                              horizontal: 18, vertical: 8),
                           decoration: BoxDecoration(
-                            color:
-                                isSelected ? activeTabColor : inactiveTabColor,
-                            borderRadius: BorderRadius.circular(20),
+                            color: isSelected ? darkBrown : Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isSelected ? darkBrown : borderColor,
+                              width: 1,
+                            ),
                           ),
                           child: Text(
                             category == 'Semua'
@@ -108,8 +129,10 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                 : category[0].toUpperCase() +
                                     category.substring(1),
                             style: GoogleFonts.poppins(
-                              color: isSelected ? textLight : textDark,
-                              fontWeight: FontWeight.bold,
+                              color: isSelected ? accentGold : textMuted,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                               fontSize: 13,
                             ),
                           ),
@@ -120,69 +143,74 @@ class GaleriPageView extends GetView<GaleriPageController> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Grid List Motif Batik + Load More Indicator + Error & Refresh Handling
             Expanded(
               child: Obx(() {
-                // 1. KONDISI JIKA SEDANG LOADING UTAMA (AWAL BUKA)
+                // 1. STATE LOADING UTAMA MENGGUNAKAN FULL SKELETON SHIMMER CARD
                 if (controller.isLoading.value) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: activeTabColor),
-                  );
+                  return _buildGridShimmerLoading(borderColor);
                 }
 
-                // 2. KONDISI JIKA JARINGAN ERROR ATAU SERVER DOWN
+                // 2. STATE ERROR / LOST CONNECTION
                 if (controller.isError.value) {
                   return Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.wifi_off_rounded,
-                            size: 64,
-                            color: textDark,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Oops! Terjadi Kendala',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                              color: textDark,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFFCE8E6),
+                              shape: BoxShape.circle,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Tidak ada koneksi internet. Pastikan Anda terhubung ke jaringan.',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                              color: textDark.withValues(alpha: 0.6),
-                              fontSize: 14,
+                            child: const Icon(
+                              Icons.wifi_off_rounded,
+                              size: 40,
+                              color: Color(0xFFC2612D),
                             ),
                           ),
                           const SizedBox(height: 20),
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: activeTabColor,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
+                          Text(
+                            'Koneksi Internet Terputus',
+                            style: GoogleFonts.poppins(
+                              color: darkBrown,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
                             ),
-                            onPressed: () => controller.refreshData(),
-                            icon: const Icon(Icons.refresh_rounded),
-                            label: Text(
-                              'Muat Ulang',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Gagal menghubungkan ke studio galeri. Pastikan jaringan internet ponsel Anda aktif lalu ketuk tombol di bawah.',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              color: textMuted,
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: 160,
+                            height: 46,
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: darkBrown,
+                                foregroundColor: accentGold,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              onPressed: () => controller.refreshData(),
+                              icon: const Icon(Icons.refresh_rounded, size: 18),
+                              label: Text(
+                                'Coba Lagi',
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w700, fontSize: 14),
                               ),
                             ),
                           ),
@@ -195,7 +223,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
                 // 3. KONDISI JIKA DATA FILTER KOSONG
                 if (controller.filteredBatikList.isEmpty) {
                   return RefreshIndicator(
-                    color: activeTabColor,
+                    color: darkBrown,
                     backgroundColor: Colors.white,
                     onRefresh: () => controller.refreshData(),
                     child: SingleChildScrollView(
@@ -206,7 +234,8 @@ class GaleriPageView extends GetView<GaleriPageController> {
                           child: Text(
                             'Motif tidak ditemukan',
                             style: GoogleFonts.poppins(
-                              color: textDark.withValues(alpha: 0.6),
+                              color: textMuted,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -215,9 +244,9 @@ class GaleriPageView extends GetView<GaleriPageController> {
                   );
                 }
 
-                // 4. KONDISI NORMAL (DATA BERHASIL DIMUAT JALAN JALAN)
+                // 4. KONDISI NORMAL (DATA BERHASIL DIMUAT DENGAN CACHED IMAGE)
                 return RefreshIndicator(
-                  color: activeTabColor,
+                  color: darkBrown,
                   backgroundColor: Colors.white,
                   onRefresh: () => controller.refreshData(),
                   child: Column(
@@ -226,130 +255,123 @@ class GaleriPageView extends GetView<GaleriPageController> {
                         child: GridView.builder(
                           controller: controller.scrollController,
                           itemCount: controller.filteredBatikList.length,
-                          // Menggunakan AlwaysScrollableScrollPhysics agar pull-to-refresh tetap aktif walau item sedikit
                           physics: const AlwaysScrollableScrollPhysics(),
                           padding: const EdgeInsets.only(
-                            left: 20.0,
-                            right: 20.0,
-                            bottom: 10.0,
-                          ),
+                              left: 20.0, right: 20.0, bottom: 16.0),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            crossAxisSpacing: 15,
-                            mainAxisSpacing: 15,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
                             childAspectRatio: 0.72,
                           ),
                           itemBuilder: (context, index) {
                             final batik = controller.filteredBatikList[index];
 
-                            return InkWell(
-                              onTap: () {
-                                Get.to(() => GaleriDetailView(batik: batik));
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.02,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 5),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Image Container
-                                    Expanded(
-                                      flex: 3,
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                            top: Radius.circular(20),
-                                          ),
-                                          child: Stack(
-                                            children: [
-                                              Positioned.fill(
-                                                child: batik.image.isNotEmpty
-                                                    ? Image.network(
-                                                        batik.image,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (
-                                                          c,
-                                                          e,
-                                                          s,
-                                                        ) =>
-                                                            Container(
-                                                          color:
-                                                              Colors.grey[200],
-                                                          child: const Icon(
-                                                            Icons.broken_image,
-                                                            size: 40,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : Container(
-                                                        color: Colors.grey[200],
-                                                        child: const Icon(
-                                                          Icons.image,
-                                                          size: 40,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    // Text Info Container
-                                    Expanded(
-                                      flex: 2,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0,
-                                          vertical: 8.0,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              batik.title,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                color: textDark,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              batik.category,
-                                              style: GoogleFonts.poppins(
-                                                color: textDark.withValues(
-                                                  alpha: 0.6,
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border:
+                                    Border.all(color: borderColor, width: 1),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: darkBrown.withOpacity(0.02),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () => Get.to(
+                                        () => GaleriDetailView(batik: batik)),
+                                    splashColor: darkBrown.withOpacity(0.02),
+                                    highlightColor: Colors.transparent,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Image Container Menggunakan CachedNetworkImage + Shimmer Internal
+                                        Expanded(
+                                          flex: 3,
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.vertical(
+                                                      top: Radius.circular(19)),
+                                              child: CachedNetworkImage(
+                                                imageUrl: batik.image,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) =>
+                                                    Shimmer(
+                                                  color:
+                                                      const Color(0xFFFAF7F2),
+                                                  colorOpacity: 0.5,
+                                                  duration: const Duration(
+                                                      milliseconds: 1500),
+                                                  child: Container(
+                                                      color: const Color(
+                                                          0xFFE6DFD5)),
                                                 ),
-                                                fontSize: 12,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Container(
+                                                  color:
+                                                      const Color(0xFFE6DFD5),
+                                                  child: const Icon(
+                                                      Icons
+                                                          .broken_image_rounded,
+                                                      size: 32,
+                                                      color: textMuted),
+                                                ),
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+
+                                        // Text Info Container
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  batik.title,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.lora(
+                                                    color: darkBrown,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  batik.category,
+                                                  style: GoogleFonts.poppins(
+                                                    color: textMuted,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             );
@@ -357,15 +379,14 @@ class GaleriPageView extends GetView<GaleriPageController> {
                         ),
                       ),
 
-                      // Indikator Loading Tambahan di bawah grid saat proses Load More (Infinite Scroll) jalan
+                      // Indikator Loading Tambahan di bawah saat proses Infinite Scroll jalan
                       Obx(() {
                         if (controller.isLoadMore.value) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
                             child: Center(
-                              child: CircularProgressIndicator(
-                                color: activeTabColor,
-                              ),
+                              child:
+                                  CircularProgressIndicator(color: darkBrown),
                             ),
                           );
                         }
@@ -378,6 +399,86 @@ class GaleriPageView extends GetView<GaleriPageController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ================= PERBAIKAN: FULL GRID SKELETON SHIMMER CARD =================
+  Widget _buildGridShimmerLoading(Color baseBorderColor) {
+    // Membungkus seluruh struktur grid ke satu Shimmer induk agar kedipan cahayanya harmonis menyapu seluruh card
+    return Shimmer(
+      color: const Color(0xFFFAF7F2),
+      colorOpacity: 0.6,
+      duration: const Duration(milliseconds: 1500),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 16.0),
+        itemCount: 4,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.72,
+        ),
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              color: const Color(
+                  0xFFF5F0E6), // Kerangka dasar kontainer luar diwarnai abu krem solid agar ikut berkedip penuh
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: baseBorderColor, width: 1),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Blok Atas (Penahan area Gambar)
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(
+                          0xFFE6DFD5), // Warna penyeimbang bayangan dalam grid
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(19)),
+                    ),
+                  ),
+                ),
+                // Blok Bawah (Penahan area Teks Info)
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Masking judul
+                        Container(
+                          width: 90,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE6DFD5),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Masking kategori
+                        Container(
+                          width: 60,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE6DFD5),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

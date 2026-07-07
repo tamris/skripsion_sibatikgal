@@ -1,3 +1,4 @@
+import 'package:batikara/app/data/config/app_config.dart';
 import 'package:batikara/app/data/provider/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ void main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
+  await AppConfig.init();
   ApiProvider.init();
   await initializeDateFormatting('id_ID', null);
 
