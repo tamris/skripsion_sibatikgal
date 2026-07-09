@@ -140,6 +140,24 @@ class DeteksiPageController extends GetxController {
     }
   }
 
+  Future<void> deleteSelectedHistory(List<dynamic> ids) async {
+    try {
+      isLoadingHistory.value = true;
+
+      // Eksekusi semua request DELETE secara bersamaan di background
+      final futures =
+          ids.map((id) => DeteksiService.deleteHistory(id.toString()));
+      await Future.wait(futures);
+
+      // Setelah selesai hapus di server, tarik data history terbaru yang bersih
+      await fetchHistory();
+    } catch (e) {
+      print("Error mass delete history pada controller: $e");
+    } finally {
+      isLoadingHistory.value = false;
+    }
+  }
+
   // =========================
   // RELATIVE TIME
   // =========================

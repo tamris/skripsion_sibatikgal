@@ -50,4 +50,20 @@ class DeteksiService {
       return null;
     }
   }
+
+  static Future<bool> deleteHistory(String historyId) async {
+    try {
+      final response = await ApiProvider.dio.delete(
+        '/api/deteksi/history/$historyId',
+      );
+
+      if (response.statusCode == 200 && response.data['status'] == 'success') {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("Error delete history ID $historyId: $e");
+      return false;
+    }
+  }
 }

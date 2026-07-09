@@ -2,7 +2,7 @@ import 'package:batikara/app/data/service/oauth_service.dart';
 import 'package:batikara/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import '../../../data/service/profile_service.dart'; // <--- Pastikan import ProfileService kamu ke sini
+import '../../../data/service/user_service.dart'; // <--- Pastikan import ProfileService kamu ke sini
 
 class PengaturanPageController extends GetxController {
   final storage =
@@ -69,7 +69,7 @@ class PengaturanPageController extends GetxController {
   // =========================================================
   void syncProfileFromServer() async {
     try {
-      final response = await ProfileService.getProfile();
+      final response = await UserService.getProfile();
       if (response.statusCode == 200 && response.data['status'] == true) {
         final userData = response.data['user'];
 

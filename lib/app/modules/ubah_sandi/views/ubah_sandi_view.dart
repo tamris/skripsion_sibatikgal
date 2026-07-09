@@ -233,24 +233,23 @@ class UbahSandiView extends GetView<UbahSandiController> {
                       );
                     }),
                     const SizedBox(height: 24),
-
-                    // --- SYARAT KATA SANDI BOX ---
                   ],
                 ),
               ),
             ),
 
-            // ================= BOTTOM BUTTON SIMPAN (CTA BERBACKGROUND SOLID & REAKTIF) =================
+            // ================= BOTTOM BUTTON SIMPAN (CTA BERBACKGROUND SOLID, REAKTIF, & RESPONSIVE LOADING) =================
             Obx(() {
-              // Validasi: Form dianggap valid jika password COCOK, password baru TIDAK LEMAH, dan konfirmasi TIDAK KOSONG
+              // Validasi: Form dianggap valid jika password COCOK, password baru TIDAK LEMAH, konfirmasi TIDAK KOSONG, dan TIDAK sedang memproses request
               bool isFormValid = controller.isPasswordMatch.value &&
                   controller.passwordStrength.value >= 2 &&
-                  controller.isConfirmPasswordNotEmpty.value;
+                  controller.isConfirmPasswordNotEmpty.value &&
+                  !controller.isLoading
+                      .value; // <--- Mengunci tombol pas loading kirim data berjalan
 
               return Container(
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                color:
-                    bgCanvas, // Mencegah teks scrolling di belakang terlihat melompong
+                color: bgCanvas,
                 child: ElevatedButton(
                   onPressed:
                       isFormValid ? () => controller.simpanSandi() : null,
@@ -263,24 +262,35 @@ class UbahSandiView extends GetView<UbahSandiController> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.save_outlined,
-                        size: 18,
-                        color: isFormValid ? accentGold : Colors.white60,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Simpan Kata Sandi',
-                        style: GoogleFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: isFormValid ? accentGold : Colors.white60),
-                      ),
-                    ],
-                  ),
+                  child: controller.isLoading.value
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: accentGold,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.save_outlined,
+                              size: 18,
+                              color: isFormValid ? accentGold : Colors.white60,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Simpan Kata Sandi',
+                              style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: isFormValid
+                                      ? accentGold
+                                      : Colors.white60),
+                            ),
+                          ],
+                        ),
                 ),
               );
             }),

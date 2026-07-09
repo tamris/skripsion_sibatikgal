@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../data/service/user_service.dart';
 
 class UbahSandiController extends GetxController {
   final oldPasswordController = TextEditingController();
@@ -10,31 +11,37 @@ class UbahSandiController extends GetxController {
   var isNewPasswordHidden = true.obs;
   var isConfirmPasswordHidden = true.obs;
 
-  // State baru untuk tingkat kekuatan password: 0 = kosong, 1 = lemah, 2 = cukup kuat, 3 = kuat
+  // State tingkat kekuatan password: 0 = kosong, 1 = lemah, 2 = cukup kuat, 3 = kuat
   var passwordStrength = 0.obs;
   var isConfirmPasswordNotEmpty = false.obs;
   var isPasswordMatch = true.obs;
 
-  void toggleOldPasswordVisibility() => isOldPasswordHidden.value = !isOldPasswordHidden.value;
-  void toggleNewPasswordVisibility() => isNewPasswordHidden.value = !isNewPasswordHidden.value;
-  void toggleConfirmPasswordVisibility() => isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
+  // State baru untuk menampung kondisi loading request internet
+  var isLoading = false.obs;
+
+  void toggleOldPasswordVisibility() =>
+      isOldPasswordHidden.value = !isOldPasswordHidden.value;
+  void toggleNewPasswordVisibility() =>
+      isNewPasswordHidden.value = !isNewPasswordHidden.value;
+  void toggleConfirmPasswordVisibility() =>
+      isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
 
   @override
   void onInit() {
     super.onInit();
-    
+
     newPasswordController.addListener(() {
       calculatePasswordStrength(newPasswordController.text);
       checkPasswordMatch();
     });
 
     confirmPasswordController.addListener(() {
-      isConfirmPasswordNotEmpty.value = confirmPasswordController.text.isNotEmpty;
+      isConfirmPasswordNotEmpty.value =
+          confirmPasswordController.text.isNotEmpty;
       checkPasswordMatch();
     });
   }
 
-  // Mengukur kekuatan sandi berdasarkan panjang teks inputan
   void calculatePasswordStrength(String value) {
     if (value.isEmpty) {
       passwordStrength.value = 0;
@@ -48,15 +55,22 @@ class UbahSandiController extends GetxController {
   }
 
   void checkPasswordMatch() {
-    if (newPasswordController.text.isEmpty || confirmPasswordController.text.isEmpty) {
-      isPasswordMatch.value = true; 
+    if (newPasswordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      isPasswordMatch.value = true;
     } else {
-      isPasswordMatch.value = newPasswordController.text == confirmPasswordController.text;
+      isPasswordMatch.value =
+          newPasswordController.text == confirmPasswordController.text;
     }
   }
 
-  void simpanSandi() {
-    if (oldPasswordController.text.isEmpty || newPasswordController.text.isEmpty || confirmPasswordController.text.isEmpty) {
+  // =====================================================================
+  // SINKRONISASI API: Menembak data input ke server Flask MongoDB
+  // =====================================================================
+  void simpanSandi() async {
+    if (oldPasswordController.text.isEmpty ||
+        newPasswordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
       Get.snackbar('Gagal', 'Semua field wajib diisi');
       return;
     }
@@ -68,7 +82,48 @@ class UbahSandiController extends GetxController {
       Get.snackbar('Gagal', 'Konfirmasi kata sandi tidak cocok');
       return;
     }
-    print("Sandi berhasil diubah");
+
+    try {
+      isLoading.value = true;
+
+      // Eksekusi pengiriman data ke backend melalui UserService
+      final response = await UserService.changePassword(
+        currentPassword: oldPasswordController.text,
+        newPassword: newPasswordController.text,
+        confirmPassword: confirmPasswordController.text,
+      );
+
+      if (response != null && response.statusCode == 200) {
+        // Jika sukses ganti kata sandi di server
+        Get.back(); // Kembali ke halaman pengaturan profil
+        Get.snackbar(
+          'Sukses',
+          response.data['msg'] ?? 'Kata sandi berhasil diperbarui',
+          backgroundColor: const Color(0xFF1C1308),
+          colorText: const Color(0xFFFBBF24),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        // Bersihkan controller input setelah berhasil
+        oldPasswordController.clear();
+        newPasswordController.clear();
+        confirmPasswordController.clear();
+      } else {
+        // Jika gagal (Misal: Password lama salah atau bad request karakter)
+        String errorMsg = response?.data['msg'] ?? 'Terjadi kesalahan sistem';
+        Get.snackbar(
+          'Gagal Mengubah Sandi',
+          errorMsg,
+          backgroundColor: const Color(0xFFC2612D),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Tidak dapat terhubung ke server');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override

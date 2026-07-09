@@ -2,39 +2,39 @@ import 'package:batikara/app/modules/deteksi_page/widget/riwayat_item_widget.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer_animation/shimmer_animation.dart'; // Impor package andalanmu untuk skeleton loading
 import '../controllers/deteksi_page_controller.dart';
 
 class RiwayatDeteksiView extends GetView<DeteksiPageController> {
   const RiwayatDeteksiView({super.key});
 
-  // ── Brand Colors — sama dengan fitur deteksi ─────────────
-  static const Color cDark = Color(0xFF1A1208);
-  static const Color cKrem = Color(0xFFF7F4EE);
-  static const Color cKremChip = Color(0xFFF0EAD8);
-  static const Color cBorder = Color(0xFFE8E4DC);
-  static const Color cGold = Color(0xFFFFD264);
-  static const Color cBrown = Color(0xFF7A3B10);
-  static const Color cTextSub = Color(0xFF9C8B7A);
+  // ── Palet Warna Premium Konsisten Batikara Global ─────────────
+  static const Color bgCanvas = Color(0xFFFAF7F2);
+  static const Color darkBrown = Color(0xFF1C1308);
+  static const Color textMuted = Color(0xFF7A7062);
+  static const Color accentGold = Color(0xFFFBBF24);
+  static const Color borderColor = Color(0xFFE6DFD5);
+  static const Color softRed = Color(0xFFFCE8E6);
   static const Color cDelete = Color(0xFFD32F2F);
 
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    // State selection — sama persis logic lama
+    // State selection asli kamu — dipertahankan penuh 100%
     final isSelectionMode = false.obs;
     final selectedItems = <Map<String, dynamic>>[].obs;
 
     return Scaffold(
-      backgroundColor: cKrem,
+      backgroundColor: bgCanvas,
       body: SafeArea(
         child: Obx(() {
           return Column(
             children: [
-              // ── HEADER ──────────────────────────────────
+              // ── HEADER PREMIUM DENGAN CHIP SELEKSI ────────────────
               _buildHeader(isSelectionMode, selectedItems),
 
-              // ── LIST / LOADING / EMPTY ───────────────────
+              // ── LIST / LOADING / EMPTY STATE DENGAN SHIMMER ───────
               Expanded(
                 child: _buildBody(
                   isSelectionMode,
@@ -43,7 +43,7 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
                 ),
               ),
 
-              // ── BOTTOM DELETE BAR — muncul saat ada yg dipilih
+              // ── BOTTOM DELETE BAR PREMIUM ────────────────────────
               _buildDeleteBar(isSelectionMode, selectedItems, bottomPadding),
             ],
           );
@@ -52,7 +52,7 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
     );
   }
 
-  // ── HEADER ───────────────────────────────────────────────
+  // ── HEADER PREMIUM SINKRON ───────────────────────────────────────────
   Widget _buildHeader(
     RxBool isSelectionMode,
     RxList<Map<String, dynamic>> selectedItems,
@@ -60,16 +60,18 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Tombol back / cancel selection
+              // Tombol back / cancel selection dengan style premium bulat kustom
               _CircleBtn(
                 child: Icon(
-                  isSelectionMode.value ? Icons.close : Icons.arrow_back,
+                  isSelectionMode.value
+                      ? Icons.close_rounded
+                      : Icons.arrow_back_rounded,
                   size: 18,
-                  color: cDark,
+                  color: darkBrown,
                 ),
                 onTap: () {
                   if (isSelectionMode.value) {
@@ -81,19 +83,19 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
                 },
               ),
 
-              // Judul — berubah saat selection mode
+              // Judul — Elegan dinamis lora font
               Text(
                 isSelectionMode.value
                     ? '${selectedItems.length} dipilih'
                     : 'Riwayat Deteksi',
                 style: GoogleFonts.lora(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: cDark,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: darkBrown,
                 ),
               ),
 
-              // Kanan: pilih semua / tombol delete
+              // Kanan: pilih semua / tombol masuk mode delete
               isSelectionMode.value
                   ? GestureDetector(
                       onTap: () {
@@ -107,14 +109,18 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
                           selectedItems.assignAll(all);
                         }
                       },
-                      child: Text(
-                        selectedItems.length == controller.historyList.length
-                            ? 'Batal Semua'
-                            : 'Pilih Semua',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: cBrown,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        child: Text(
+                          selectedItems.length == controller.historyList.length
+                              ? 'Batal Semua'
+                              : 'Pilih Semua',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: darkBrown,
+                          ),
                         ),
                       ),
                     )
@@ -122,29 +128,27 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
                       child: const Icon(
                         Icons.delete_outline_rounded,
                         size: 18,
-                        color: cDark,
+                        color: darkBrown,
                       ),
                       onTap: () => isSelectionMode.value = true,
                     ),
             ],
           ),
         ),
-        // Divider tipis
-        const Divider(height: 1, color: cBorder, thickness: 0.5),
+        const Divider(height: 1, color: borderColor, thickness: 1),
       ],
     );
   }
 
-  // ── BODY ─────────────────────────────────────────────────
+  // ── BODY DENGAN INOVASI SHIMMER LAYOUT ───────────────────────────────
   Widget _buildBody(
     RxBool isSelectionMode,
     RxList<Map<String, dynamic>> selectedItems,
     double bottomPadding,
   ) {
+    // 1. INOVASI: KONDISI LOADING SEKARANG MENGGUNAKAN SHIMMER LAYOUT FORM SKELETON
     if (controller.isLoadingHistory.value) {
-      return const Center(
-        child: CircularProgressIndicator(color: cBrown, strokeWidth: 2),
-      );
+      return _buildShimmerLoading();
     }
 
     if (controller.historyList.isEmpty) {
@@ -153,15 +157,14 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
 
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 24 + bottomPadding),
+      padding: EdgeInsets.fromLTRB(20, 16, 20, 24 + bottomPadding),
       itemCount: controller.historyList.length,
       itemBuilder: (context, index) {
         final rawItem = controller.historyList[index];
-        final Map<String, dynamic> item = Map<String, dynamic>.from(
-          rawItem as Map,
-        );
+        final Map<String, dynamic> item =
+            Map<String, dynamic>.from(rawItem as Map);
 
-        // ── Date header logic — sama persis lama ──────────
+        // ── Date header logic asli kamu — dipertahankan presisi ──
         String tanggalHeader = '';
         bool showDateHeader = false;
 
@@ -180,7 +183,7 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
               'September',
               'Oktober',
               'November',
-              'Desember',
+              'Desember'
             ];
             tanggalHeader = '${dt.day} ${bulan[dt.month - 1]} ${dt.year}';
           } catch (_) {}
@@ -190,16 +193,13 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
           showDateHeader = true;
         } else {
           final prev = Map<String, dynamic>.from(
-            controller.historyList[index - 1] as Map,
-          );
+              controller.historyList[index - 1] as Map);
           if (prev['created_at'] != null && item['created_at'] != null) {
             try {
-              final cur = DateTime.parse(
-                item['created_at'].toString(),
-              ).toLocal();
-              final pre = DateTime.parse(
-                prev['created_at'].toString(),
-              ).toLocal();
+              final cur =
+                  DateTime.parse(item['created_at'].toString()).toLocal();
+              final pre =
+                  DateTime.parse(prev['created_at'].toString()).toLocal();
               if (cur.day != pre.day ||
                   cur.month != pre.month ||
                   cur.year != pre.year) {
@@ -209,63 +209,63 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
           }
         }
 
-        final bool isChecked = selectedItems.any(
-          (e) => e['_id'] == item['_id'],
-        );
+        final bool isChecked =
+            selectedItems.any((e) => e['_id'] == item['_id']);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Date header dengan style baru
+            // Date chip header dengan gaya minimalis premium baru
             if (showDateHeader)
               Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 12),
+                padding: const EdgeInsets.only(top: 8, bottom: 14),
                 child: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
+                          horizontal: 14, vertical: 6),
                       decoration: BoxDecoration(
-                        color: cDark,
-                        borderRadius: BorderRadius.circular(20),
+                        color: darkBrown,
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         tanggalHeader,
                         style: GoogleFonts.poppins(
                           fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: cGold,
+                          fontWeight: FontWeight.w700,
+                          color: accentGold,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(child: Container(height: 0.5, color: cBorder)),
+                    const SizedBox(width: 12),
+                    Expanded(child: Container(height: 1, color: borderColor)),
                   ],
                 ),
               ),
 
-            // Item widget — logic onTap & checkbox tetap
-            RiwayatItemWidget(
-              item: item,
-              index: index,
-              isSelectionMode: isSelectionMode.value,
-              isChecked: isChecked,
-              onCheckboxChanged: (val) {
-                if (val == true) {
-                  selectedItems.add(item);
-                } else {
-                  selectedItems.removeWhere((e) => e['_id'] == item['_id']);
-                }
-              },
-              onCardTapInSelection: () {
-                if (isChecked) {
-                  selectedItems.removeWhere((e) => e['_id'] == item['_id']);
-                } else {
-                  selectedItems.add(item);
-                }
-              },
+            // Item widget asli kamu tetap aman berjalan logikanya
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: RiwayatItemWidget(
+                item: item,
+                index: index,
+                isSelectionMode: isSelectionMode.value,
+                isChecked: isChecked,
+                onCheckboxChanged: (val) {
+                  if (val == true) {
+                    selectedItems.add(item);
+                  } else {
+                    selectedItems.removeWhere((e) => e['_id'] == item['_id']);
+                  }
+                },
+                onCardTapInSelection: () {
+                  if (isChecked) {
+                    selectedItems.removeWhere((e) => e['_id'] == item['_id']);
+                  } else {
+                    selectedItems.add(item);
+                  }
+                },
+              ),
             ),
           ],
         );
@@ -273,41 +273,46 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
     );
   }
 
-  // ── EMPTY STATE ──────────────────────────────────────────
+  // ── EMPTY STATE SINKRON ──────────────────────────────────────────────
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: cKremChip,
-              borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF2ECE0),
+                shape: BoxShape.circle,
+              ),
+              child:
+                  const Icon(Icons.history_rounded, size: 30, color: darkBrown),
             ),
-            child: const Icon(Icons.history_rounded, size: 30, color: cBrown),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            'Belum ada riwayat deteksi',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: cDark,
+            const SizedBox(height: 20),
+            Text(
+              'Belum ada riwayat deteksi',
+              style: GoogleFonts.lora(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: darkBrown,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Coba deteksi motif batik dulu yuk!',
-            style: GoogleFonts.poppins(fontSize: 12, color: cTextSub),
-          ),
-        ],
+            const SizedBox(height: 6),
+            Text(
+              'Coba deteksi motif batik dulu yuk!',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(fontSize: 13, color: textMuted),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // ── DELETE BAR — animasi muncul/hilang ───────────────────
+  // ── DELETE BAR — ANIMASI DI-POLES HALUS ───────────────────────────────
   Widget _buildDeleteBar(
     RxBool isSelectionMode,
     RxList<Map<String, dynamic>> selectedItems,
@@ -316,37 +321,43 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
     final bool show = isSelectionMode.value && selectedItems.isNotEmpty;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOut,
-      height: show ? (60 + bottomPadding) : 0,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      height: show ? (68 + bottomPadding) : 0,
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 8 + bottomPadding * 0.5),
+      padding: EdgeInsets.fromLTRB(20, 10, 20, 10 + bottomPadding),
       decoration: const BoxDecoration(
-        color: Color(0xFAF7F4EE),
-        border: Border(top: BorderSide(color: cBorder, width: 0.5)),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, -4),
+          )
+        ],
       ),
       child: show
           ? GestureDetector(
-              onTap: () => _showDeleteDialog(selectedItems),
+              onTap: () => _showDeleteDialog(isSelectionMode, selectedItems),
               child: Container(
                 decoration: BoxDecoration(
                   color: cDelete,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(
-                      Icons.delete_rounded,
-                      size: 16,
+                      Icons.delete_forever_rounded,
+                      size: 18,
                       color: Colors.white,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Hapus ${selectedItems.length} Riwayat',
                       style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
                     ),
@@ -358,44 +369,102 @@ class RiwayatDeteksiView extends GetView<DeteksiPageController> {
     );
   }
 
-  // ── DIALOG KONFIRMASI HAPUS — logic sama persis lama ─────
-  void _showDeleteDialog(RxList<Map<String, dynamic>> selectedItems) {
+  // ── DIALOG KONFIRMASI HAPUS PREMIUM SINKRON ─────────────────────────
+  void _showDeleteDialog(
+      RxBool isSelectionMode, RxList<Map<String, dynamic>> selectedItems) {
     Get.defaultDialog(
       title: 'Hapus Riwayat',
-      titleStyle: GoogleFonts.poppins(
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-        color: cDark,
+      titleStyle: GoogleFonts.lora(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        color: darkBrown,
       ),
-      middleText: 'Hapus ${selectedItems.length} riwayat deteksi yang dipilih?',
-      middleTextStyle: GoogleFonts.poppins(fontSize: 12, color: cTextSub),
+      titlePadding: const EdgeInsets.only(top: 24),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      middleText:
+          'Hapus ${selectedItems.length} riwayat deteksi yang dipilih secara permanen?',
+      middleTextStyle:
+          GoogleFonts.poppins(fontSize: 14, color: textMuted, height: 1.4),
       textConfirm: 'Hapus',
       textCancel: 'Batal',
       confirmTextColor: Colors.white,
       buttonColor: cDelete,
-      cancelTextColor: cDark,
-      radius: 16,
+      cancelTextColor: darkBrown,
+      radius: 20,
       onConfirm: () {
         final ids = selectedItems.map((e) => e['_id']).toList();
-        // Hapus dari list lokal — sama persis logic lama
+
+        // 1. Jalankan hapus di database & storage server asli bawaan kamu
+        controller.deleteSelectedHistory(ids);
+
+        // 2. State UI kamu dibersihkan seketika
         controller.historyList.removeWhere((e) => ids.contains(e['_id']));
         selectedItems.clear();
+        isSelectionMode.value = false;
+
         Get.back();
         Get.snackbar(
           'Sukses',
           'Riwayat berhasil dihapus',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: cDark,
-          colorText: cGold,
+          backgroundColor: darkBrown,
+          colorText: accentGold,
+          borderRadius: 12,
+          margin: const EdgeInsets.all(16),
         );
       },
     );
   }
+
+  // ================= UTILITY OPTIMIZED SHIMMER LAYOUT =================
+  Widget _buildShimmerLoading() {
+    return Shimmer(
+      color: const Color(0xFFFAF7F2),
+      colorOpacity: 0.6,
+      duration: const Duration(milliseconds: 1500),
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Tiruan Tanggal Header di baris pertama
+                if (index == 0)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 14.0),
+                    child: Container(
+                      width: 140,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE6DFD5),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                // Tiruan Card List Utama berkilau menyatu
+                Container(
+                  width: double.infinity,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F0E6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: borderColor, width: 1),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
-// ════════════════════════════════════════════════════════════
-// REUSABLE WIDGETS
-// ════════════════════════════════════════════════════════════
+// ── CUSTOM REUSABLE BUTTON SINKRON ──────────────────────────────────
 class _CircleBtn extends StatelessWidget {
   final Widget child;
   final VoidCallback onTap;
@@ -406,11 +475,12 @@ class _CircleBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 45,
-        height: 45,
-        decoration: const BoxDecoration(
-          color: Color(0xFFF0EAD8),
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: Colors.white,
           shape: BoxShape.circle,
+          border: Border.all(color: const Color(0xFFE6DFD5), width: 1),
         ),
         child: Center(child: child),
       ),

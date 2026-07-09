@@ -1,5 +1,5 @@
 import 'package:batikara/app/data/service/informasi_service.dart';
-import 'package:batikara/app/data/service/profile_service.dart';
+import 'package:batikara/app/data/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart'; // <--- Tambahkan import GetStorage
@@ -96,7 +96,7 @@ class HomeController extends GetxController {
 
   void syncUserProfileFromServer() async {
     try {
-      final response = await ProfileService.getProfile();
+      final response = await UserService.getProfile();
       if (response.statusCode == 200 && response.data['status'] == true) {
         final userData = response.data['user'];
 

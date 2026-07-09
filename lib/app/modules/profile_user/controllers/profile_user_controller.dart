@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data/service/profile_service.dart';
+import '../../../data/service/user_service.dart';
 import 'package:get_storage/get_storage.dart'; // <--- Tambahkan import GetStorage
 
 class ProfileUserController extends GetxController {
@@ -29,7 +29,7 @@ class ProfileUserController extends GetxController {
   void fetchUserProfile() async {
     isLoading.value = true;
     try {
-      final response = await ProfileService.getProfile();
+      final response = await UserService.getProfile();
 
       if (response.statusCode == 200 && response.data['status'] == true) {
         final userData = response.data['user'];
@@ -107,7 +107,7 @@ class ProfileUserController extends GetxController {
 
     isSaving.value = true;
     try {
-      final response = await ProfileService.updateProfile(
+      final response = await UserService.updateProfile(
         username: usernameC.text.trim(),
         gender: genderC.text.trim(),
         tanggalLahir:
