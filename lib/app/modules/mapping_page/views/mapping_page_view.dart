@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer_animation/shimmer_animation.dart'; // Impor paket shimmer andalanmu
 import '../controllers/mapping_page_controller.dart';
 
 class MappingPageView extends GetView<MappingPageController> {
@@ -15,18 +16,19 @@ class MappingPageView extends GetView<MappingPageController> {
 
   @override
   Widget build(BuildContext context) {
+    // Palet warna premium konsisten Batikara global
     const colorBackground = Color(0xFFF7F5EE);
     const colorPrimaryDark = Color(0xFF1A1208);
     const colorAccentOrange = Color(0xFFD35400);
     const Color cGold = Color(0xFFFFD264);
+    const Color borderColor = Color(0xFFE6DFD5);
 
     return Scaffold(
       backgroundColor: colorBackground,
       body: Obx(() {
+        // 1. STATE LOADING UTAMA HALAMAN: Menggunakan Full Skeleton Shimmer Card Premium
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: colorPrimaryDark),
-          );
+          return _buildFullPageShimmer(borderColor);
         }
 
         return Stack(
@@ -72,8 +74,8 @@ class MappingPageView extends GetView<MappingPageController> {
                         ),
                       ),
                     ...controller.filteredLocationsList.map((loc) {
-                      String chipAktif = controller.selectedCategory.value
-                          .toLowerCase();
+                      String chipAktif =
+                          controller.selectedCategory.value.toLowerCase();
                       String kategoriVisual = (chipAktif == 'semua')
                           ? (loc.category ?? '').toLowerCase()
                           : chipAktif;
@@ -97,34 +99,47 @@ class MappingPageView extends GetView<MappingPageController> {
 
                       return Marker(
                         point: LatLng(loc.latitude!, loc.longitude!),
-                        width: 50,
+                        width:
+                            50, // Sedikit diperbesar agar area klik lebih nyaman
                         height: 50,
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: markerColor,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.15),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
+                        child: GestureDetector(
+                          // =======================================================================
+                          // KUNCI UTAMA: Ketika Marker Peta Di-klik
+                          // =======================================================================
+                          onTap: () {
+                            // Option 1: Langsung bawa user masuk ke halaman Detail tempat tersebut
+                            Get.toNamed(Routes.DETAIL_PAGE, arguments: loc);
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(
+                                    7), // Perbesar padding sedikit
+                                decoration: BoxDecoration(
+                                  color: markerColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
                                   ),
-                                ],
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.2),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  markerIcon,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                               ),
-                              child: Icon(
-                                markerIcon,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     }),
@@ -132,7 +147,6 @@ class MappingPageView extends GetView<MappingPageController> {
                 ),
               ],
             ),
-
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -156,8 +170,13 @@ class MappingPageView extends GetView<MappingPageController> {
                           ],
                         ),
                         child: TextField(
-                          onChanged: (val) =>
-                              controller.loadLocations(query: val),
+                          controller: controller
+                              .searchTextController, // 1. Pasangkan controller teks di sini
+                          onChanged: (val) {
+                            // Update status apakah tombol 'X' harus muncul atau tidak
+                            controller.isSearching.value = val.isNotEmpty;
+                            controller.loadLocations(query: val);
+                          },
                           decoration: InputDecoration(
                             hintText: 'Cari lokasi batik...',
                             hintStyle: GoogleFonts.poppins(
@@ -168,6 +187,30 @@ class MappingPageView extends GetView<MappingPageController> {
                               Icons.search,
                               color: Colors.grey,
                             ),
+
+                            // =========================================================================
+                            // KUNCI UTAMA: Tambahkan suffixIcon dinamis menggunakan Obx
+                            // =========================================================================
+                            suffixIcon: Obx(() {
+                              // Jika user sedang tidak mengetik apa-apa, kosongkan ikon kanan
+                              if (!controller.isSearching.value)
+                                return const SizedBox.shrink();
+
+                              // Jika ada teks, munculkan tombol klik 'X' (clear button)
+                              return IconButton(
+                                icon:
+                                    const Icon(Icons.clear, color: Colors.grey),
+                                onPressed: () {
+                                  // 1. Bersihkan teks di dalam TextField
+                                  controller.searchTextController.clear();
+                                  // 2. Sembunyikan kembali tombol 'X'
+                                  controller.isSearching.value = false;
+                                  // 3. Reset list lokasi agar menampilkan semua data tanpa filter
+                                  controller.loadLocations(query: '');
+                                },
+                              );
+                            }),
+
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 14,
@@ -177,20 +220,10 @@ class MappingPageView extends GetView<MappingPageController> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.tune, color: Colors.black87),
-                    ),
                   ],
                 ),
               ),
             ),
-
             Positioned(
               right: 16,
               bottom: MediaQuery.of(context).size.height * 0.23,
@@ -218,7 +251,6 @@ class MappingPageView extends GetView<MappingPageController> {
                 ),
               ),
             ),
-
             Align(
               alignment: Alignment.bottomCenter,
               child: DraggableScrollableSheet(
@@ -256,7 +288,6 @@ class MappingPageView extends GetView<MappingPageController> {
                           ),
                         ),
                         const SizedBox(height: 15),
-
                         SizedBox(
                           height: 38,
                           child: ListView.builder(
@@ -267,7 +298,7 @@ class MappingPageView extends GetView<MappingPageController> {
                               return Obx(() {
                                 bool isSelected =
                                     controller.selectedCategory.value ==
-                                    category;
+                                        category;
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: ChoiceChip(
@@ -278,9 +309,8 @@ class MappingPageView extends GetView<MappingPageController> {
                                     selectedColor: Colors.black,
                                     backgroundColor: Colors.white,
                                     labelStyle: GoogleFonts.poppins(
-                                      color: isSelected
-                                          ? cGold
-                                          : Colors.black87,
+                                      color:
+                                          isSelected ? cGold : Colors.black87,
                                       fontWeight: isSelected
                                           ? FontWeight.bold
                                           : FontWeight.normal,
@@ -301,7 +331,6 @@ class MappingPageView extends GetView<MappingPageController> {
                           ),
                         ),
                         const SizedBox(height: 20),
-
                         Text(
                           'Terdekat dari lokasimu',
                           style: GoogleFonts.poppins(
@@ -311,7 +340,6 @@ class MappingPageView extends GetView<MappingPageController> {
                           ),
                         ),
                         const SizedBox(height: 10),
-
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -323,6 +351,7 @@ class MappingPageView extends GetView<MappingPageController> {
                               loc,
                               colorAccentOrange,
                               colorPrimaryDark,
+                              borderColor,
                             );
                           },
                         ),
@@ -342,6 +371,7 @@ class MappingPageView extends GetView<MappingPageController> {
     MappingModelData loc,
     Color distanceColor,
     Color primaryDark,
+    Color baseBorderColor,
   ) {
     return GestureDetector(
       onTap: () {
@@ -368,44 +398,40 @@ class MappingPageView extends GetView<MappingPageController> {
               borderRadius: BorderRadius.circular(14),
               child:
                   loc.bannerImageUrl != null && loc.bannerImageUrl!.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl:
-                          '${AppConfig.baseUrl}/static/img/mapping/${loc.bannerImageUrl}',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: 100,
-                        height: 100,
-                        color: Colors.grey.shade100,
-                        child: const Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.grey,
+                      ? CachedNetworkImage(
+                          imageUrl:
+                              '${AppConfig.baseUrl}/static/img/mapping/${loc.bannerImageUrl}',
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          // 2. FIXED INTERNAL IMAGE PLACEHOLDER: Efek Shimmer Transparan Lembut
+                          placeholder: (context, url) => Shimmer(
+                            color: const Color(0xFFE6DFD5),
+                            colorOpacity: 0.4,
+                            duration: const Duration(milliseconds: 1200),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.transparent,
                             ),
                           ),
+                          errorWidget: (context, url, error) => Container(
+                            width: 100,
+                            height: 100,
+                            color: primaryDark.withValues(alpha: 0.1),
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: primaryDark,
+                              size: 24,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.grey.shade200,
+                          child: const Icon(Icons.store, size: 24),
                         ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        width: 100,
-                        height: 100,
-                        color: primaryDark.withValues(alpha: 0.1),
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: primaryDark,
-                          size: 24,
-                        ),
-                      ),
-                    )
-                  : Container(
-                      width: 100,
-                      height: 100,
-                      color: Colors.grey.shade200,
-                      child: const Icon(Icons.store, size: 24),
-                    ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -501,6 +527,146 @@ class MappingPageView extends GetView<MappingPageController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ================= INDUSTRIAL STANDARD: FULL PAGE MAP & DRAGGABLE SKELETON SHIMMER =================
+  Widget _buildFullPageShimmer(Color baseBorderColor) {
+    const shimmerBg = Color(0xFFEFECE6);
+    const maskColor = Color(0xFFE2DDD5);
+
+    return Shimmer(
+      color: const Color(0xFFFAF7F2),
+      colorOpacity: 0.5,
+      duration: const Duration(milliseconds: 1200),
+      child: Stack(
+        children: [
+          // Kerangka dasar peta latar belakang meluas penuh
+          Container(
+            color: maskColor,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+
+          // Kerangka Search Bar Tiruan Atas
+          SafeArea(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: shimmerBg,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+          ),
+
+          // Kerangka Bottom Sheet Tiruan Yang Menyerupai Draggable Asli
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 240, // Tinggi dummy meniru bodi area lembar lipat bawah
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color(0xFFF7F5EE),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(28),
+                  topRight: Radius.circular(28),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle Bar Atas
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: maskColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Judul Sub Menu Tiruan
+                    Container(
+                      width: 160,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: maskColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Replikasi baris tunggal dummy list card lokasi
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: shimmerBg,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: baseBorderColor, width: 1),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: maskColor,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: maskColor,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: 130,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                    color: maskColor,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Container(
+                                  width: 90,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: maskColor,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

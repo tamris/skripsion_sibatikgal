@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -13,6 +14,10 @@ class MappingPageController extends GetxController {
   final MappingService _mappingService = MappingService();
   final MapController mapController = MapController();
   final _storage = GetStorage();
+
+  final TextEditingController searchTextController = TextEditingController();
+  var isSearching =
+      false.obs; // Untuk memantau apakah user sedang mengetik atau tidak
 
   var isLoading = true.obs;
   final locationsList = <MappingModelData>[].obs;
@@ -56,6 +61,7 @@ class MappingPageController extends GetxController {
   @override
   void onClose() {
     reviewCommentController.dispose();
+    searchTextController.dispose();
     super.onClose();
   }
 
@@ -164,8 +170,7 @@ class MappingPageController extends GetxController {
           bool matchUtama =
               loc.category?.toLowerCase() == selectedCat.toLowerCase();
 
-          bool matchTambahan =
-              loc.categories != null &&
+          bool matchTambahan = loc.categories != null &&
               loc.categories!.any(
                 (cat) => cat.toLowerCase() == selectedCat.toLowerCase(),
               );
@@ -192,14 +197,19 @@ class MappingPageController extends GetxController {
       return;
     }
 
-    final String encodedName = Uri.encodeComponent(placeName ?? 'Lokasi Batik');
+    // Gunakan skema geo intent universal untuk aplikasi Maps bawaan smartphone
     final Uri googleMapsUrl = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=$lat,$lng&query_place_id=$encodedName',
-    );
+        'geo:$lat,$lng?q=$lat,$lng(${Uri.encodeComponent(placeName ?? 'Lokasi Batik')})');
+
+    // URL Cadangan jika geo intent tidak disupport (dibuka lewat browser)
+    final Uri googleMapsWebUrl =
+        Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
 
     try {
       if (await canLaunchUrl(googleMapsUrl)) {
-        await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+        await launchUrl(googleMapsUrl);
+      } else if (await canLaunchUrl(googleMapsWebUrl)) {
+        await launchUrl(googleMapsWebUrl, mode: LaunchMode.externalApplication);
       } else {
         throw 'Tidak bisa membuka URL Maps.';
       }
@@ -208,7 +218,7 @@ class MappingPageController extends GetxController {
         'Terjadi Kesalahan',
         'Gagal membuka Google Maps atau browser tidak tersedia.',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange.withOpacity(0.8),
+        backgroundColor: Colors.orange.withValues(alpha: 0.8),
         colorText: Colors.white,
       );
     }
@@ -232,13 +242,19 @@ class MappingPageController extends GetxController {
       cleanedPhone = '62$cleanedPhone';
     }
 
+    // Best practice WhatsApp Link menggunakan skema whatsapp intent langsung atau api.whatsapp
     final Uri whatsappUrl = Uri.parse(
-      'https://wa.me/$cleanedPhone?text=${Uri.encodeComponent("Halo, saya ingin bertanya tentang informasi Batik Tegalan di toko Anda.")}',
-    );
+        'whatsapp://send?phone=$cleanedPhone&text=${Uri.encodeComponent("Halo, saya ingin bertanya tentang informasi Batik Tegalan di toko Anda.")}');
+
+    // Cadangan jika aplikasi WA tidak terinstall langsung (buka via web browser)
+    final Uri whatsappWebUrl = Uri.parse(
+        'https://api.whatsapp.com/send?phone=$cleanedPhone&text=${Uri.encodeComponent("Halo, saya ingin bertanya tentang informasi Batik Tegalan di toko Anda.")}');
 
     try {
       if (await canLaunchUrl(whatsappUrl)) {
-        await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+        await launchUrl(whatsappUrl);
+      } else if (await canLaunchUrl(whatsappWebUrl)) {
+        await launchUrl(whatsappWebUrl, mode: LaunchMode.externalApplication);
       } else {
         throw 'Tidak dapat membuka WhatsApp.';
       }
@@ -319,8 +335,7 @@ class MappingPageController extends GetxController {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
 
         // Ekstrak ID dari payload JWT (standar Flask-JWT-Extended menggunakan sub atau identity)
-        currentUserId =
-            decodedToken['sub']?.toString() ??
+        currentUserId = decodedToken['sub']?.toString() ??
             decodedToken['identity']?.toString();
       } catch (e) {
         currentUserId = null;
@@ -341,12 +356,10 @@ class MappingPageController extends GetxController {
       String reviewUserId = r.userId.toString();
 
       // Bersihkan format ObjectId bawaan MongoDB jika ada
-      reviewUserId = reviewUserId
-          .replaceAll("ObjectId('", "")
-          .replaceAll("')", "");
-      String cleanCurrentUserId = currentUserId!
-          .replaceAll("ObjectId('", "")
-          .replaceAll("')", "");
+      reviewUserId =
+          reviewUserId.replaceAll("ObjectId('", "").replaceAll("')", "");
+      String cleanCurrentUserId =
+          currentUserId!.replaceAll("ObjectId('", "").replaceAll("')", "");
 
       return reviewUserId.trim() == cleanCurrentUserId.trim();
     });
@@ -412,6 +425,43 @@ class MappingPageController extends GetxController {
       );
     } finally {
       isSendingReview(false);
+    }
+  }
+
+  Future<void> bagikanLokasi(MappingModelData loc) async {
+    if (loc.name == null) return;
+
+    // Susun template teks share yang informatif dan rapi
+    final String namaTempat = loc.name!;
+    final String kategori = loc.category ?? '-';
+    final String alamat = loc.address != null && loc.address!['full'] != null
+        ? loc.address!['full'].toString()
+        : 'Alamat belum terdaftar.';
+
+    // Link koordinat Google Maps agar penerima bisa langsung klik navigasi
+    final String linkMaps = loc.latitude != null && loc.longitude != null
+        ? '\n\nBuka di Google Maps:\nhttps://www.google.com/maps/search/?api=1&query=${loc.latitude},${loc.longitude}'
+        : '';
+
+    final String textToShare =
+        'Temukan tempat Batik menarik di aplikasi Sibatikgal!\n\n'
+        '🏛️ Nama: $namaTempat\n'
+        '🏷️ Kategori: $kategori\n'
+        '📍 Alamat: $alamat'
+        '$linkMaps';
+
+    try {
+      // Panggil share dialog sistem smartphone
+      await Share.share(
+        textToShare,
+        subject: 'Rekomendasi Tempat Batik: $namaTempat',
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Gagal Berbagi',
+        'Terjadi kesalahan saat mencoba membagikan informasi.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 }

@@ -47,8 +47,7 @@ class DetailPageView extends StatelessWidget {
                   SizedBox(
                     height: 260,
                     width: double.infinity,
-                    child:
-                        loc.bannerImageUrl != null &&
+                    child: loc.bannerImageUrl != null &&
                             loc.bannerImageUrl!.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl:
@@ -107,11 +106,11 @@ class DetailPageView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            _buildSquareActionButton(
-                              icon: Icons.bookmark_border_outlined,
-                              onTap: () {},
-                            ),
+                            // const SizedBox(width: 12),
+                            // _buildSquareActionButton(
+                            //   icon: Icons.bookmark_border_outlined,
+                            //   onTap: () {},
+                            // ),
                             const SizedBox(width: 12),
                             _buildSquareActionButton(
                               icon: Icons.phone_outlined,
@@ -121,13 +120,11 @@ class DetailPageView extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 25),
-
                         _buildCustomTabBar(
                           mappingController,
                           colorAccentOrange,
                         ),
                         const SizedBox(height: 20),
-
                         if (mappingController.selectedDetailTab.value == 0) ...[
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +241,6 @@ class DetailPageView extends StatelessWidget {
                   ),
                 ],
               ),
-
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -258,12 +254,15 @@ class DetailPageView extends StatelessWidget {
                         Icons.arrow_back,
                         () => Get.back(),
                       ),
-                      _buildHeaderCircleButton(Icons.share_outlined, () {}),
+                      _buildHeaderCircleButton(
+                        Icons.share_outlined,
+                        () => mappingController
+                            .bagikanLokasi(loc), // <-- Panggil fungsi share
+                      ),
                     ],
                   ),
                 ),
               ),
-
               Positioned(
                 top: 210,
                 left: 16,
@@ -618,8 +617,7 @@ class DetailPageView extends StatelessWidget {
         count3++;
       else if (r == 2)
         count2++;
-      else if (r == 1)
-        count1++;
+      else if (r == 1) count1++;
     }
 
     // ===========================================================================
@@ -790,12 +788,10 @@ class DetailPageView extends StatelessWidget {
     // 1. Lakukan duplikasi & sorting berdasarkan tanggal terbaru
     List<ReviewModel> sortedReviews = List.from(allReviews);
     sortedReviews.sort((a, b) {
-      DateTime dateA = a.createdAt != null
-          ? DateTime.parse(a.createdAt!)
-          : DateTime(2000);
-      DateTime dateB = b.createdAt != null
-          ? DateTime.parse(b.createdAt!)
-          : DateTime(2000);
+      DateTime dateA =
+          a.createdAt != null ? DateTime.parse(a.createdAt!) : DateTime(2000);
+      DateTime dateB =
+          b.createdAt != null ? DateTime.parse(b.createdAt!) : DateTime(2000);
       return dateB.compareTo(dateA);
     });
 
@@ -828,9 +824,8 @@ class DetailPageView extends StatelessWidget {
       );
     }
 
-    final Iterable<ReviewModel> reviewDataToShow = limit != null
-        ? sortedReviews.take(limit)
-        : sortedReviews;
+    final Iterable<ReviewModel> reviewDataToShow =
+        limit != null ? sortedReviews.take(limit) : sortedReviews;
     final List<Color> avatarColors = [
       const Color(0xFFD35400),
       const Color(0xFF2C3E50),
@@ -1075,8 +1070,8 @@ class DetailPageView extends StatelessWidget {
                       mappingController.isSendingReview.value
                           ? 'Mengirim...'
                           : (mappingController.isAlreadyReviewed.value
-                                ? 'Perbarui ulasan'
-                                : 'Kirim ulasan'),
+                              ? 'Perbarui ulasan'
+                              : 'Kirim ulasan'),
                       style: GoogleFonts.poppins(
                         color: goldColor,
                         fontWeight: FontWeight.bold,
