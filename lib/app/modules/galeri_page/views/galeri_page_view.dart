@@ -175,7 +175,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            'Koneksi Internet Terputus',
+                            'Tidak Dapat Memuat Data',
                             style: GoogleFonts.poppins(
                               color: darkBrown,
                               fontWeight: FontWeight.w700,
@@ -184,7 +184,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Gagal menghubungkan ke studio galeri. Pastikan jaringan internet ponsel Anda aktif lalu ketuk tombol di bawah.',
+                            'Data tidak dapat dimuat saat ini. Pastikan koneksi internet Anda aktif, lalu ketuk tombol Coba Lagi.',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                               color: textMuted,
@@ -276,7 +276,7 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                     Border.all(color: borderColor, width: 1),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: darkBrown.withOpacity(0.02),
+                                    color: darkBrown.withValues(alpha: 0.02),
                                     blurRadius: 10,
                                     offset: const Offset(0, 5),
                                   ),
@@ -289,7 +289,8 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                   child: InkWell(
                                     onTap: () => Get.to(
                                         () => GaleriDetailView(batik: batik)),
-                                    splashColor: darkBrown.withOpacity(0.02),
+                                    splashColor:
+                                        darkBrown.withValues(alpha: 0.02),
                                     highlightColor: Colors.transparent,
                                     child: Column(
                                       crossAxisAlignment:
@@ -310,13 +311,13 @@ class GaleriPageView extends GetView<GaleriPageController> {
                                                 placeholder: (context, url) =>
                                                     Shimmer(
                                                   color:
-                                                      const Color(0xFFFAF7F2),
-                                                  colorOpacity: 0.5,
+                                                      const Color(0xFFE6DFD5),
+                                                  colorOpacity: 0.4,
                                                   duration: const Duration(
-                                                      milliseconds: 1500),
+                                                      milliseconds: 1200),
                                                   child: Container(
-                                                      color: const Color(
-                                                          0xFFE6DFD5)),
+                                                      color:
+                                                          Colors.transparent),
                                                 ),
                                                 errorWidget:
                                                     (context, url, error) =>
@@ -403,83 +404,88 @@ class GaleriPageView extends GetView<GaleriPageController> {
     );
   }
 
-  // ================= PERBAIKAN: FULL GRID SKELETON SHIMMER CARD =================
+  // ================= INDUSTRIAL STANDARD: INDUSTRIAL SKELETON GRID SHIMMER =================
   Widget _buildGridShimmerLoading(Color baseBorderColor) {
-    // Membungkus seluruh struktur grid ke satu Shimmer induk agar kedipan cahayanya harmonis menyapu seluruh card
-    return Shimmer(
-      color: const Color(0xFFFAF7F2),
-      colorOpacity: 0.6,
-      duration: const Duration(milliseconds: 1500),
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 16.0),
-        itemCount: 4,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.72,
-        ),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: const Color(
-                  0xFFF5F0E6), // Kerangka dasar kontainer luar diwarnai abu krem solid agar ikut berkedip penuh
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: baseBorderColor, width: 1),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Blok Atas (Penahan area Gambar)
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(
-                          0xFFE6DFD5), // Warna penyeimbang bayangan dalam grid
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(19)),
-                    ),
-                  ),
-                ),
-                // Blok Bawah (Penahan area Teks Info)
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Masking judul
-                        Container(
-                          width: 90,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE6DFD5),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        // Masking kategori
-                        Container(
-                          width: 60,
-                          height: 12,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE6DFD5),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+    const shimmerBg = Color(0xFFEFECE6); // Warna dasar dasar kerangka bodi
+    const maskColor =
+        Color(0xFFE2DDD5); // Warna elemen dalam topeng gambar/baris teks
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 16.0),
+      itemCount: 4, // Tampilkan 4 item kotak tiruan grid
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.72,
       ),
+      itemBuilder: (context, index) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Shimmer(
+            color: const Color(0xFFFAF7F2),
+            colorOpacity: 0.5,
+            duration: const Duration(milliseconds: 1200),
+            child: Container(
+              decoration: BoxDecoration(
+                color: shimmerBg,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: baseBorderColor, width: 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 1. Area Gambar Atas (Flex 3)
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: maskColor,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(19)),
+                      ),
+                    ),
+                  ),
+
+                  // 2. Area Teks Keterangan Bawah (Flex 2)
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Topeng baris Judul
+                          Container(
+                            width: 100,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              color: maskColor,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          // Topeng baris Kategori
+                          Container(
+                            width: 60,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: maskColor,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

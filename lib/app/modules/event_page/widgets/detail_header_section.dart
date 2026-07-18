@@ -5,7 +5,7 @@ import '../../../data/models/event_model.dart';
 
 class DetailHeaderSection extends StatelessWidget {
   final EventModel event;
-  
+
   // Ambil warna static dari view utama
   static const Color cDark = Color(0xFF1A1208);
   static const Color cKremChip = Color(0xFFF0EAD8);
@@ -30,15 +30,15 @@ class DetailHeaderSection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _CircleBtn(
-            child: const Icon(Icons.arrow_back, size: 16, color: cDark),
+          _HeaderAction(
+            child: const Icon(Icons.arrow_back, size: 20, color: cDark),
             onTap: () => Get.back(),
           ),
           Text('Detail Event',
               style: GoogleFonts.lora(
                   fontSize: 20, fontWeight: FontWeight.w500, color: cDark)),
-          _CircleBtn(
-            child: const Icon(Icons.share_outlined, size: 16, color: cDark),
+          _HeaderAction(
+            child: const Icon(Icons.share_outlined, size: 20, color: cDark),
             onTap: () {},
           ),
         ],
@@ -99,24 +99,23 @@ class DetailHeaderSection extends StatelessWidget {
   }
 }
 
-// Tombol bulat bawaan kode aslimu
-class _CircleBtn extends StatelessWidget {
+class _HeaderAction extends StatelessWidget {
   final Widget child;
   final VoidCallback onTap;
-  const _CircleBtn({required this.child, required this.onTap});
+
+  const _HeaderAction({required this.child, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 45,
-        height: 45,
-        decoration: const BoxDecoration(
-          color: Color(0xFFF0EAD8),
-          shape: BoxShape.circle,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: child,
         ),
-        child: Center(child: child),
       ),
     );
   }

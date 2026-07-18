@@ -3,6 +3,8 @@ import 'package:batikara/app/modules/informasi_page/widgets/informasi_search_bar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import '../controllers/informasi_page_controller.dart';
 
 class InformasiPageView extends GetView<InformasiPageController> {
@@ -10,7 +12,7 @@ class InformasiPageView extends GetView<InformasiPageController> {
 
   @override
   Widget build(BuildContext context) {
-    // Palet warna premium konsisten Batikara
+    // Palet warna premium konsisten Batikara global
     const bgCanvas = Color(0xFFFAF7F2);
     const darkBrown = Color(0xFF1C1308);
     const textMuted = Color(0xFF7A7062);
@@ -25,7 +27,6 @@ class InformasiPageView extends GetView<InformasiPageController> {
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: false,
-        // Tombol Back dikembalikan secara kustom dan rapi bro!
         leading: Padding(
           padding: const EdgeInsets.only(left: 16.0),
           child: Center(
@@ -59,7 +60,6 @@ class InformasiPageView extends GetView<InformasiPageController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Memanggil search bar kustom baru yang sudah kita sesuaikan di atas
                   InformasiSearchBar(onChanged: controller.onSearchChanged),
 
                   // Horizontal Scrolling Kategori Chips
@@ -107,20 +107,16 @@ class InformasiPageView extends GetView<InformasiPageController> {
             ),
 
             // --- BAGIAN KONTEN UTAMA ---
+            // 1. FIXED: Shimmer dideklarasikan sebagai fungsi pembantu biasa, bungkusan Sliver dilakukan di dalam fungsi tersebut
             if (controller.isLoading.value)
-              const SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(darkBrown),
-                  ),
-                ),
-              )
+              _buildShimmerLoading(borderColor)
+
+            // 2. KONDISI LOST CONNECTION (ERROR STATE GLOBAL)
             else if (controller.isError.value)
-              SliverFillRemaining(
-                hasScrollBody: false,
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(32.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 32.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -132,49 +128,50 @@ class InformasiPageView extends GetView<InformasiPageController> {
                         ),
                         child: const Icon(
                           Icons.wifi_off_rounded,
-                          size: 44,
+                          size: 40,
                           color: Color(0xFFC2612D),
                         ),
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Oops! Terjadi Kendala',
+                        'Tidak Dapat Memuat Data',
                         style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
                           color: darkBrown,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        controller.errorMessage.value,
+                        'Data tidak dapat dimuat saat ini. Pastikan koneksi internet Anda aktif, lalu ketuk tombol Coba Lagi.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
                           color: textMuted,
+                          fontSize: 13,
                           height: 1.4,
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      ElevatedButton.icon(
-                        onPressed: () => controller.loadInformasi(),
-                        icon: const Icon(Icons.refresh_rounded,
-                            color: Colors.white, size: 18),
-                        label: Text(
-                          'Coba Lagi',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: Colors.white,
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: 150,
+                        height: 44,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: darkBrown,
+                            foregroundColor: accentGold,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: darkBrown,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                          onPressed: () => controller.loadInformasi(),
+                          icon: const Icon(Icons.refresh_rounded, size: 18),
+                          label: Text(
+                            'Coba Lagi',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
                           ),
                         ),
                       ),
@@ -182,6 +179,8 @@ class InformasiPageView extends GetView<InformasiPageController> {
                   ),
                 ),
               )
+
+            // 3. KONDISI JIKA DATA FILTER KOSONG
             else if (controller.filteredNews.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -196,18 +195,20 @@ class InformasiPageView extends GetView<InformasiPageController> {
                   ),
                 ),
               )
+
+            // 4. KONDISI BERHASIL MEMUAT DATA BER-CACHE
             else
-              // Render List Artikel Premium
               SliverList.separated(
                 itemCount: controller.filteredNews.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 16),
                 itemBuilder: (context, i) {
                   final n = controller.filteredNews[i];
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
-                      onTap: () =>
-                          Get.to(() => InformasiDetailPage(), arguments: n),
+                      onTap: () => Get.to(() => const InformasiDetailPage(),
+                          arguments: n),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -226,10 +227,19 @@ class InformasiPageView extends GetView<InformasiPageController> {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                Image.network(
-                                  n.imageUrl ?? '',
+                                CachedNetworkImage(
+                                  imageUrl: n.imageUrl ?? '',
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
+                                  placeholder: (context, url) => Shimmer(
+                                    color: const Color(0xFFFAF7F2),
+                                    colorOpacity: 0.5,
+                                    duration:
+                                        const Duration(milliseconds: 1500),
+                                    child: Container(
+                                        color: const Color(0xFFE6DFD5)),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
                                     color: const Color(0xFFE6DFD5),
                                     child: const Icon(
                                       Icons.broken_image_rounded,
@@ -296,6 +306,38 @@ class InformasiPageView extends GetView<InformasiPageController> {
               ),
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
           ],
+        ),
+      ),
+    );
+  }
+
+  // ================= FIXED SOLUTION: SHIMMER DIBUNGKUS SLIVERTOBOXADAPTER =================
+  Widget _buildShimmerLoading(Color baseBorderColor) {
+    return SliverToBoxAdapter(
+      child: Shimmer(
+        color: const Color(0xFFFAF7F2),
+        colorOpacity: 0.6,
+        duration: const Duration(milliseconds: 1500),
+        child: ListView.separated(
+          // Memakai ListView biasa di dalam adapter karena posisinya sudah aman di dalam Sliver
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 3,
+          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                height: 210,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F0E6),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: baseBorderColor, width: 1),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

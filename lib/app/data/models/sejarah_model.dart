@@ -29,79 +29,92 @@ class SejarahModel {
 // ==============================
 
 final List<SejarahModel> sejarahData = const [
+  // 1
   SejarahModel(
     era: 'ABAD KE-17',
-    tahun: '1670-an',
-    judul: 'Awal Masuknya\nBudaya Batik',
+    tahun: '1677',
+    judul: 'Awal Tradisi\nBatik Tegalan',
     deskripsi:
-        'Sejarah Batik Tegalan berkaitan dengan pelarian Raja Amangkurat I dari Kerajaan Mataram pada masa Perang Trunojoyo. Pengaruh budaya keraton kemudian menyebar ke masyarakat Tegal dan menjadi awal berkembangnya tradisi batik di wilayah pesisir.',
+        'Tradisi Batik Tegalan mulai berkembang ketika Raja Amangkurat I melarikan diri ke wilayah Tegal Arum pada tahun 1677. Bersama para pengikut dari lingkungan Kerajaan Mataram, keterampilan membatik diperkenalkan kepada masyarakat dan menjadi cikal bakal berkembangnya Batik Tegalan.',
     motifChips: [
-      'Pengaruh Mataram',
-      'Budaya Keraton',
+      'Amangkurat I',
+      'Keraton Mataram',
     ],
   ),
+
+  // 2
   SejarahModel(
     era: 'ABAD KE-18',
     tahun: '1700-an',
-    judul: 'Akulturasi\nBudaya Pesisir',
+    judul: 'Perkembangan\nBatik Pesisir',
     deskripsi:
-        'Sebagai daerah pelabuhan, Tegal menerima pengaruh budaya dari pedagang Cina, Arab, dan Belanda. Motif Batik Tegalan berkembang menjadi lebih berani, luwes, dan kaya unsur flora-fauna.',
-    infoCardJudul: 'Ciri Batik Pesisir',
+        'Sebagai wilayah di jalur perdagangan Pantai Utara Jawa, Batik Tegalan berkembang dengan karakter batik pesisir yang lebih bebas dalam bentuk, warna, dan ragam hias dibandingkan batik keraton.',
+    infoCardJudul: 'Karakter Batik Pesisir',
     infoCardDeskripsi:
-        'Karakter pesisir melahirkan warna yang lebih cerah dan motif yang lebih dinamis dibanding batik pedalaman.',
+        'Batik pesisir dikenal memiliki warna yang lebih cerah, motif yang dinamis, serta terbuka terhadap berbagai pengaruh budaya.',
   ),
+
+  // 3
   SejarahModel(
-    era: 'ABAD KE-19',
+    era: 'AKHIR ABAD KE-19',
     tahun: '1800-an',
-    judul: 'Lahirnya Identitas\nBatik Tegalan',
+    judul: 'Munculnya Identitas\nBatik Tegalan',
     deskripsi:
-        'Pengrajin lokal mulai mengembangkan ciri khas Batik Tegalan melalui perpaduan unsur keraton dan budaya pesisir. Motif flora, fauna, dan garis-garis dinamis mulai banyak digunakan.',
+        'Menjelang akhir abad ke-19, Batik Tegalan mulai dikenal dengan ciri khasnya sendiri. Berbagai motif flora, fauna, serta ornamen khas pesisir berkembang dan menjadi identitas budaya masyarakat Tegal.',
     motifChips: [
       'Flora',
       'Fauna',
       'Motif Pesisir',
     ],
   ),
+
+  // 4
   SejarahModel(
-    era: 'ERA KOLONIAL',
-    tahun: '1900-an',
-    judul: 'Bertahan di Tengah\nProduksi Modern',
+    era: '1908–1914',
+    tahun: '1914',
+    judul: 'Peran\nRA Kardinah',
     deskripsi:
-        'Masuknya kain pabrikan dari Eropa sempat memengaruhi produksi batik tradisional. Namun masyarakat Tegal tetap mempertahankan tradisi membatik sebagai bagian dari budaya lokal.',
+        'RA Kardinah, istri Bupati Tegal sekaligus adik RA Kartini, berperan penting dalam perkembangan Batik Tegalan. Melalui Sekolah Kepandaian Putri yang didirikannya pada tahun 1914, keterampilan membatik diajarkan kepada perempuan pribumi sehingga tradisi membatik semakin berkembang.',
     quote:
-        '"Batik menjadi bagian penting dalam berbagai acara adat dan tradisi masyarakat."',
+        '"Pendidikan menjadi salah satu sarana penting dalam melestarikan tradisi membatik di Tegal."',
   ),
+
+  // 5
   SejarahModel(
-    era: '1950 – 1990',
+    era: '1950–1990',
     tahun: '1950–1990',
     judul: 'Perkembangan\nSentra Batik',
     deskripsi:
-        'Setelah kemerdekaan, produksi Batik Tegalan berkembang melalui teknik batik cap dan batik tulis. Wilayah Bengle menjadi salah satu pusat perkembangan batik di Kabupaten Tegal.',
+        'Setelah Indonesia merdeka, Batik Tegalan berkembang sebagai industri rumah tangga. Teknik batik tulis dan batik cap semakin banyak digunakan, sementara Desa Bengle menjadi salah satu sentra batik penting di Kabupaten Tegal.',
     stats: {
-      'Sentra': 'Bengle',
-      'Teknik': 'Cap & Tulis',
+      'Sentra': 'Desa Bengle',
+      'Teknik': 'Tulis & Cap',
     },
   ),
+
+  // 6
   SejarahModel(
     era: '2009',
-    tahun: '2009',
+    tahun: '2 Okt 2009',
     judul: 'Pengakuan\nUNESCO',
     deskripsi:
-        'Pengakuan batik Indonesia sebagai Warisan Budaya Tak Benda oleh UNESCO turut mendorong pelestarian Batik Tegalan sebagai bagian dari identitas budaya nasional.',
+        'Pada 2 Oktober 2009, UNESCO menetapkan Batik Indonesia sebagai Warisan Budaya Takbenda Dunia. Pengakuan ini turut memperkuat upaya pelestarian Batik Tegalan sebagai bagian dari kekayaan budaya Indonesia.',
     motifChips: [
       'UNESCO',
       'Warisan Budaya',
     ],
   ),
+
+  // 7
   SejarahModel(
-    era: 'SEKARANG · 2020s',
-    tahun: 'Sekarang',
-    judul: 'Warisan Hidup di\nEra Digital',
+    era: 'SEKARANG',
+    tahun: '2020-an',
+    judul: 'Pelestarian di\nEra Digital',
     deskripsi:
-        'Batik Tegalan kini diakui sebagai warisan budaya tak benda. Generasi muda mengangkat kembali motif tradisional dengan pendekatan kontemporer — dari fashion hingga desain digital.',
+        'Batik Tegalan terus dilestarikan melalui inovasi motif, pengembangan UMKM, pendidikan, pariwisata budaya, serta pemanfaatan teknologi digital untuk memperkenalkan warisan budaya kepada generasi muda.',
     motifChips: [
       'Digital',
-      'Fashion',
+      'UMKM',
       'Pelestarian',
     ],
     isAktif: true,
@@ -113,11 +126,11 @@ final List<SejarahModel> sejarahData = const [
 // ==============================
 
 final List<String> connectorLabels = const [
-  'pengaruh budaya Mataram',
-  'akulturasi budaya pesisir',
-  'perkembangan identitas lokal',
-  'masa kolonial',
+  'awal tradisi membatik',
+  'perkembangan batik pesisir',
+  'identitas Batik Tegalan',
+  'peran RA Kardinah',
   'perkembangan sentra batik',
   'pengakuan UNESCO',
-  'warisan budaya berlanjut',
+  'pelestarian era digital',
 ];

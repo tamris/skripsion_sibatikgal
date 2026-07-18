@@ -8,11 +8,11 @@ class VideoPageController extends GetxController {
   final RxList<VideoModel> filteredVideos = <VideoModel>[].obs;
 
   final RxBool isLoading = false.obs;
+  final RxBool isError = false.obs; // Tambah state error terkontrol global
   final RxString selectedKategori = 'Semua'.obs;
   final RxString searchQuery = ''.obs;
 
   final TextEditingController searchController = TextEditingController();
-
   final RxList<String> kategoriList = <String>['Semua'].obs;
 
   @override
@@ -27,9 +27,9 @@ class VideoPageController extends GetxController {
     super.onClose();
   }
 
-  // ── Fetch pakai VideoService yang udah ada ────────────────────────────────
   Future<void> fetchVideos() async {
     isLoading.value = true;
+    isError.value = false; // Reset state error setiap kali mulai fetch data
     try {
       final response = await VideoService.fetchAllVideos(
         search: searchQuery.value,
@@ -39,36 +39,27 @@ class VideoPageController extends GetxController {
         final List data = response.data['data'] ?? [];
         allVideos.value = data.map((e) => VideoModel.fromJson(e)).toList();
 
-        // Extract kategori unik dari DB, selalu awali 'Semua'
-        final uniqueKategori =
-            allVideos
-                .map((v) => v.kategori ?? '')
-                .where((k) => k.isNotEmpty)
-                .toSet()
-                .toList()
-              ..sort();
+        final uniqueKategori = allVideos
+            .map((v) => v.kategori ?? '')
+            .where((k) => k.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
         kategoriList.value = ['Semua', ...uniqueKategori];
 
         _applyFilter();
+        isError.value = false;
       } else {
-        Get.snackbar(
-          'Error',
-          'Gagal memuat video',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        isError.value = true;
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Tidak dapat terhubung ke server',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      print("Gagal memuat video di Beranda: $e");
+      isError.value = true; // Set true agar memicu render layout pesan error di UI
     } finally {
       isLoading.value = false;
     }
   }
 
-  // ── Filter kategori — dilakukan di client, search sudah di-handle API ─────
   void _applyFilter() {
     List<VideoModel> result = List.from(allVideos);
 
@@ -86,10 +77,9 @@ class VideoPageController extends GetxController {
     _applyFilter();
   }
 
-  // Search — kirim ke API langsung biar hasil lebih akurat
   void onSearch(String query) {
     searchQuery.value = query;
-    fetchVideos(); // re-fetch dengan query baru
+    fetchVideos();
   }
 
   void clearSearch() {

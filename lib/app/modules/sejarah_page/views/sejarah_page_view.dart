@@ -56,7 +56,7 @@ class SejarahPageView extends GetView<SejarahPageController> {
         children: [
           _circleBtn(
             onTap: () => Get.back(),
-            child: const Icon(Icons.arrow_back, size: 16, color: cDark),
+            child: const Icon(Icons.arrow_back, size: 20, color: cDark),
           ),
           Expanded(
             child: Column(
@@ -78,8 +78,8 @@ class SejarahPageView extends GetView<SejarahPageController> {
             ),
           ),
           _circleBtn(
-            onTap: () {},
-            child: const Icon(Icons.share, size: 16, color: cDark),
+            onTap: controller.shareSejarah,
+            child: const Icon(Icons.share, size: 20, color: cDark),
           ),
         ],
       ),
@@ -92,10 +92,6 @@ class SejarahPageView extends GetView<SejarahPageController> {
       child: Container(
         width: 45,
         height: 45,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 235, 232, 224),
-          shape: BoxShape.circle,
-        ),
         child: Center(child: child),
       ),
     );

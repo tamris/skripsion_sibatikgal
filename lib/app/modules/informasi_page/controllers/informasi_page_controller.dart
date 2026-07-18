@@ -44,7 +44,7 @@ class InformasiPageController extends GetxController {
       // Terjadi jika ada masalah lain (misal server down/timeout)
       isError.value = true;
       errorMessage.value =
-          'Tidak ada koneksi internet. Pastikan Anda terhubung ke jaringan.';
+          'Data tidak dapat dimuat saat ini. Pastikan koneksi internet Anda aktif, lalu ketuk tombol Coba Lagi.';
     } finally {
       isLoading.value = false;
     }
@@ -110,8 +110,7 @@ class InformasiPageController extends GetxController {
 
   // --- FUNGSI BARU: LOGIKA SHARE ---
   void shareArtikel(InformasiModel info) {
-    final String shareText =
-        '''
+    final String shareText = '''
 📢 *${info.title}*
 Kategori: ${info.categori ?? 'Umum'}
 

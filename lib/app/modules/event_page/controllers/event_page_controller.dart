@@ -7,9 +7,10 @@ import '../../../data/service/event_service.dart';
 class EventPageController extends GetxController {
   var eventList = <EventModel>[].obs;
   var isLoading = false.obs;
+  var isError = false.obs;
+
   final RxString selectedCategory = 'Semua'.obs;
   final RxString searchQuery = ''.obs;
-
   var categories = <String>['Semua'].obs;
 
   // Warna static untuk kebutuhan snackbar kustommu
@@ -24,6 +25,8 @@ class EventPageController extends GetxController {
 
   void fetchEvents() async {
     isLoading.value = true;
+    isError.value =
+        false; // 1. Reset state error ke false setiap kali mulai menarik data
     try {
       final response =
           await EventService.fetchAllEvents(search: searchQuery.value);
@@ -32,9 +35,14 @@ class EventPageController extends GetxController {
         final fetchedEvents = data.map((e) => EventModel.fromJson(e)).toList();
         eventList.assignAll(fetchedEvents);
         _updateCategories(fetchedEvents);
+        isError.value = false; // Memastikan tetap false jika response aman
+      } else {
+        isError.value = true; // Jaga-jaga jika response server bukan 200
       }
     } catch (e) {
       print("Error Parsing atau Koneksi: $e");
+      isError.value =
+          true; // 2. Set true saat crash/koneksi putus agar UI merender Message Error Global
     } finally {
       isLoading.value = false;
     }

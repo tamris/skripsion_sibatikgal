@@ -28,7 +28,7 @@ class EventDetailView extends GetView<EventPageController> {
           backgroundColor: cKrem,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: cDark, size: 16),
+            icon: const Icon(Icons.arrow_back, color: cDark, size: 20),
             onPressed: () => Get.back(),
           ),
         ),

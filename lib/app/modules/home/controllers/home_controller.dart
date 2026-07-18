@@ -17,6 +17,9 @@ class HomeController extends GetxController {
   // Instance GetStorage
   final storage = GetStorage();
 
+  var isLoading = false.obs;
+  var isError = false.obs;
+
   // greeting/user
   final text = 'Jelajahi & deteksi motif batik hari ini'.obs;
   var greeting = ''.obs;
@@ -61,8 +64,11 @@ class HomeController extends GetxController {
   ];
 
   // informasi / news
+  // informasi / news
   void fetchLatestNews() async {
     isLoadingNews.value = true;
+    isError.value =
+        false; // <--- 1. Reset status error ke false setiap kali mulai ambil data
     try {
       final response = await InformasiService.fetchAllInformasi(page: 1);
       if (response.statusCode == 200) {
@@ -70,9 +76,14 @@ class HomeController extends GetxController {
         // Ambil 3-4 berita saja untuk di Beranda
         news.assignAll(
             data.map((e) => InformasiModel.fromJson(e)).take(4).toList());
+        isError.value = false; // <--- Pastikan tetap false kalau sukses
+      } else {
+        isError.value = true; // <--- Jaga-jaga kalau response server bukan 200
       }
     } catch (e) {
       print("Gagal memuat berita di Beranda: $e");
+      isError.value =
+          true; // <--- 2. INI YANG PENTING! Set true agar UI mendeteksi error dan memunculkan message
     } finally {
       isLoadingNews.value = false;
     }

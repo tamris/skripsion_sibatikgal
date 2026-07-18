@@ -149,15 +149,12 @@ class InformasiDetailPage extends StatelessWidget {
 
   // --- HELPER COMPONENT WIDGETS (Agar build utama tetap clean) ---
   Widget _buildTopBarButton(IconData icon, VoidCallback onTap) {
+    const darkBrown = Color(0xFF1C1308);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5EFE1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(icon, size: 20, color: const Color(0xFFB08968)),
+        child: Icon(icon, size: 20, color: darkBrown),
       ),
     );
   }

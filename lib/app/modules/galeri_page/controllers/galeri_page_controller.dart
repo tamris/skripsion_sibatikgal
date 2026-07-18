@@ -92,13 +92,6 @@ class GaleriPageController extends GetxController {
       }
     } catch (e) {
       isError(true);
-      Get.snackbar(
-        'Koneksi Gagal',
-        'Periksa kembali jaringan internet Anda.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withValues(alpha: 0.8),
-        colorText: Colors.white,
-      );
     } finally {
       isLoading(false);
     }
