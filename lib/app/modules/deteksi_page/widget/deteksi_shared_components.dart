@@ -28,10 +28,10 @@ class CircleBtn extends StatelessWidget {
       child: Container(
         width: 45,
         height: 45,
-        decoration: const BoxDecoration(
-          color: DeteksiColors.cKremChip,
-          shape: BoxShape.circle,
-        ),
+        // decoration: const BoxDecoration(
+        //   color: DeteksiColors.cKremChip,
+        //   shape: BoxShape.circle,
+        // ),
         child: Center(child: child),
       ),
     );

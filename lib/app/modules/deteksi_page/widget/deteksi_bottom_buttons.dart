@@ -16,10 +16,10 @@ class SmallBtn extends StatelessWidget {
       child: Container(
         width: 55,
         height: 55,
-        decoration: BoxDecoration(
-          color: DeteksiColors.cKremChip,
-          borderRadius: BorderRadius.circular(14),
-        ),
+        // decoration: BoxDecoration(
+        //   color: DeteksiColors.cKremChip,
+        //   borderRadius: BorderRadius.circular(14),
+        // ),
         child: Icon(icon, size: 22, color: DeteksiColors.cBrown),
       ),
     );

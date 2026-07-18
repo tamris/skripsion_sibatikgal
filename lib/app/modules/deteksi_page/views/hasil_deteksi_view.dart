@@ -33,7 +33,8 @@ class HasilDeteksiView extends StatelessWidget {
       return;
     }
 
-    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+    Get.dialog(const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false);
     final batik = await GaleriService.fetchBatikByMotifName(name);
     if (Get.isDialogOpen ?? false) Get.back();
 
@@ -80,11 +81,16 @@ class HasilDeteksiView extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 0, left: 0, right: 0,
-              child: Container(color: DeteksiColors.cKrem, child: _buildHeader()),
+              top: 0,
+              left: 0,
+              right: 0,
+              child:
+                  Container(color: DeteksiColors.cKrem, child: _buildHeader()),
             ),
             Positioned(
-              bottom: 0, left: 0, right: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: _buildBottomCta(bottomPadding),
             ),
           ],
@@ -100,15 +106,20 @@ class HasilDeteksiView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CircleBtn(
-            child: const Icon(Icons.arrow_back_rounded, size: 15, color: DeteksiColors.cDark),
+            child: const Icon(Icons.arrow_back_rounded,
+                size: 20, color: DeteksiColors.cDark),
             onTap: _resetToDeteksi,
           ),
           Text(
             'Hasil Deteksi',
-            style: GoogleFonts.lora(fontSize: 24, fontWeight: FontWeight.w500, color: DeteksiColors.cDark),
+            style: GoogleFonts.lora(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                color: DeteksiColors.cDark),
           ),
           CircleBtn(
-            child: const Icon(Icons.share, size: 15, color: DeteksiColors.cDark),
+            child:
+                const Icon(Icons.share, size: 20, color: DeteksiColors.cDark),
             onTap: () {},
           ),
         ],
@@ -125,7 +136,9 @@ class HasilDeteksiView extends StatelessWidget {
           height: 300,
           width: double.infinity,
           child: controller.selectedImagePath.value.isNotEmpty
-              ? Image.file(File(controller.selectedImagePath.value), fit: BoxFit.cover, errorBuilder: (_, __, ___) => _imageFallback())
+              ? Image.file(File(controller.selectedImagePath.value),
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => _imageFallback())
               : _imageFallback(),
         ),
       ),
@@ -135,14 +148,19 @@ class HasilDeteksiView extends StatelessWidget {
   Widget _imageFallback() {
     return Container(
       color: const Color(0xFF2C1A0C),
-      child: const Center(child: Icon(Icons.image_not_supported_outlined, size: 36, color: Colors.white24)),
+      child: const Center(
+          child: Icon(Icons.image_not_supported_outlined,
+              size: 36, color: Colors.white24)),
     );
   }
 
   Widget _buildConfidenceBar() {
     final pct = _parseConfidence();
-    final pctLabel = controller.confidence.value.isNotEmpty ? controller.confidence.value : '–';
-    final Color pctColor = _isLowConfidence ? DeteksiColors.cOrange : DeteksiColors.cGreen;
+    final pctLabel = controller.confidence.value.isNotEmpty
+        ? controller.confidence.value
+        : '–';
+    final Color pctColor =
+        _isLowConfidence ? DeteksiColors.cOrange : DeteksiColors.cGreen;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -160,12 +178,16 @@ class HasilDeteksiView extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.warning_amber_rounded, size: 22, color: Color(0xFFF57F17)),
+                  const Icon(Icons.warning_amber_rounded,
+                      size: 22, color: Color(0xFFF57F17)),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'Hasil kurang akurat. Coba foto ulang dengan pencahayaan lebih baik.',
-                      style: GoogleFonts.poppins(fontSize: 15, color: const Color(0xFF9C6B00), height: 1.6),
+                      style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: const Color(0xFF9C6B00),
+                          height: 1.6),
                     ),
                   ),
                 ],
@@ -183,8 +205,16 @@ class HasilDeteksiView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Tingkat Keyakinan', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: DeteksiColors.cDark)),
-                    Text(pctLabel, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: pctColor)),
+                    Text('Tingkat Keyakinan',
+                        style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: DeteksiColors.cDark)),
+                    Text(pctLabel,
+                        style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: pctColor)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -193,8 +223,12 @@ class HasilDeteksiView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Kurang yakin', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFC8BEB0))),
-                    Text('Sangat yakin', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFC8BEB0))),
+                    Text('Kurang yakin',
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, color: const Color(0xFFC8BEB0))),
+                    Text('Sangat yakin',
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, color: const Color(0xFFC8BEB0))),
                   ],
                 ),
               ],
@@ -225,15 +259,24 @@ class HasilDeteksiView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 56, height: 56,
-                  decoration: BoxDecoration(color: DeteksiColors.cKremChip, borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.palette_outlined, size: 22, color: DeteksiColors.cBrown),
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                      color: DeteksiColors.cKremChip,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: const Icon(Icons.palette_outlined,
+                      size: 22, color: DeteksiColors.cBrown),
                 ),
                 const SizedBox(width: 14),
                 Obx(() => Text(
-                  controller.motifName.value.isNotEmpty ? controller.motifName.value : 'Tidak diketahui',
-                  style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w500, color: DeteksiColors.cDark),
-                )),
+                      controller.motifName.value.isNotEmpty
+                          ? controller.motifName.value
+                          : 'Tidak diketahui',
+                      style: GoogleFonts.poppins(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: DeteksiColors.cDark),
+                    )),
               ],
             ),
           ),
@@ -259,10 +302,15 @@ class HasilDeteksiView extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(14),
             child: Obx(() => Text(
-              controller.filosofi.value.isNotEmpty ? controller.filosofi.value : 'Makna tidak tersedia.',
-              style: GoogleFonts.mulish(fontSize: 14, color: DeteksiColors.cTextBody, height: 1.85),
-              textAlign: TextAlign.justify,
-            )),
+                  controller.filosofi.value.isNotEmpty
+                      ? controller.filosofi.value
+                      : 'Makna tidak tersedia.',
+                  style: GoogleFonts.mulish(
+                      fontSize: 14,
+                      color: DeteksiColors.cTextBody,
+                      height: 1.85),
+                  textAlign: TextAlign.justify,
+                )),
           ),
         ],
       ),
@@ -270,24 +318,32 @@ class HasilDeteksiView extends StatelessWidget {
   }
 
   Widget _buildTimestamp() {
-    final waktu = controller.historyList.isNotEmpty ? (controller.historyList[0]['waktu_relatif'] ?? 'Baru saja') : 'Baru saja';
+    final waktu = controller.historyList.isNotEmpty
+        ? (controller.historyList[0]['waktu_relatif'] ?? 'Baru saja')
+        : 'Baru saja';
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
       child: Container(
-        decoration: BoxDecoration(color: DeteksiColors.cKremChip, borderRadius: BorderRadius.circular(14)),
+        decoration: BoxDecoration(
+            color: DeteksiColors.cKremChip,
+            borderRadius: BorderRadius.circular(14)),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         child: Row(
           children: [
-            const Icon(Icons.access_time_rounded, size: 15, color: DeteksiColors.cBrown),
+            const Icon(Icons.access_time_rounded,
+                size: 15, color: DeteksiColors.cBrown),
             const SizedBox(width: 8),
             Expanded(
-              child: Text.rich(TextSpan(
-                style: GoogleFonts.poppins(fontSize: 14, color: DeteksiColors.cBrown),
-                children: [
-                  const TextSpan(text: 'Dideteksi '),
-                  TextSpan(text: waktu, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-                ],
-              ))),
+                child: Text.rich(TextSpan(
+              style: GoogleFonts.poppins(
+                  fontSize: 14, color: DeteksiColors.cBrown),
+              children: [
+                const TextSpan(text: 'Dideteksi '),
+                TextSpan(
+                    text: waktu,
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+              ],
+            ))),
           ],
         ),
       ),
@@ -299,9 +355,12 @@ class HasilDeteksiView extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(16, 10, 16, 14 + bottomPadding * 0.5),
       decoration: const BoxDecoration(
         color: Color(0xFAF7F4EE),
-        border: Border(top: BorderSide(color: DeteksiColors.cBorder, width: 0.5)),
+        border:
+            Border(top: BorderSide(color: DeteksiColors.cBorder, width: 0.5)),
       ),
-      child: _isLowConfidence ? _buildCtaLowConfidence() : _buildCtaHighConfidence(),
+      child: _isLowConfidence
+          ? _buildCtaLowConfidence()
+          : _buildCtaHighConfidence(),
     );
   }
 
@@ -310,7 +369,11 @@ class HasilDeteksiView extends StatelessWidget {
       children: [
         SmallBtn(icon: Icons.refresh_rounded, onTap: _resetToDeteksi),
         const SizedBox(width: 8),
-        Expanded(child: PrimaryBtn(icon: Icons.menu_book_rounded, label: 'Lihat Detail Motif', onTap: _openDetectedMotifDetail)),
+        Expanded(
+            child: PrimaryBtn(
+                icon: Icons.menu_book_rounded,
+                label: 'Lihat Detail Motif',
+                onTap: _openDetectedMotifDetail)),
       ],
     );
   }
@@ -318,9 +381,14 @@ class HasilDeteksiView extends StatelessWidget {
   Widget _buildCtaLowConfidence() {
     return Row(
       children: [
-        Expanded(child: PrimaryBtn(icon: Icons.refresh_rounded, label: 'Deteksi Ulang', onTap: _resetToDeteksi)),
+        Expanded(
+            child: PrimaryBtn(
+                icon: Icons.refresh_rounded,
+                label: 'Deteksi Ulang',
+                onTap: _resetToDeteksi)),
         const SizedBox(width: 8),
-        SmallBtn(icon: Icons.menu_book_rounded, onTap: _openDetectedMotifDetail),
+        SmallBtn(
+            icon: Icons.menu_book_rounded, onTap: _openDetectedMotifDetail),
       ],
     );
   }

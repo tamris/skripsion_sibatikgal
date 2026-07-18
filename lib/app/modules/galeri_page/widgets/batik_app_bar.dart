@@ -19,8 +19,7 @@ class BatikAppBar extends StatelessWidget {
   // 3. FUNGSI SHARE BERSTANDAR BEST PRACTICE
   void _shareBatikContent() {
     // Menyusun teks estetik yang akan dikirim ke aplikasi lain
-    final String shareMessage =
-        '''
+    final String shareMessage = '''
 ✨ *Kamus Batik Tegalan* ✨
 
 *Motif:* ${batik.title}
@@ -84,14 +83,14 @@ Yuk pelajari dan lestarikan kebudayaan lokal Batik Tegalan lewat aplikasi Kamus 
     return Container(
       width: 40,
       height: 40,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: buttonColor.withValues(alpha: 0.35),
-          width: 1,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   shape: BoxShape.circle,
+      //   border: Border.all(
+      //     color: buttonColor.withValues(alpha: 0.35),
+      //     width: 1,
+      //   ),
+      // ),
       child: IconButton(
         padding: EdgeInsets.zero,
         iconSize: 20,

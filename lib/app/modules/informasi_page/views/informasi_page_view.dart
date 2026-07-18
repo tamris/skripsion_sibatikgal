@@ -186,7 +186,7 @@ class InformasiPageView extends GetView<InformasiPageController> {
                 hasScrollBody: false,
                 child: Center(
                   child: Text(
-                    'Tidak ada informasi mengenai motif ini.',
+                    'Tidak ada informasi mengenai artikel ini.',
                     style: GoogleFonts.poppins(
                       color: textMuted,
                       fontSize: 14,
