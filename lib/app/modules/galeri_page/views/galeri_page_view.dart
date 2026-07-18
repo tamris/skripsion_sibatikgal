@@ -60,7 +60,13 @@ class GaleriPageView extends GetView<GaleriPageController> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: TextField(
-                onChanged: (value) => controller.searchBatik(value),
+                controller: controller
+                    .searchTextController, // 1. Pasangkan controller teks di sini
+                onChanged: (value) {
+                  // Aktifkan tombol 'X' jika teks tidak kosong
+                  controller.isSearching.value = value.isNotEmpty;
+                  controller.searchBatik(value);
+                },
                 cursorColor: darkBrown,
                 style: GoogleFonts.poppins(
                   fontSize: 15,
@@ -70,14 +76,36 @@ class GaleriPageView extends GetView<GaleriPageController> {
                 decoration: InputDecoration(
                   hintText: 'Cari motif batik...',
                   hintStyle: GoogleFonts.poppins(
-                    color: textMuted.withOpacity(0.5),
+                    color: textMuted.withValues(alpha: 0.5),
                     fontSize: 14,
                   ),
                   prefixIcon: Icon(
                     Icons.search_rounded,
-                    color: textMuted.withOpacity(0.7),
+                    color: textMuted.withValues(alpha: 0.7),
                     size: 20,
                   ),
+
+                  // =========================================================================
+                  // KUNCI UTAMA: Tombol X otomatis muncul ketika user mengetik sesuatu
+                  // =========================================================================
+                  suffixIcon: Obx(() {
+                    if (!controller.isSearching.value)
+                      return const SizedBox.shrink();
+
+                    return IconButton(
+                      icon: Icon(Icons.clear_rounded,
+                          color: textMuted.withValues(alpha: 0.7)),
+                      onPressed: () {
+                        // 1. Hapus teks dari form input
+                        controller.searchTextController.clear();
+                        // 2. Sembunyikan kembali tombol X
+                        controller.isSearching.value = false;
+                        // 3. Trigger fungsi pencarian dengan string kosong agar reload data awal dari Flask
+                        controller.searchBatik('');
+                      },
+                    );
+                  }),
+
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding:

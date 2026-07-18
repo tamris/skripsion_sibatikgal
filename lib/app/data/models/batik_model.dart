@@ -31,8 +31,8 @@ class BatikModel {
       parsedColors = List<String>.from(colorsFromJson.map((x) => x.toString()));
     }
 
-    print(
-        "DEBUG MODEL -> Batik: ${json['name']}, Ambil 'is_liked' dari server: ${json['is_liked']}");
+    // print(
+    //     "DEBUG MODEL -> Batik: ${json['name']}, Ambil 'is_liked' dari server: ${json['is_liked']}");
 
     return BatikModel(
       id: json['_id']?.toString(),

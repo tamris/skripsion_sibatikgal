@@ -1,42 +1,31 @@
 import 'package:batikara/app/data/models/batik_model.dart';
 import 'package:batikara/app/data/provider/api_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:get_storage/get_storage.dart'; // <--- 1. PASTIKAN IMPORT INI ADA
-import '../config/app_config.dart';
 
 class GaleriService {
-  static final Dio _dio = Dio(); // Menggunakan instance lokal agar bersih
+  // HAPUS: instance lokal _dio agar semua terpusat satu pintu lewat ApiProvider
 
   static Future<Response> fetchBatikWithPagination(
     int page,
     String search,
   ) async {
     try {
-      // 2. KUNCI UTAMA: Ambil token yang bener-bener fresh tepat saat fungsi ini dipanggil
-      final storage = GetStorage();
-      String? token = storage.read('token'); // Sesuaikan key storage token loginmu
-
-      // 3. Rakit header secara dinamis
-      Map<String, dynamic> headers = {};
-      if (token != null && token.isNotEmpty) {
-        headers['Authorization'] = 'Bearer $token';
-      }
-
-      // 4. Tembak menggunakan baseUrl lengkap dan sertakan hantaran header token
-      return await _dio.get(
-        '${AppConfig.baseUrl}/api/galeri',
+      // Menggunakan ApiProvider.dio agar otomatis diselipi token & auto-refresh token (401)
+      // Path disesuaikan menjadi relatif sesuai dengan konfigurasi base URL di ApiProvider
+      return await ApiProvider.dio.get(
+        '/api/galeri',
         queryParameters: {
           'page': page,
           'q': search, 
         },
-        options: Options(headers: headers), // <--- JAMINAN MUTLAK TOKEN TERKIRIM KANTONG FLASK
       );
     } on DioException catch (e) {
-      return e.response!;
+      if (e.response != null) return e.response!;
+      rethrow;
     }
   }
 
-  // ... Batas suci logika fungsi lain di bawah jangan diubah ...
+  // ... Batas suci logika fungsi lain di bawah tetap dipertahankan utuh ...
   static Future<Response> fetchBatikDetail(String batikId) async {
     try {
       final response = await ApiProvider.dio.get('/api/galeri/$batikId');

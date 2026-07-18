@@ -1,5 +1,8 @@
+import 'package:batikara/app/modules/galeri_page/views/galeri_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer_animation/shimmer_animation.dart'; // Impor paket shimmer andalanmu
 import '../controllers/home_controller.dart';
 
 class HomeCarousel extends GetView<HomeController> {
@@ -7,51 +10,134 @@ class HomeCarousel extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    final banners = controller.banners;
+    const itemBgIcon = Color(0xFFF3EDE2);
+    const borderColor = Color(0xFFE6DFD5);
 
-    // Konstanta warna premium konsisten Batikara
-    const itemBgIcon = Color(0xFFF3EDE2); // Latar hangat saat gambar loading
-    
+    return Obx(() {
+      // 1. STATE LOADING UTAMA CAROUSEL: Menggunakan Skeleton Shimmer Standar Industri
+      if (controller.isLoadingCarousel.value) {
+        return _buildCarouselShimmer(borderColor);
+      }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 190,
-          child: PageView.builder(
-            controller: controller.pageC,
-            onPageChanged: controller.onBannerChanged,
-            itemCount: banners.length,
-            itemBuilder: (_, i) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 11),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                      16), // Kembali ke radius 16 asli yang presisi
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color:
-                          itemBgIcon, // Mengganti warna terracotta lama yang kaku
-                      image: DecorationImage(
-                        image: AssetImage(banners[i]),
-                        fit: BoxFit.cover,
+      // Jika kosong atau server error, tampilkan container kosong agar tidak crash
+      if (controller.randomBatikList.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      final batiks = controller.randomBatikList;
+
+      return Column(
+        children: [
+          SizedBox(
+            height: 190,
+            child: PageView.builder(
+              controller: controller.pageC,
+              onPageChanged: controller.onBannerChanged,
+              itemCount: batiks.length,
+              itemBuilder: (_, i) {
+                final batik = batiks[i];
+
+                // TAMBAHKAN PRINT INI UNTUK CEK DI TERMINAL
+                // print(
+                //     "URL GAMBAR CAROUSEL: ${AppConfig.baseUrl}/static/img/galeri/${batik.image}");
+                // print("ISI ASLI FIELD IMAGE: ${batik.image}");
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 11),
+                  child: GestureDetector(
+                    onTap: () => Get.to(() => GaleriDetailView(batik: batik)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: itemBgIcon,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: batik.image,
+                          fit: BoxFit.cover,
+                          // Efek shimmer internal transparan lembut saat memuat gambar individu
+                          placeholder: (context, url) => Shimmer(
+                            color: const Color(0xFFE6DFD5),
+                            colorOpacity: 0.4,
+                            duration: const Duration(milliseconds: 1200),
+                            child: Container(
+                              color: Colors.transparent,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: itemBgIcon,
+                            child:
+                                const Icon(Icons.image_not_supported, size: 40),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-        const SizedBox(
-            height: 20), // Mempertahankan jarak 20 bawaan kode asli Anda
-        Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: Obx(() => _CarouselDots(
-                length: banners.length,
-                index: controller.currentBanner.value,
-              )),
-        )
-      ],
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: _CarouselDots(
+              length: batiks.length,
+              index: controller.currentBanner.value,
+            ),
+          )
+        ],
+      );
+    });
+  }
+
+  // ================= INDUSTRIAL STANDARD: BANNER CAROUSEL SKELETON SHIMMER =================
+  Widget _buildCarouselShimmer(Color baseBorderColor) {
+    const shimmerBg = Color(0xFFEFECE6);
+    const maskColor = Color(0xFFE2DDD5);
+
+    return Shimmer(
+      color: const Color(0xFFFAF7F2),
+      colorOpacity: 0.5,
+      duration: const Duration(milliseconds: 1200),
+      child: Column(
+        children: [
+          // Replikasi proporsi dan layout utama PageView Carousel Box
+          SizedBox(
+            height: 190,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 11),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: shimmerBg,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: baseBorderColor, width: 1),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Replikasi deretan dummy indicator dots di bawah box carousel
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (i) {
+                return Container(
+                  height: 6,
+                  width: i == 0 ? 18 : 6, // Meniru dots aktif di bagian depan
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  decoration: BoxDecoration(
+                    color: maskColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                );
+              }),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -63,9 +149,8 @@ class _CarouselDots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Penyelarasan warna dots agar masuk ke dalam tema global aplikasi Anda
-    const darkBrown = Color(0xFF1C1308); // Dots aktif cokelat pekat
-    const textMuted = Color(0xFF7A7062); // Dots pasif abu-abu pudar
+    const darkBrown = Color(0xFF1C1308);
+    const textMuted = Color(0xFF7A7062);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -73,16 +158,13 @@ class _CarouselDots extends StatelessWidget {
         final active = i == index;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          height:
-              6, // Mempertahankan tinggi 6 asli agar bentuk kapsul tidak kekecilan
-          width:
-              active ? 18 : 6, // Mempertahankan dimensi panjang asli 18 dan 6
+          height: 6,
+          width: active ? 18 : 6,
           margin: const EdgeInsets.symmetric(horizontal: 3),
           decoration: BoxDecoration(
-            // Menghapus warna terracotta lama yang kemerahan, diganti transisi opasitas global
             color: active
-                ? darkBrown.withOpacity(0.9)
-                : textMuted.withOpacity(0.3),
+                ? darkBrown.withValues(alpha: 0.9)
+                : textMuted.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
           ),
         );

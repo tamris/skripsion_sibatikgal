@@ -1,10 +1,12 @@
+import 'package:batikara/app/data/models/informasi_model.dart';
 import 'package:batikara/app/data/service/informasi_service.dart';
 import 'package:batikara/app/data/service/user_service.dart';
+// 1. IMPORT SERVICE GALERI & MODEL BATIK KAMU
+import 'package:batikara/app/data/service/galeri_service.dart';
+import 'package:batikara/app/data/models/batik_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart'; // <--- Tambahkan import GetStorage
-
-import '../../../data/models/informasi_model.dart';
+import 'package:get_storage/get_storage.dart';
 
 class QuickAction {
   final IconData icon;
@@ -14,7 +16,6 @@ class QuickAction {
 }
 
 class HomeController extends GetxController {
-  // Instance GetStorage
   final storage = GetStorage();
 
   var isLoading = false.obs;
@@ -23,9 +24,8 @@ class HomeController extends GetxController {
   // greeting/user
   final text = 'Jelajahi & deteksi motif batik hari ini'.obs;
   var greeting = ''.obs;
-  var username = ''.obs; // <--- Tambah Rx variable untuk menampung Nama
-  var profilePictureUrl =
-      ''.obs; // <--- Tambah Rx variable untuk URL Foto Profil
+  var username = ''.obs;
+  var profilePictureUrl = ''.obs;
 
   // Search
   final searchC = TextEditingController();
@@ -33,15 +33,13 @@ class HomeController extends GetxController {
   var news = <InformasiModel>[].obs;
   var isLoadingNews = false.obs;
 
-  // Carousel
+  // ===========================================================================
+  // KUNCI RANDOM CAROUSEL: Ubah Banners Menjadi Objek List BatikModel Reaktif
+  // ===========================================================================
+  var randomBatikList = <BatikModel>[].obs;
+  var isLoadingCarousel = false.obs;
   final PageController pageC = PageController(viewportFraction: 0.98);
-
   final currentBanner = 0.obs;
-  final banners = <String>[
-    'assets/images/news4.png',
-    'assets/images/news2.png',
-    'assets/images/news3.png',
-  ].obs;
 
   // Quick actions
   late final actions = <QuickAction>[
@@ -63,27 +61,56 @@ class HomeController extends GetxController {
         onTap: () => Get.toNamed('/sejarah-page')),
   ];
 
-  // informasi / news
-  // informasi / news
+  @override
+  void onInit() {
+    super.onInit();
+    updateGreetingAndProfile();
+    fetchLatestNews();
+    fetchRandomBatik(); // <-- Jalankan fungsi ambil batik random saat init
+  }
+
+  // ===========================================================================
+  // LOGIKA RANDOM: Ambil Data Dari API Galeri Lalu Acak (.shuffle())
+  // ===========================================================================
+  void fetchRandomBatik() async {
+    try {
+      isLoadingCarousel(true);
+      // Panggil service pagination halaman 1 tanpa query teks
+      final response = await GaleriService.fetchBatikWithPagination(1, '');
+
+      if (response.statusCode == 200) {
+        List data = response.data['data'] ?? [];
+        var batiks = data.map((e) => BatikModel.fromJson(e)).toList();
+
+        // Acak urutan batik yang didapat
+        batiks.shuffle();
+
+        // Ambil maksimal 3 atau 5 batik saja untuk dipajang di Carousel banner
+        randomBatikList.assignAll(batiks.take(5).toList());
+      }
+    } catch (e) {
+      print("Gagal memuat batik untuk carousel: $e");
+    } finally {
+      isLoadingCarousel(false);
+    }
+  }
+
   void fetchLatestNews() async {
     isLoadingNews.value = true;
-    isError.value =
-        false; // <--- 1. Reset status error ke false setiap kali mulai ambil data
+    isError.value = false;
     try {
       final response = await InformasiService.fetchAllInformasi(page: 1);
       if (response.statusCode == 200) {
         List data = response.data['data'];
-        // Ambil 3-4 berita saja untuk di Beranda
         news.assignAll(
             data.map((e) => InformasiModel.fromJson(e)).take(4).toList());
-        isError.value = false; // <--- Pastikan tetap false kalau sukses
+        isError.value = false;
       } else {
-        isError.value = true; // <--- Jaga-jaga kalau response server bukan 200
+        isError.value = true;
       }
     } catch (e) {
       print("Gagal memuat berita di Beranda: $e");
-      isError.value =
-          true; // <--- 2. INI YANG PENTING! Set true agar UI mendeteksi error dan memunculkan message
+      isError.value = true;
     } finally {
       isLoadingNews.value = false;
     }
@@ -98,27 +125,14 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    updateGreetingAndProfile(); // <--- Ganti loadGreeting() lama dengan fungsi gabungan baru
-    fetchLatestNews();
-  }
-
   void syncUserProfileFromServer() async {
     try {
       final response = await UserService.getProfile();
       if (response.statusCode == 200 && response.data['status'] == true) {
         final userData = response.data['user'];
-
-        // Tulis ulang ke GetStorage agar tersimpan permanen
         storage.write('user_data', userData);
-
-        // Perbarui variable reaktif secara realtime di halaman Beranda
         username.value = userData['username'] ?? '';
         profilePictureUrl.value = userData['profile_picture'] ?? '';
-
-        // Paksa refresh UI reaktif
         profilePictureUrl.refresh();
       }
     } catch (e) {
@@ -126,9 +140,6 @@ class HomeController extends GetxController {
     }
   }
 
-  // =========================================================
-  // FIX LOGIC: UPDATE GREETING & AMBIL DATA PROFILE DARI LOCAL
-  // =========================================================
   void updateGreetingAndProfile() {
     final hour = DateTime.now().hour;
     if (hour < 11) {

@@ -11,6 +11,11 @@ class GaleriPageController extends GetxController {
   var isError = false.obs;
   var totalBatikCount = 0.obs;
 
+  // 1. Tambahkan dua variabel ini di dalam class GaleriPageController
+  final TextEditingController searchTextController = TextEditingController();
+  var isSearching =
+      false.obs; // Untuk memantau status ketikan user secara reaktif
+
   var batikList = <BatikModel>[].obs;
   var filteredBatikList = <BatikModel>[].obs;
   var selectedCategory = 'Semua'.obs;
@@ -44,6 +49,7 @@ class GaleriPageController extends GetxController {
   @override
   void onClose() {
     scrollController.dispose();
+    searchTextController.dispose();
     super.onClose();
   }
 
@@ -52,8 +58,10 @@ class GaleriPageController extends GetxController {
     currentPage = 1;
     hasMoreData = true;
     selectedCategory.value = 'Semua';
-    currentSearchQuery =
-        ''; // Reset kata kunci pencarian saat halaman dimuat ulang
+    currentSearchQuery = '';
+    searchTextController
+        .clear(); // <-- Tambahkan ini agar teks di inputan bersih saat refresh
+    isSearching.value = false; // <-- Reset tombol silang
     await fetchInitialBatikData(isRefresh: true);
   }
 
