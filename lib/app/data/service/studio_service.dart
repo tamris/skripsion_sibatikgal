@@ -1,19 +1,17 @@
-import 'package:dio/dio.dart';
-import 'package:batikara/app/data/config/app_config.dart';
+import 'package:batikara/app/data/provider/api_provider.dart';
 import '../models/studio_model.dart';
 
+
 class StudioService {
-  final Dio _dio = Dio();
+  // HAPUS: final Dio _dio = Dio(); -> Diganti menggunakan ApiProvider.dio secara global
 
   // 💡 1. FETCH LIST MOTIF BATIK
   Future<List<StudioBatikModel>> fetchCanvasList() async {
     try {
-      final response = await _dio.get(
-        '${AppConfig.baseUrl}/api/studio/canvas-list',
-      );
+      // Menggunakan ApiProvider.dio dengan path relatif
+      final response = await ApiProvider.dio.get('/api/studio/canvas-list');
 
       if (response.statusCode == 200) {
-        // Dio otomatis melakukan json decode, jadi langsung ambil List data-nya
         final List<dynamic> batikList = response.data['data'];
         return batikList
             .map((item) => StudioBatikModel.fromJson(item))
@@ -26,17 +24,12 @@ class StudioService {
     }
   }
 
+  // Parameter tokenJwt tetap ada agar tidak mengubah logika pemanggilan dari luar
   Future<List<StudioBatikModel>> fetchMySavedDrafts(String tokenJwt) async {
     try {
-      final response = await _dio.get(
-        '${AppConfig.baseUrl}/api/studio/my-drafts',
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $tokenJwt",
-          },
-        ),
-      );
+      // Menggunakan ApiProvider.dio. 
+      // Interceptor ApiProvider akan otomatis menimpa tokenJwt jika ada token baru hasil refresh.
+      final response = await ApiProvider.dio.get('/api/studio/my-drafts');
 
       if (response.statusCode == 200) {
         final List<dynamic> draftList = response.data['data'];
@@ -54,19 +47,12 @@ class StudioService {
   // 💡 2. LOAD USER CANVAS DRAFT (Berbasis JWT & Batik ID)
   Future<dynamic> loadUserCanvasDraft(String batikId, String tokenJwt) async {
     try {
-      final response = await _dio.get(
-        '${AppConfig.baseUrl}/api/studio/get-draft',
+      final response = await ApiProvider.dio.get(
+        '/api/studio/get-draft',
         queryParameters: {'batik_id': batikId},
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $tokenJwt",
-          },
-        ),
       );
 
       if (response.statusCode == 200) {
-        // Langsung kembalikan datanya (bisa berupa List atau Map sesuai struktur Flask)
         return response.data['canvas_json'];
       }
       return null;
@@ -82,16 +68,9 @@ class StudioService {
     String tokenJwt,
   ) async {
     try {
-      final response = await _dio.post(
-        '${AppConfig.baseUrl}/api/studio/save-draft',
+      final response = await ApiProvider.dio.post(
+        '/api/studio/save-draft',
         data: {"batik_id": batikId, "canvas_json": canvasJson},
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization":
-                "Bearer $tokenJwt", // 🔒 Token JWT dilempar via header
-          },
-        ),
       );
 
       return response.statusCode == 200;

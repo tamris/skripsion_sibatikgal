@@ -125,6 +125,9 @@ class LoginPageController extends GetxController {
       if (result != null) {
         // Simpan token (misal pakai GetStorage)
         storage.write('token', result['access_token']);
+        storage.write('refresh_token', result['refresh_token']);
+        print("Token Google: ${result['access_token']}");
+        print("Refresh Token Google: ${result['refresh_token']}");
 
         showCustomSnackbar(
             "Berhasil", "Selamat datang, ${result['user']['name']}!");

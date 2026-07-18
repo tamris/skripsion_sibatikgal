@@ -1,24 +1,18 @@
+import 'package:batikara/app/data/provider/api_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:batikara/app/data/config/app_config.dart';
 import 'package:batikara/app/data/models/mapping_model.dart';
-import 'package:get_storage/get_storage.dart';
 
 class MappingService {
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: AppConfig.baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ),
-  );
-
-  final _storage = GetStorage();
-
+  
+  // ===========================================================================
+  // 1. Fungsi Ambil Data Lokasi
+  // ===========================================================================
   Future<List<MappingModelData>> fetchLocations({String query = ''}) async {
     try {
-      final response = await _dio.get(
+      // Menggunakan ApiProvider.dio agar otomatis diselipi token jika user sudah login
+      final response = await ApiProvider.dio.get(
         '/api/mappings',
-        queryParameters: {'q': query},
+        queryParameters: query.isNotEmpty ? {'q': query} : null,
       );
 
       if (response.statusCode == 200) {
@@ -32,29 +26,28 @@ class MappingService {
         throw Exception('Gagal memuat data lokasi dari server');
       }
     } on DioException catch (e) {
-      throw Exception(e.message);
+      throw Exception(e.message ?? 'Terjadi kesalahan pada jaringan');
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
+  // ===========================================================================
+  // 2. Fungsi Kirim Ulasan Baru (POST)
+  // ===========================================================================
   Future<Map<String, dynamic>> submitReview({
     required String mappingId,
     required int rating,
     required String comment,
   }) async {
     try {
-      String? token = _storage.read('token');
-
-      final response = await _dio.post(
-        '${AppConfig.baseUrl}/api/mappings/$mappingId/reviews',
-        data: {'rating': rating, 'comment': comment},
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
+      // Lebih bersih: Tidak perlu mengambil token manual & setting Options header lagi
+      final response = await ApiProvider.dio.post(
+        '/api/mappings/$mappingId/reviews',
+        data: {
+          'rating': rating, 
+          'comment': comment,
+        },
       );
 
       if (response.data is Map<String, dynamic>) {
@@ -62,17 +55,7 @@ class MappingService {
       }
       return {"status": "success", "message": "Ulasan diproses."};
     } on DioException catch (e) {
-      if (e.response != null && e.response!.data != null) {
-        if (e.response!.data is Map) {
-          return Map<String, dynamic>.from(e.response!.data);
-        } else {
-          return {"status": "error", "message": e.response!.data.toString()};
-        }
-      }
-      return {
-        "status": "error",
-        "message": "Gagal terhubung ke server. Pastikan server Flask menyala.",
-      };
+      return _handleDioError(e);
     } catch (e) {
       return {
         "status": "error",
@@ -82,7 +65,7 @@ class MappingService {
   }
 
   // ===========================================================================
-  // KUNCI BEST PRACTICE: Endpoint PUT untuk Update Review Lama User
+  // 3. Fungsi Update Ulasan Lama (PUT)
   // ===========================================================================
   Future<Map<String, dynamic>> updateReview({
     required String mappingId,
@@ -90,17 +73,13 @@ class MappingService {
     required String comment,
   }) async {
     try {
-      String? token = _storage.read('token');
-
-      final response = await _dio.put(
-        '${AppConfig.baseUrl}/api/mappings/$mappingId/reviews',
-        data: {'rating': rating, 'comment': comment},
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
+      // Otomatis terintegrasi silent-refresh token jika mendadak expired (401)
+      final response = await ApiProvider.dio.put(
+        '/api/mappings/$mappingId/reviews',
+        data: {
+          'rating': rating, 
+          'comment': comment,
+        },
       );
 
       if (response.data is Map<String, dynamic>) {
@@ -108,22 +87,29 @@ class MappingService {
       }
       return {"status": "success", "message": "Ulasan berhasil diperbarui!"};
     } on DioException catch (e) {
-      if (e.response != null && e.response!.data != null) {
-        if (e.response!.data is Map) {
-          return Map<String, dynamic>.from(e.response!.data);
-        } else {
-          return {"status": "error", "message": e.response!.data.toString()};
-        }
-      }
-      return {
-        "status": "error",
-        "message": "Gagal terhubung ke server. Pastikan server Flask menyala.",
-      };
+      return _handleDioError(e);
     } catch (e) {
       return {
         "status": "error",
         "message": "Terjadi kesalahan internal aplikasi: $e",
       };
     }
+  }
+
+  // ===========================================================================
+  // KUNCI CLEAN CODE: Helper khusus untuk merapikan handling error Dio
+  // ===========================================================================
+  Map<String, dynamic> _handleDioError(DioException e) {
+    if (e.response != null && e.response!.data != null) {
+      if (e.response!.data is Map) {
+        return Map<String, dynamic>.from(e.response!.data);
+      } else {
+        return {"status": "error", "message": e.response!.data.toString()};
+      }
+    }
+    return {
+      "status": "error",
+      "message": "Gagal terhubung ke server. Pastikan server API/Flask menyala.",
+    };
   }
 }
