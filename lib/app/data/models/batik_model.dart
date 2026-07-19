@@ -1,3 +1,5 @@
+import 'package:batikara/app/data/config/app_config.dart';
+
 class BatikModel {
   String? id;
   String title;
@@ -31,6 +33,14 @@ class BatikModel {
       parsedColors = List<String>.from(colorsFromJson.map((x) => x.toString()));
     }
 
+    String rawImage =
+        json['image_url']?.toString() ?? json['image']?.toString() ?? '';
+
+    // KUNCI UTAMA: Cek secara otomatis. Jika belum ada domain 'http', otomatis tambahkan baseUrl!
+    if (rawImage.isNotEmpty && !rawImage.startsWith('http')) {
+      rawImage = '${AppConfig.baseUrl}/static/img/galeri/$rawImage';
+    }
+
     // print(
     //     "DEBUG MODEL -> Batik: ${json['name']}, Ambil 'is_liked' dari server: ${json['is_liked']}");
 
@@ -43,7 +53,7 @@ class BatikModel {
       technique: json['technique']?.toString() ?? '',
       history: json['history']?.toString() ?? '',
       dominantColors: parsedColors,
-      image: json['image_url']?.toString() ?? '',
+      image: rawImage,
       // --- 3. SINKRONISASI DARI BACKEND FLASK ---
       isLiked: json['is_liked'] ?? false,
     );

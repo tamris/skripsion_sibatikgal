@@ -25,6 +25,7 @@ abstract class Routes {
   static const TENTANG_APLIKASI_PAGE = _Paths.TENTANG_APLIKASI_PAGE;
   static const FAQS_PAGE = _Paths.FAQS_PAGE;
   static const SAVE_ITEM_PAGE = _Paths.SAVE_ITEM_PAGE;
+  static const GLOBAL_SEARCH = _Paths.GLOBAL_SEARCH;
 }
 
 abstract class _Paths {
@@ -51,4 +52,5 @@ abstract class _Paths {
   static const TENTANG_APLIKASI_PAGE = '/tentang-aplikasi-page';
   static const FAQS_PAGE = '/faqs-page';
   static const SAVE_ITEM_PAGE = '/save-item-page';
+  static const GLOBAL_SEARCH = '/global-search';
 }

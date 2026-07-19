@@ -1,3 +1,4 @@
+import 'package:batikara/app/modules/event_page/controllers/event_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +7,6 @@ import '../../../data/models/event_model.dart';
 class DetailHeaderSection extends StatelessWidget {
   final EventModel event;
 
-  // Ambil warna static dari view utama
   static const Color cDark = Color(0xFF1A1208);
   static const Color cKremChip = Color(0xFFF0EAD8);
   static const Color cGold = Color(0xFFFFD264);
@@ -15,16 +15,20 @@ class DetailHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 2. Cari / temukan controller yang sedang aktif
+    final controller = Get.find<EventPageController>();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildHeader(),
+        _buildHeader(controller), // 3. Oper controller ke fungsi header
         _buildImage(event),
       ],
     );
   }
 
-  Widget _buildHeader() {
+  // 4. Update parameter menerima controller
+  Widget _buildHeader(EventPageController controller) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
       child: Row(
@@ -39,12 +43,15 @@ class DetailHeaderSection extends StatelessWidget {
                   fontSize: 20, fontWeight: FontWeight.w500, color: cDark)),
           _HeaderAction(
             child: const Icon(Icons.share_outlined, size: 20, color: cDark),
-            onTap: () {},
+            // 5. Panggil fungsi shareEvent dari controller
+            onTap: () => controller.shareEvent(event),
           ),
         ],
       ),
     );
   }
+
+  // ... Sisa kode _buildImage dan lainnya tetap sama ...
 
   Widget _buildImage(EventModel event) {
     return Padding(

@@ -12,6 +12,8 @@ import '../modules/faqs_page/bindings/faqs_page_binding.dart';
 import '../modules/faqs_page/views/faqs_page_view.dart';
 import '../modules/galeri_page/bindings/galeri_page_binding.dart';
 import '../modules/galeri_page/views/galeri_page_view.dart';
+import '../modules/global_search/bindings/global_search_binding.dart';
+import '../modules/global_search/views/global_search_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/informasi_page/bindings/informasi_page_binding.dart';
 import '../modules/informasi_page/views/informasi_page_view.dart';
@@ -169,6 +171,11 @@ class AppPages {
       name: _Paths.SAVE_ITEM_PAGE,
       page: () => const SaveItemPageView(),
       binding: SaveItemPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.GLOBAL_SEARCH,
+      page: () => const GlobalSearchView(),
+      binding: GlobalSearchBinding(),
     ),
   ];
 }

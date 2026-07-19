@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../../data/models/event_model.dart';
 import '../../../data/service/event_service.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EventPageController extends GetxController {
   var eventList = <EventModel>[].obs;
@@ -122,6 +123,31 @@ class EventPageController extends GetxController {
       }
     } catch (e) {
       Get.snackbar("Error", "Tidak dapat membuka link pendaftaran: $e",
+          backgroundColor: cDark, colorText: cGold);
+    }
+  }
+
+  Future<void> shareEvent(EventModel event) async {
+    try {
+      final String eventName = event.title ?? 'Event Seru';
+      final String eventCat = event.kategori ?? '-';
+      final String eventDate = event.eventDate ?? '-';
+      final String eventDesc = event.description ?? '-';
+      final String eventUrl = event.registrationUrl ?? '-';
+
+      // Susun template pesan text share sesuai kebutuhanmu
+      final String shareText = "Yuk cek event menarik ini!\n\n"
+          "📌 *Nama Event:* $eventName\n"
+          "🏷️ *Kategori:* $eventCat\n"
+          "📅 *Tanggal:* $eventDate\n\n"
+          "📖 *Deskripsi:* $eventDesc\n"
+          "🔗 *Link Pendaftaran:* $eventUrl\n\n"
+          "Jangan sampai ketinggalan ya! ✨";
+
+      // Memanggil method bawaan share_plus
+      await Share.share(shareText);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal membagikan event: $e",
           backgroundColor: cDark, colorText: cGold);
     }
   }

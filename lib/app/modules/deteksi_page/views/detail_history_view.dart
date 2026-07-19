@@ -1,4 +1,5 @@
 import 'package:batikara/app/data/service/galeri_service.dart';
+import 'package:batikara/app/modules/deteksi_page/controllers/deteksi_page_controller.dart';
 import 'package:batikara/app/modules/galeri_page/views/galeri_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -98,6 +99,13 @@ class DetailHistoryView extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    // Ambil data dari map historyData
+    final String namaMotif = historyData['nama_motif'] ?? 'Batik';
+    final String filosofi = historyData['makna'] ?? 'Makna tidak ditemukan.';
+    final String akurasiLabel = historyData['akurasi'] ??
+        historyData['confidence'] ??
+        '${(_parseConfidence() * 100).toStringAsFixed(0)}%';
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
       child: Row(
@@ -118,7 +126,14 @@ class DetailHistoryView extends StatelessWidget {
           CircleBtn(
             child:
                 const Icon(Icons.share, size: 20, color: DeteksiColors.cDark),
-            onTap: () {},
+            // HUBUNGKAN DENGAN CONTROLLER DI SINI
+            onTap: () {
+              Get.find<DeteksiPageController>().shareBatikResult(
+                nama: namaMotif,
+                akurasi: akurasiLabel,
+                makna: filosofi,
+              );
+            },
           ),
         ],
       ),

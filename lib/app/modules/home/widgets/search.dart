@@ -8,39 +8,42 @@ class HomeSearchBar extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    // Palet warna premium konsisten Batikara
-    const darkBrown = Color(0xFF1C1308); // Cokelat gelap utama
-    const textMuted = Color(0xFF7A7062); // Warna teks sekunder
-    const borderColor = Color(0xFFE6DFD5); // Garis tepi tipis premium
+    const darkBrown = Color(0xFF1C1308);
+    const textMuted = Color(0xFF7A7062);
+    const borderColor = Color(0xFFE6DFD5);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       child: TextField(
         controller: controller.searchC,
-        cursorColor: darkBrown, // Cursor disamakan dengan warna teks utama
+        cursorColor: darkBrown,
         style: GoogleFonts.poppins(
             fontSize: 15, color: darkBrown, fontWeight: FontWeight.w500),
+        textInputAction: TextInputAction.search,
+        // =========================================================================
+        // ON SUBMITTED: Ketika tombol enter/kaca pembesar ditekan, lempar ke GlobalSearch
+        // =========================================================================
+        onSubmitted: (value) {
+          if (value.trim().isNotEmpty) {
+            Get.toNamed('/global-search', arguments: value);
+            controller.searchC
+                .clear(); // Pastikan rute '/global-search' sesuai di app_pages.dart
+          }
+        },
         decoration: InputDecoration(
-          hintText: 'Cari informasi batik...',
+          hintText: 'Cari motif, artikel, video, atau event...',
           hintStyle: GoogleFonts.poppins(
-            color: textMuted.withOpacity(0.5),
-            fontSize: 14,
-          ),
+              color: textMuted.withValues(alpha: 0.5), fontSize: 14),
           filled: true,
-          fillColor: Colors
-              .white, // Menggunakan putih solid agar terlihat bersih di atas kanvas krem
+          fillColor: Colors.white,
           prefixIcon: Icon(Icons.search_rounded,
-              color: textMuted.withOpacity(0.7), size: 20),
+              color: textMuted.withValues(alpha: 0.7), size: 20),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-
-          // Enabled Border: Menggunakan warna garis tepi halus
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: borderColor, width: 1.0),
           ),
-
-          // Focused Border: Menggunakan darkBrown yang tegas dan elegan
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: darkBrown, width: 1.5),

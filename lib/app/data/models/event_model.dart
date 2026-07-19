@@ -1,3 +1,4 @@
+import 'package:batikara/app/data/config/app_config.dart';
 import 'package:intl/intl.dart';
 
 class EventModel {
@@ -30,13 +31,20 @@ class EventModel {
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
+    // 1. Ambil nama gambar mentah dari json backend
+    String rawImage = json['banner_image_url']?.toString() ?? '';
+
+    // 2. Otomatis deteksi dan gabungkan dengan baseUrl + path folder events
+    if (rawImage.isNotEmpty && !rawImage.startsWith('http')) {
+      rawImage = '${AppConfig.baseUrl}/static/img/events/$rawImage';
+    }
+
     return EventModel(
-      id: json['_id']?.toString(), // Pastikan ID selalu string
+      id: json['_id']?.toString(),
       title: json['title'],
       kategori: json['category']?.toString() ?? '',
       description: json['description'],
-      bannerImageUrl: json['banner_image_url'],
-      // Cek tipe data sebelum parse untuk menghindari crash
+      bannerImageUrl: rawImage, // <-- URL Gambar sudah bersih & mutlak
       eventDate: json['event_date'] is String ? json['event_date'] : null,
       latitude: json['latitude']?.toString(),
       longitude: json['longitude']?.toString(),

@@ -1,6 +1,7 @@
 import 'package:batikara/app/data/config/app_config.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../data/service/deteksi_service.dart';
 
@@ -210,6 +211,29 @@ class DeteksiPageController extends GetxController {
       }
     } catch (e) {
       return 'Baru saja';
+    }
+  }
+
+  Future<void> shareBatikResult({
+    required String nama,
+    required String akurasi,
+    required String makna,
+  }) async {
+    try {
+      final String shareText = 
+          "✨ *Hasil Identifikasi Batik Tegalan* ✨\n\n"
+          "📌 *Motif:* $nama\n"
+          "🎯 *Akurasi:* $akurasi\n\n"
+          "📖 *Filosofi & Makna:* \n$makna\n\n"
+          "Didokumentasikan via aplikasi Sibatikgal.";
+
+      await Share.share(shareText);
+    } catch (e) {
+      Get.snackbar(
+        "Gagal Berbagi",
+        "Terjadi kesalahan saat mencoba membagikan data.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 

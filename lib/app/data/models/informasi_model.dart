@@ -1,3 +1,4 @@
+import 'package:batikara/app/data/config/app_config.dart';
 import 'package:intl/intl.dart';
 
 class InformasiModel {
@@ -21,19 +22,45 @@ class InformasiModel {
   });
 
   factory InformasiModel.fromJson(Map<String, dynamic> json) {
+    // =========================================================================
+    // FIX LOGIC FOR AUTHOR NAME: Antisipasi jika data yang dikirim adalah Object/Map
+    // =========================================================================
+    String extractedAuthor = "Admin Batik Tegal";
+
+    String rawImage =
+        json['image_url']?.toString() ?? json['image']?.toString() ?? '';
+
+    // KUNCI UTAMA: Cek secara otomatis. Jika belum ada domain 'http', otomatis tambahkan baseUrl!
+    if (rawImage.isNotEmpty && !rawImage.startsWith('http')) {
+      rawImage = '${AppConfig.baseUrl}/static/img/informasi/$rawImage';
+    }
+
+    // 1. Cek dari field 'author_name' atau 'created_by'
+    var authorRaw = json['author_name'] ?? json['created_by'];
+    if (authorRaw != null) {
+      if (authorRaw is Map) {
+        extractedAuthor = authorRaw['name']?.toString() ?? "Admin Batik Tegal";
+      } else {
+        extractedAuthor = authorRaw.toString();
+      }
+    }
+    // 2. Cek fallback dari field pipeline 'admin_data' yang dikirim backend Flask
+    else if (json['admin_data'] != null && json['admin_data'] is Map) {
+      extractedAuthor = json['admin_data']['name']?.toString() ??
+          json['admin_data']['username']?.toString() ??
+          "Admin Batik Tegal";
+    }
+
     return InformasiModel(
-      id: json['_id'],
-      title: json['title'],
-      deskripsi: json['description'],
-      categori: json['category'],
-      imageUrl: json['image_url'],
+      id: json['_id']?.toString(), // Amankan agar selalu dikonversi string
+      title: json['title']?.toString(),
+      deskripsi: json['description']?.toString(),
+      categori: json['category']?.toString(),
+      imageUrl: rawImage, // Gunakan nilai yang sudah diperbaiki
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.tryParse(json['created_at'].toString())
           : null,
-      // PETAKAN FIELD DARI BACKEND DI SINI
-      // Sesuaikan key 'author_name' atau 'created_by' dengan response JSON dari Flask kamu
-      authorName:
-          json['author_name'] ?? json['created_by'] ?? "Admin Batik Tegal",
+      authorName: extractedAuthor, // Masukkan data author aman
     );
   }
 

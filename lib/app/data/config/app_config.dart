@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class AppConfig {
   static const String primaryBaseUrl = 'http://146.190.83.155:5000';
-  // static const String primaryBaseUrl = 'http://146.190.83.155:5000';
+  // static const String primaryBaseUrl = 'http://192.168.18.9:5000';
   static const String fallbackBaseUrl =
       'https://delphia-formulable-kristyn.ngrok-free.dev';
 

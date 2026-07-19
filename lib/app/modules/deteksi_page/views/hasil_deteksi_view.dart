@@ -120,7 +120,12 @@ class HasilDeteksiView extends StatelessWidget {
           CircleBtn(
             child:
                 const Icon(Icons.share, size: 20, color: DeteksiColors.cDark),
-            onTap: () {},
+            // PANGGIL FUNGSI SHARE DI SINI
+            onTap: () => controller.shareBatikResult(
+              nama: controller.motifName.value,
+              akurasi: controller.confidence.value,
+              makna: controller.filosofi.value,
+            ),
           ),
         ],
       ),
