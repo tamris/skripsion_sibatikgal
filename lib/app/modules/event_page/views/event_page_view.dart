@@ -174,6 +174,11 @@ class EventPageView extends GetView<EventPageController> {
       final events = controller.filteredEvents;
       if (events.isEmpty) return _buildEmptyState();
 
+      // TAMBAHKAN PRINT INI UNTUK CEK LOG
+      print("TOTAL EVENTS DI UI: ${events.length}");
+      print(
+          "TOTAL EVENT LAINNYA: ${events.length > 1 ? events.length - 1 : 0}");
+
       final featured = events.first;
       final rest = events.length > 1 ? events.sublist(1) : <EventModel>[];
 

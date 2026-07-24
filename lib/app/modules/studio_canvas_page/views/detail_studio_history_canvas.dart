@@ -54,7 +54,7 @@ class DetailStudioHistoryCanvas extends GetView<StudioCanvasPageController> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save_alt_rounded, color: cDark, size: 24),
+            icon: const Icon(Icons.save_rounded, color: cDark, size: 24),
             tooltip: 'Simpan Hasil Membatik',
             onPressed: () {
               final batikId = controller.currentSelectedBatik?.id ?? '';
@@ -120,31 +120,31 @@ class DetailStudioHistoryCanvas extends GetView<StudioCanvasPageController> {
                                       // 🟢 MENGGANTI SPINNER LAMA DENGAN ANIMASI SHIMMER KAIN KANVAS
                                       loadingBuilder:
                                           (context, child, loadingProgress) {
-                                            if (loadingProgress == null)
-                                              return child;
-                                            return Shimmer(
-                                              duration: const Duration(
-                                                seconds: 2,
-                                              ),
-                                              interval: const Duration(
-                                                milliseconds: 100,
-                                              ),
-                                              color: Colors.grey.shade100,
-                                              colorOpacity: 0.6,
-                                              child: Container(
-                                                color: Colors.grey.shade200,
-                                                width: double.infinity,
-                                                height: double.infinity,
-                                              ),
-                                            );
-                                          },
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Shimmer(
+                                          duration: const Duration(
+                                            seconds: 2,
+                                          ),
+                                          interval: const Duration(
+                                            milliseconds: 100,
+                                          ),
+                                          color: Colors.grey.shade100,
+                                          colorOpacity: 0.6,
+                                          child: Container(
+                                            color: Colors.grey.shade200,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                          ),
+                                        );
+                                      },
                                       errorBuilder:
                                           (context, error, stackTrace) =>
                                               const Icon(
-                                                Icons.broken_image,
-                                                color: Colors.grey,
-                                                size: 40,
-                                              ),
+                                        Icons.broken_image,
+                                        color: Colors.grey,
+                                        size: 40,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -284,8 +284,7 @@ class DetailStudioHistoryCanvas extends GetView<StudioCanvasPageController> {
                         Expanded(
                           child: Slider(
                             value: controller
-                                .painterController
-                                .freeStyleStrokeWidth,
+                                .painterController.freeStyleStrokeWidth,
                             min: 0.5,
                             max: 15.0,
                             activeColor: Colors.brown,
@@ -324,8 +323,7 @@ class DetailStudioHistoryCanvas extends GetView<StudioCanvasPageController> {
                               _toolButton(
                                 tool: CanvasTool.pen,
                                 icon: Icons.brush,
-                                isSelected:
-                                    controller.activeTool.value ==
+                                isSelected: controller.activeTool.value ==
                                     CanvasTool.pen,
                                 controller: controller,
                               ),
@@ -333,8 +331,7 @@ class DetailStudioHistoryCanvas extends GetView<StudioCanvasPageController> {
                               _toolButton(
                                 tool: CanvasTool.eraser,
                                 icon: Icons.cleaning_services,
-                                isSelected:
-                                    controller.activeTool.value ==
+                                isSelected: controller.activeTool.value ==
                                     CanvasTool.eraser,
                                 controller: controller,
                               ),

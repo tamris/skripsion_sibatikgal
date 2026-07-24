@@ -7,6 +7,8 @@ import 'package:batikara/app/modules/deteksi_page/widget/loading_stepper.view.da
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // Impor cache gambar premium
+import 'package:shimmer_animation/shimmer_animation.dart'; // Impor paket shimmer andalanmu
 import '../controllers/deteksi_page_controller.dart';
 
 class DeteksiPageView extends GetView<DeteksiPageController> {
@@ -139,15 +141,9 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
     Color colorSecondaryBg,
     Color textDark,
   ) {
+    // 1. STATE LOADING UTAMA SECTION: Menggunakan Horizontal Skeleton Shimmer Premium
     if (controller.isLoadingHistory.value) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(colorPrimary),
-          ),
-        ),
-      );
+      return _buildHistoryShimmer(cardWidth, colorPrimary);
     }
 
     if (controller.historyList.isEmpty) {
@@ -174,7 +170,6 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
 
         return InkWell(
           onTap: () {
-            // --- AKSI TAP SEKARANG JADI SUPER MUDAH & BERSIH ---
             Get.to(
               () => DetailHistoryView(
                 historyData: {
@@ -187,9 +182,7 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(
-            16,
-          ), // Biar efek riak air (splash effect) rapi mengikuti bentuk kartu
+          borderRadius: BorderRadius.circular(16),
           child: Container(
             width: cardWidth,
             margin: EdgeInsets.only(
@@ -211,15 +204,22 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(15),
                   ),
+                  // 2. FIXED INTERNAL IMAGE: Menggunakan CachedNetworkImage + Shimmer Internal
                   child: Container(
                     height: 100,
                     width: double.infinity,
                     color: colorSecondaryBg.withValues(alpha: 0.4),
                     child: fullImageUrl.isNotEmpty
-                        ? Image.network(
-                            fullImageUrl,
+                        ? CachedNetworkImage(
+                            imageUrl: fullImageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (c, e, s) => Center(
+                            placeholder: (context, url) => Shimmer(
+                              color: const Color(0xFFFAF7F2),
+                              colorOpacity: 0.5,
+                              duration: const Duration(milliseconds: 1200),
+                              child: Container(color: const Color(0xFFE6DFD5)),
+                            ),
+                            errorWidget: (c, e, s) => Center(
                               child: Icon(
                                 Icons.broken_image_outlined,
                                 color: colorPrimary,
@@ -269,6 +269,77 @@ class DeteksiPageView extends GetView<DeteksiPageController> {
           ),
         );
       }),
+    );
+  }
+
+  // ================= INDUSTRIAL STANDARD: HORIZONTAL REPEAT SKELETON SHIMMER =================
+  Widget _buildHistoryShimmer(double cardWidth, Color colorPrimary) {
+    const shimmerBg = Color(0xFFEFECE6);
+    const maskColor = Color(0xFFE2DDD5);
+
+    return Shimmer(
+      color: const Color(0xFFFAF7F2),
+      colorOpacity: 0.5,
+      duration: const Duration(milliseconds: 1200),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(3, (index) {
+          return Container(
+            width: cardWidth,
+            margin: EdgeInsets.only(right: index == 2 ? 0 : 12),
+            decoration: BoxDecoration(
+              color: shimmerBg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colorPrimary.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Topeng Thumbnail Gambar Atas Kartu
+                Container(
+                  height: 100,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: maskColor,
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(15)),
+                  ),
+                ),
+                // Topeng Area Teks Info Bawah Kartu
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 55,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: maskColor,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        width: 40,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: maskColor,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 }

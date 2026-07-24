@@ -2,7 +2,8 @@ import 'package:batikara/app/modules/deteksi_page/views/detail_history_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:cached_network_image/cached_network_image.dart'; // Impor cache gambar premium
+import 'package:shimmer_animation/shimmer_animation.dart'; // Impor paket shimmer andalanmu
 
 class RiwayatItemWidget extends StatelessWidget {
   final Map<String, dynamic> item;
@@ -161,11 +162,18 @@ class RiwayatItemWidget extends StatelessWidget {
                               width: 60,
                               height: 60,
                               color: currentBoxColor,
+                              // INTEGRASI BERHASIL: Menggunakan CachedNetworkImage + Shimmer Internal Transparan Lembut
                               child: fullImageUrl.isNotEmpty
-                                  ? Image.network(
-                                      fullImageUrl,
+                                  ? CachedNetworkImage(
+                                      imageUrl: fullImageUrl,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (c, e, s) => Center(
+                                      placeholder: (context, url) => Shimmer(
+                                        color: const Color(0xFFFAF7F2),
+                                        colorOpacity: 0.5,
+                                        duration: const Duration(milliseconds: 1200),
+                                        child: Container(color: Colors.transparent),
+                                      ),
+                                      errorWidget: (c, e, s) => Center(
                                         child: Icon(currentIcon, color: colorPrimary.withOpacity(0.5), size: 24),
                                       ),
                                     )

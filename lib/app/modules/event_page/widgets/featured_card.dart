@@ -92,7 +92,7 @@ class FeaturedCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          isFree ? 'GRATIS' : event.formattedCurrency,
+                          isFree ? 'GRATIS' : 'Rp ${event.formattedPrice}',
                           style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,

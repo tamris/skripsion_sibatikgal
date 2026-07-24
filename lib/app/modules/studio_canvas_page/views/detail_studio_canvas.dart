@@ -53,7 +53,7 @@ class DetailStudioCanvas extends GetView<StudioCanvasPageController> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save_alt_rounded, color: cDark, size: 24),
+            icon: const Icon(Icons.save_rounded, color: cDark, size: 24),
             tooltip: 'Simpan Hasil Membatik',
             onPressed: () {
               final batikId = controller.currentSelectedBatik?.id ?? '';

@@ -99,10 +99,14 @@ class _BatikActionButtonsState extends State<BatikActionButtons>
                 elevation: 2,
               ),
               onPressed: () {
-                // Aksi navigasi ke peta lokasi pengrajin
+                // =========================================================================
+                // SOLUSI: Arahkan ke Halaman Peta/Mapping Secara Global Tanpa Oper Argumen
+                // =========================================================================
+                Get.toNamed(
+                    '/mapping-page'); // Sesuaikan dengan nama route halaman MappingPageView kamu
               },
               child: Text(
-                'Lihat Lokasi Pengrajin',
+                'Jelajahi Peta Batik',
                 style: GoogleFonts.poppins(
                   color: textligt,
                   fontSize: 16,
